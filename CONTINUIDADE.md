@@ -60,6 +60,8 @@ Os dados salvos ficam vinculados ao navegador e à origem HTTP. O relógio autom
 
 # Testes executados
 
+**Taxas da apresentação de 10/11/2026.** O Comparador usa referências datadas e mostra taxas mensais e anuais equivalentes. Poupança de 0,5936% no aniversário de 10/11, CDB de 100% do CDI com 13,65% a.a. no dado de 09/11 e meta Selic de 13,75% a.a. O simulador mantém o exemplo acadêmico de 0,8% a.m. As fontes estão nos cartões do Comparador.
+
 **Investir simplificado e detalhes de ativos.** Investir fica com Visão geral, Mercado simulado e Minha carteira. O detalhe mantém o X visível ao rolar e fecha por clique ou toque fora e por Escape, com foco de volta ao ativo. A Carteira mostra a quantidade abaixo do código e também no topo do detalhe. Lint, 35 testes do Node e os smokes locais de navegação, Investir, relógio, risco e mobile passaram. A rodada legada foi preservada ao abrir o endereço antigo. Toque e rolagem foram verificados a 360 e 390 px.
 
 **Replay do dólar sem revelar o episódio.** O resultado abre um novo sorteio entre os dois recortes históricos versionados. Durante o replay, o título é neutro e o gráfico e as ordens usam dias numerados. O evento e as datas reais aparecem na conclusão. O smoke local validou os dois recortes, incluindo cotações e conversões, ausência do título e das datas antes do resultado e a revelação ao terminar. Lint e 35 testes do Node passaram.

@@ -50,7 +50,8 @@ test('conversão de taxa anual e mensal é efetiva e reversível', () => {
 
 test('comparador usa o mesmo capital, aporte, prazo e motor', () => {
   const results = compareModes(example);
-  assert.deepEqual(results.map(({ result }) => result.balance.toFixed(2)), ['36233.87', '40585.58', '41260.02']);
+  assert.deepEqual(results.map(({ result }) => result.balance.toFixed(2)), ['37337.16', '43689.55', '43798.15']);
+  assert.deepEqual(results.map(({ rate }) => annualFromMonthly(rate).toFixed(2)), ['7.36', '13.65', '13.75']);
   for (const { rate, result } of results) {
     assert.deepEqual(result, project({ ...example, rate }));
     assert.equal(result.invested, 31000);

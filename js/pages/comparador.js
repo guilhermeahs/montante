@@ -1,8 +1,8 @@
-import { example, project } from '../core/financial-engine.js';
+import { annualFromMonthly, example, project } from '../core/financial-engine.js';
 import { escapeHtml, money, percent } from '../core/format.js';
 import { baseFields, durationField, field, listenForm, readBase, readNumber } from '../components/forms.js';
 import { drawChart } from '../components/chart.js';
-import { compareModes, defaultRates, modes } from '../data/modalidades.js';
+import { compareModes, defaultRates, modes, rateReferenceDate } from '../data/modalidades.js';
 import { takeComparison } from './simulador.js';
 
 let base = { ...example };
@@ -24,10 +24,11 @@ export function renderComparator(main) {
       <p class="eyebrow">Simular · Projeções</p>
       <h1>Comparador de modalidades</h1>
       <p class="lead" id="comparison-base"></p>
+      <p class="muted">Taxas de referência consultadas em <strong>${rateReferenceDate}</strong>.</p>
     </header>
     <section class="card" aria-label="Montantes por modalidade"><div id="comparison-bars" class="comparison-bars" aria-live="polite"></div></section>
     <section id="comparison-cards" class="cards section" aria-label="Sobre cada modalidade"></section>
-    <p class="muted section">Taxas ilustrativas. Resultados simulados, sem IR, IOF, taxas operacionais ou garantia de rentabilidade futura.</p>
+    <p class="muted section">O comparador usa taxas constantes nas projeções e mostra equivalentes entre mês e ano. Resultados brutos, sem IR, IOF ou taxas operacionais.</p>
     <details class="card section">
       <summary>Editar valores, prazo e taxas</summary>
       <form id="comparison-form" class="stacked section" novalidate>
@@ -59,9 +60,14 @@ export function renderComparator(main) {
       `${money(params.initial)} iniciais + ${money(params.contribution)} por mês durante ${params.months} meses.`;
     main.querySelector('#comparison-bars').innerHTML = results.map(entry => `
       <div class="bar-row"><strong>${escapeHtml(entry.label)}</strong><div class="bar-track" aria-hidden="true"><div style="width:${highest ? entry.result.balance / highest * 100 : 0}%;background:${entry.color}"></div></div><strong>${money(entry.result.balance)}</strong></div>`).join('');
-    main.querySelector('#comparison-cards').innerHTML = results.map(entry => `
-      <article class="card modality"><h2>${escapeHtml(entry.label)}</h2><p class="muted">${percent(entry.rate, 6)} a.m. · Taxa hipotética</p>
-      <p>${entry.description}</p><p>Juros: <strong>${money(entry.result.interest)}</strong><br>Rentabilidade sobre o investido: <strong>${entry.result.returnPercent === null ? '—' : percent(entry.result.returnPercent)}</strong></p></article>`).join('');
+    main.querySelector('#comparison-cards').innerHTML = results.map(entry => {
+      const reference = entry.source && entry.rate === defaultRates[entry.id];
+      return `<article class="card modality"><h2>${escapeHtml(entry.label)}</h2>
+      <p><strong>${percent(entry.rate, 4)} a.m. · ${percent(annualFromMonthly(entry.rate))} a.a.</strong></p>
+      ${reference ? `<p>${entry.description} <a href="${escapeHtml(entry.source)}" target="_blank" rel="noopener">Fonte BCB</a></p>` :
+        `<p class="muted">${entry.id === 'salva' ? entry.description : 'Taxa personalizada para esta projeção.'}</p>`}
+      <p>Juros: <strong>${money(entry.result.interest)}</strong><br>Rentabilidade sobre o investido: <strong>${entry.result.returnPercent === null ? '—' : percent(entry.result.returnPercent)}</strong></p></article>`;
+    }).join('');
     main.querySelector('#comparison-difference').textContent =
       `Diferença entre o maior e o menor montante bruto: ${money(highest - lowest)}${lowest ? ' (' + percent((highest - lowest) / lowest * 100) + ' sobre o menor)' : ''}. Aportes no fim de cada mês.`;
     const history = results[0].result.series.map((_, month) =>
