@@ -40,8 +40,8 @@ Os dados salvos ficam vinculados ao navegador e à origem HTTP. O relógio autom
 
 # GitHub
 
-O marco de mercado e carteira anterior foi confirmado em `96a33ea` (10/11/2026). Use `git status -sb` e `git ls-remote origin refs/heads/main` para verificar o hash publicado do marco atual. O checkout usa Git Credential Manager.
+O último marco funcional foi confirmado em `main` no commit `a0801e6c2d24e92c65080f47a10be09b5cfe5397`, em 10/11/2026 às 12:04:45 (horário de Brasília). O checkout usa Git Credential Manager. Use `git status -sb` e `git ls-remote origin refs/heads/main` para confirmar a revisão atual, que pode incluir commits posteriores de documentação.
 
 # Como continuar com a próxima conta
 
-Abra este checkout, leia README e AGENTS, confirme a versão remota, rode `npm test` e `npm start`, e retome a primeira tarefa pendente.
+Abra este checkout, leia README e AGENTS, rode `git status -sb` e `git fetch origin` para conferir a revisão remota. Se a árvore estiver limpa e houver avanço remoto linear, rode `git pull --ff-only`. Em seguida, execute `npm test` e `npm start`. Abra `http://127.0.0.1:4178/#dados` para o roteiro de demonstração e siga a primeira tarefa pendente.
