@@ -1,5 +1,6 @@
 import { escapeHtml, money, number, percent } from '../core/format.js';
-import { initialCash } from '../core/portfolio-engine.js';
+import { marketDate } from '../core/market-engine.js';
+import { initialCash, saleAvailabilityDay } from '../core/portfolio-engine.js';
 
 const stamp = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'UTC' });
 const date = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'UTC' });
@@ -11,13 +12,16 @@ export const quantity = (asset, units) => number(units / asset.scale, 6);
 export const sideLabel = side => side === 'buy' ? 'Compra' : 'Venda';
 export const profitClass = value => value < 0 ? 'negative' : value > 0 ? 'positive' : '';
 
+export function balanceCards(summary) {
+  return `<article class="card metric emphasis" data-balance="wealth"><p>Patrimônio</p><strong>${moneyCents(summary.wealth)}</strong></article>
+    <article class="card metric" data-balance="cash"><p>Saldo disponível</p><strong>${moneyCents(summary.cash)}</strong></article>
+    <article class="card metric" data-balance="pending"><p>A receber</p><strong>${moneyCents(summary.pendingCash)}</strong></article>`;
+}
+
 export function portfolioMetrics(summary, { overview = false } = {}) {
   const variation = (summary.wealth - initialCash) / initialCash * 100;
   const totalResult = summary.realized + summary.unrealized;
-  const metrics = [
-    ['Patrimônio virtual', summary.wealth, 'emphasis'],
-    ['Saldo disponível', summary.cash]
-  ];
+  const metrics = [];
   if (overview) metrics.push(['Resultado da carteira', totalResult, profitClass(totalResult)]);
   else metrics.push(
     ['Custo das posições', summary.invested],
@@ -25,7 +29,7 @@ export function portfolioMetrics(summary, { overview = false } = {}) {
     ['Resultado realizado', summary.realized, profitClass(summary.realized)],
     ['Resultado não realizado', summary.unrealized, profitClass(summary.unrealized)]
   );
-  return `<div class="metric-grid portfolio-metrics">
+  return `<div class="metric-grid portfolio-metrics${overview ? ' portfolio-overview' : ''}">${balanceCards(summary)}
     ${metrics.map(([label, value, tone = '']) => `<article class="card metric ${tone}"><p>${label}</p><strong>${moneyCents(value)}</strong></article>`).join('')}
     </div><p class="section muted">Variação sobre o saldo fictício inicial de ${moneyCents(initialCash)}: <strong>${percent(variation)}</strong>. Os aportes do simulador ficam nas projeções.</p>`;
 }
@@ -50,10 +54,11 @@ export function distribution(positions) {
 export function operationTable(operations, provider) {
   if (!operations.length) return '<p class="muted">Nenhuma operação registrada.</p>';
   return `<p class="table-hint muted">Deslize a tabela para ver o extrato completo.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Extrato das operações simuladas">
-    <table><thead><tr><th>Data simulada</th><th>Operação</th><th>Ativo</th><th>Quantidade</th><th>Preço</th><th>Bruto</th><th>Taxas</th><th>Líquido</th><th>Caixa antes</th><th>Caixa depois</th><th>Realizado</th><th>ID</th></tr></thead>
+    <table><thead><tr><th>Data simulada</th><th>Operação</th><th>Ativo</th><th>Quantidade</th><th>Preço</th><th>Bruto</th><th>Taxas</th><th>Líquido</th><th>Caixa antes</th><th>Caixa depois</th><th>Realizado</th><th>Crédito da venda</th><th>ID</th></tr></thead>
       <tbody>${operations.map(order => `<tr><td>${dateTime(order.timestamp)}</td><td>${sideLabel(order.side)}</td><th scope="row">${order.assetId}</th>
         <td>${quantity(provider.metadata(order.assetId), order.units)}</td><td>${moneyCents(order.cents)}</td><td>${moneyCents(order.gross)}</td>
         <td>${moneyCents(order.fees)}</td><td>${moneyCents(order.net)}</td><td>${moneyCents(order.cashBefore)}</td><td>${moneyCents(order.cashAfter)}</td>
-        <td class="${profitClass(order.realized)}">${moneyCents(order.realized)}</td><td><code>${order.id}</code></td></tr>`).join('')}</tbody></table>
+        <td class="${profitClass(order.realized)}">${moneyCents(order.realized)}</td>
+        <td>${order.side === 'sell' ? dateTime(marketDate(saleAvailabilityDay(order))) : '—'}</td><td><code>${order.id}</code></td></tr>`).join('')}</tbody></table>
     </div>`;
 }

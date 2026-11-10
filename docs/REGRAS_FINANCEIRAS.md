@@ -18,10 +18,11 @@
 ## Carteira virtual
 
 - O saldo inicial é R$ 50.000,00 fictícios. Dinheiro é registrado em centavos, ações, FIIs e ETFs em unidades inteiras, e criptoativos em milionésimos de unidade.
-- Compras debitam o bruto e somam ao custo. Vendas retiram o custo proporcional da posição, arredondado ao centavo, e creditam o líquido. Venda integral retira todo o custo remanescente. Taxas e impostos são zero.
+- Nas novas operações, a taxa simulada é de 0,10% do bruto, arredondada ao centavo. Compras debitam bruto mais taxa do saldo disponível e somam esse total ao custo. Vendas retiram o custo proporcional da posição e registram o bruto menos a taxa como valor a receber. A venda integral retira todo o custo remanescente.
+- O dinheiro da venda passa de A receber para Saldo disponível no próximo dia simulado. Esse prazo é uma convenção didática. Ordens antigas preservam taxa zero e crédito imediato. O exercício usa impostos zerados. [B3 · Características das ações](https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/acoes.htm) · [CVM · Taxas e custos](https://www.gov.br/investidor/pt-br/investir/como-investir/como-funciona-a-bolsa/taxas-e-custos).
 - Arredondamentos de ordens e baixas de custo usam inteiros com meia unidade para cima. Ordens acima do saldo, vendas acima da posição, operações inferiores a um centavo e IDs duplicados são rejeitados.
-- Valor de mercado é quantidade vezes cotação. Lucro não realizado é a diferença para o custo remanescente. Lucro realizado é a receita líquida de venda menos o custo baixado. Patrimônio é caixa mais valor de mercado.
-- A variação patrimonial usa o crédito inicial como referência. O histórico diário usa o extrato até aquele dia. O gráfico do painel mostra até 90 dias disponíveis.
+- Valor de mercado é quantidade vezes cotação. Lucro não realizado é a diferença para o custo remanescente. Lucro realizado é a receita líquida de venda menos o custo baixado. Patrimônio soma saldo disponível, vendas a receber e valor de mercado.
+- A variação patrimonial usa o crédito inicial como referência. O gráfico e a maior queda desde um pico usam os mesmos até 90 dias simulados disponíveis. A concentração divide o valor do maior ativo e da maior categoria pelo patrimônio atual.
 - Renda fixa permanece no comparador educacional. O mercado negociável usa quatro classes de ativos e 18 cotações fictícias.
 
 ## Metas e cenários

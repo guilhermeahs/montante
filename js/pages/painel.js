@@ -3,7 +3,7 @@ import { distribution, moneyCents, operationTable, portfolioMetrics, shortDate }
 import { escapeHtml, money, percent } from '../core/format.js';
 import { project } from '../core/financial-engine.js';
 import { marketDate } from '../core/market-engine.js';
-import { markPortfolio, portfolioHistory } from '../core/portfolio-engine.js';
+import { marketPortfolio, portfolioHistory, portfolioRisk } from '../core/portfolio-engine.js';
 import { projectGoal } from '../core/planning.js';
 import { DemoMarketProvider } from '../services/market-provider.js';
 import { observeState, store } from '../services/storage.js';
@@ -30,10 +30,14 @@ export function renderDashboard(main) {
       <p>Escolha um ativo, consulte a cotação simulada e confirme a compra. A posição e o registro aparecerão em Minha carteira.</p>
       <a class="button" href="#mercado">Escolher um ativo</a>
     </section>
+    <section class="card section" aria-labelledby="dashboard-risk-title">
+      <h2 id="dashboard-risk-title">Risco da carteira</h2>
+      <div id="dashboard-risk"></div>
+    </section>
     <section class="card section"><h2>Onde investi</h2><div id="dashboard-distribution"></div></section>
     <section class="card section">
       <h2>Evolução do patrimônio virtual</h2>
-      <p class="muted">Últimos 90 dias simulados disponíveis desde o início da carteira. Cada ponto usa o caixa, o extrato e as cotações daquele dia.</p>
+      <p class="muted">Até 90 dias simulados. O patrimônio de cada dia soma o saldo disponível, as vendas a receber e o valor dos ativos.</p>
       <div id="dashboard-chart"></div>
     </section>
     <section class="card section"><h2>Últimas operações</h2><div id="dashboard-operations"></div><a href="#carteira">Ver extrato em Minha carteira</a></section>
@@ -49,11 +53,19 @@ export function renderDashboard(main) {
   const query = selector => main.querySelector(selector);
   function show(next) {
     const provider = new DemoMarketProvider(next.market);
-    const summary = markPortfolio(next.operations, asset => provider.quote(asset.id).cents);
+    const summary = marketPortfolio(next.operations, next.market.ticks.at(-1));
     const history = portfolioHistory(next.operations, next.market.ticks);
+    const { largestAsset, largestCategory, drawdown, fees } = portfolioRisk(summary, history, next.operations);
     query('#dashboard-profile').textContent = next.profile === 'example' ? 'Carteira de exemplo acadêmico' : '';
     query('#dashboard-metrics').innerHTML = portfolioMetrics(summary, { overview: true });
     query('#dashboard-first-trade').hidden = next.operations.length > 0;
+    query('#dashboard-risk').innerHTML = `
+      ${largestAsset ? `<p><strong>${percent(largestAsset.share * 100)}</strong> do patrimônio está em ${escapeHtml(largestAsset.label)}.
+        Se esse ativo cair 10% e o resto ficar igual, o patrimônio cai cerca de <strong>${percent(largestAsset.share * 10)}</strong>.</p>
+        <p><strong>${percent(largestCategory.share * 100)}</strong> do patrimônio está em ${escapeHtml(largestCategory.label)}, sua maior categoria.
+        Ativos da mesma categoria podem cair juntos.</p>` : '<p>Quando você tiver posições, verá quanto do patrimônio depende do seu maior ativo e da sua maior categoria.</p>'}
+      <p>${drawdown === null ? 'Avance um dia para começar a medir a queda desde um pico.' : `Maior queda desde um pico nos dias do gráfico: <strong>${percent(drawdown * 100)}</strong>.`}</p>
+      <p>Taxas pagas desde o início desta carteira: <strong>${moneyCents(fees)}</strong>.</p>`;
     query('#dashboard-distribution').innerHTML = distribution(summary.positions);
     query('#dashboard-operations').innerHTML = operationTable(next.operations.slice(-5).reverse(), provider);
     const chart = query('#dashboard-chart');

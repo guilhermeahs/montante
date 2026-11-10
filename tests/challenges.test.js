@@ -86,6 +86,7 @@ test('backup da rodada preserva semente, posição, operações e a carteira do 
   assert.equal(migrated.challenge, null);
   assert.deepEqual(migrated.operations, existing.operations);
   const run = tradeChallenge(advanceChallenge(make({ allocation: 75 })), { id: 'sell-one', side: 'sell', units: 1 });
+  assert.deepEqual(validateState({ ...migrated, version: 4, challenge: run }).challenge, run);
   const restored = parseBackup(serializeBackup({ ...migrated, challenge: run }));
   assert.deepEqual(restored.challenge, run);
   assert.deepEqual(restored.operations, existing.operations);

@@ -7,7 +7,7 @@ import { quiz } from '../data/educacao.js';
 import { validateChallenge } from '../core/challenges.js';
 
 export const storageKey = 'montante.state';
-export const version = 4;
+export const version = 5;
 export const emptyState = () => ({
   version, profile: 'default', simulations: [], market: initialMarket(), favorites: [], operations: [],
   goals: [], answers: {}, theme: 'light', challenge: null
@@ -49,7 +49,7 @@ function validateAnswers(value) {
 }
 
 export function validateState(value) {
-  if (![1, 2, 3, version].includes(value?.version) || !Array.isArray(value.simulations) || value.simulations.length > 100) {
+  if (![1, 2, 3, 4, version].includes(value?.version) || !Array.isArray(value.simulations) || value.simulations.length > 100) {
     throw new Error('Dados salvos em formato inválido ou versão incompatível.');
   }
   const ids = new Set();
@@ -73,14 +73,16 @@ export function validateState(value) {
     if (operation.day > lastDay || (operation.day >= firstDay && operation.cents !== market.ticks[operation.day - firstDay].prices[asset.index])) {
       throw new Error('Uma ordem está fora do relógio ou da cotação do mercado simulado.');
     }
+    if (value.version < 5 && operation.rules !== undefined) throw new Error('Extrato incompatível com esta versão do backup.');
     return Object.fromEntries(['id', 'side', 'assetId', 'units', 'cents', 'day', 'timestamp', 'gross',
-      'fees', 'net', 'cashBefore', 'cashAfter', 'costSold', 'realized'].map(key => [key, operation[key]]));
+      'fees', 'net', 'cashBefore', 'cashAfter', 'costSold', 'realized', ...(operation.rules === undefined ? [] : ['rules'])]
+      .map(key => [key, operation[key]]));
   });
   const state = { version, profile: value.profile, simulations, market, favorites: [...value.favorites], operations, challenge: null };
   if (value.version === 2) return { ...state, goals: [], answers: {}, theme: 'light' };
   if (!['light', 'dark'].includes(value.theme)) throw new Error('Preferência de tema inválida.');
   return { ...state, goals: validateGoals(value.goals), answers: validateAnswers(value.answers), theme: value.theme,
-    challenge: value.version === version ? validateChallenge(value.challenge) : null };
+    challenge: value.version >= 4 ? validateChallenge(value.challenge) : null };
 }
 
 export function createStore(getStorage) {

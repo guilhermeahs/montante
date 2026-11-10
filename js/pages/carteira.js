@@ -2,7 +2,8 @@ import { openAssetDetails } from '../components/asset-details.js';
 import { confirmAction } from '../components/dialog.js';
 import { distribution, moneyCents, operationTable, portfolioMetrics, profitClass, quantity, sideLabel } from '../components/portfolio-ui.js';
 import { openTrade } from '../components/trade.js';
-import { markPortfolio } from '../core/portfolio-engine.js';
+import { marketDate } from '../core/market-engine.js';
+import { marketPortfolio, saleAvailabilityDay } from '../core/portfolio-engine.js';
 import { exportCSV } from '../services/export.js';
 import { DemoMarketProvider } from '../services/market-provider.js';
 import { observeState, store, transact } from '../services/storage.js';
@@ -20,7 +21,7 @@ export function renderPortfolio(main) {
     <p id="portfolio-status" role="status"></p><p id="portfolio-error" class="error" role="alert"></p>
     <section class="card section">
       <h2>Posições</h2>
-      <p class="muted">Compras e vendas têm taxas e impostos zerados. O preço médio considera o custo remanescente.</p>
+      <p class="muted">O preço médio inclui a taxa de compra. O dinheiro das novas vendas aparece em A receber até o próximo dia simulado.</p>
       <div id="positions"></div>
       <div class="actions section"><a class="button" href="#mercado">Explorar mercado</a><a class="button secondary" href="#painel">Ver visão geral</a></div>
     </section>
@@ -40,7 +41,7 @@ export function renderPortfolio(main) {
   function show(next) {
     state = next;
     provider = new DemoMarketProvider(state.market);
-    const summary = markPortfolio(state.operations, asset => provider.quote(asset.id).cents);
+    const summary = marketPortfolio(state.operations, state.market.ticks.at(-1));
     query('#portfolio-profile').textContent = state.profile === 'example' ? 'Carteira de exemplo acadêmico' : '';
     query('#portfolio-metrics').innerHTML = portfolioMetrics(summary);
     query('#portfolio-distribution').innerHTML = distribution(summary.positions);
@@ -82,10 +83,11 @@ export function renderPortfolio(main) {
     if (side) trade(id, side);
   });
   query('#export-operations').addEventListener('click', () => {
-    const headings = ['ID', 'Data simulada (UTC)', 'Operação', 'Ativo', 'Quantidade', 'Preço (R$)', 'Bruto (R$)', 'Taxas (R$)', 'Líquido (R$)', 'Caixa antes (R$)', 'Caixa depois (R$)', 'Realizado (R$)'];
+    const headings = ['ID', 'Data simulada (UTC)', 'Operação', 'Ativo', 'Quantidade', 'Preço (R$)', 'Bruto (R$)', 'Taxas (R$)', 'Líquido (R$)', 'Caixa antes (R$)', 'Caixa depois (R$)', 'Realizado (R$)', 'Crédito da venda (UTC)'];
     const rows = state.operations.map(order => [order.id, order.timestamp, sideLabel(order.side), order.assetId,
       order.units / provider.metadata(order.assetId).scale,
-      ...[order.cents, order.gross, order.fees, order.net, order.cashBefore, order.cashAfter, order.realized].map(value => value / 100)]);
+      ...[order.cents, order.gross, order.fees, order.net, order.cashBefore, order.cashAfter, order.realized].map(value => value / 100),
+      order.side === 'sell' ? marketDate(saleAvailabilityDay(order)) : '']);
     exportCSV('montante-extrato.csv', [headings, ...rows]);
   });
   query('#reset-wallet').addEventListener('click', () => {

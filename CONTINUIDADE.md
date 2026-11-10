@@ -17,7 +17,8 @@
 
 # Módulos concluídos
 
-- Desafios históricos (`#desafios-historicos`) entra em Investir com rodadas surpresa de alta, queda ou sem choque forte. A inspiração é revelada no resultado, que libera os replays da PTAX de março e novembro de 2020. A carteira do desafio é isolada e incluída nos backups v4. O plano inicial de anunciar alta ou queda antes da prática foi substituído pela rodada surpresa a pedido do usuário.
+- Mercado com risco (`#mercado`, `#carteira`, `#painel`). O cenário padrão combina oscilações gerais, por categoria e por ativo, com períodos de turbulência sorteados pela semente. Novas ordens cobram 0,10% de taxa simulada. O valor líquido da venda fica a receber até o dia seguinte. A Visão geral explica concentração, maior queda recente e taxas pagas.
+- Desafios históricos (`#desafios-historicos`) entra em Investir com rodadas surpresa de alta, queda ou sem choque forte. A inspiração é revelada no resultado, que libera os replays da PTAX de março e novembro de 2020. A carteira do desafio é isolada e incluída nos backups desde a versão 4. O plano inicial de anunciar alta ou queda antes da prática foi substituído pela rodada surpresa a pedido do usuário.
 
 - Início (`js/pages/inicio.js`) com CTAs e gráfico do protótipo.
 - Simulador (`js/pages/simulador.js`) com juros compostos, comparação de juros simples, tabela, gráfico interativo, cenários salvos e CSV.
@@ -35,19 +36,21 @@ Os seis marcos da reorganização foram implementados e validados localmente. A 
 
 # Próximas tarefas por prioridade
 
-1. Abrir **Investir → Desafios históricos** com um aluno iniciante em um celular físico. Sortear uma rodada, avançar os dias, negociar e discutir o resultado antes de abrir um replay. Em seguida, ensaiar as jornadas de Simular e Mercado simulado.
+1. Abrir **Investir → Mercado simulado** em um celular físico. Comprar e vender, observar o valor a receber, avançar o dia e verificar o saldo disponível. Pedir a um aluno iniciante que explique a diferença entre saldo e patrimônio e leia o painel de risco. Em seguida, ensaiar as jornadas de Simular e Desafios históricos.
 2. Fazer a verificação manual com leitor de tela, incluindo navegação secundária, gráfico e diálogos.
 3. Conferir no aparelho físico a rolagem dos gráficos, a interação por toque e os controles das tabelas.
 
 # Contratos e arquitetura
 
-Leia `docs/ARQUITETURA.md`, `docs/REGRAS_FINANCEIRAS.md`, `docs/REFERENCIAS.md` e `docs/DADOS_HISTORICOS.md`. Projeções usam taxa mensal percentual. A carteira é derivada do extrato em centavos, com preços congelados. O estado v4 preserva a chave `montante.state` e os hashes existentes. Backups v1 a v3 migram com o desafio vazio e preservam os dados anteriores.
+Leia `docs/ARQUITETURA.md`, `docs/REGRAS_FINANCEIRAS.md`, `docs/REFERENCIAS.md` e `docs/DADOS_HISTORICOS.md`. Projeções usam taxa mensal percentual. A carteira é derivada do extrato em centavos, com preços congelados. O estado v5 preserva a chave `montante.state` e os hashes existentes. Backups v1 a v4 migram sem recalcular operações antigas. O crédito das vendas novas é derivado do dia simulado e do extrato.
 
 # Bugs e limitações conhecidos
 
 Os dados salvos ficam vinculados ao navegador e à origem HTTP. O relógio automático depende de uma aba visível. O histórico de cotações conserva até 366 pontos diários. Renda fixa é explorada no Comparador. Testes com leitor de tela, usuários e celulares físicos seguem pendentes.
 
 # Testes executados
+
+Mercado com risco passou no lint (47 arquivos), nos 34 testes do Node e em sete smoke tests locais no Edge. O fluxo novo cobriu duas vendas no mesmo dia, taxa, recarga, outra aba, compra bloqueada até a liberação do saldo e reinvestimento com toque em 360 e 390 px. A navegação cobriu 11 telas em seis larguras.
 
 Desafios históricos passou no `npm run lint` (46 arquivos), `npm test` (29 testes) e nos smoke tests locais no Edge. O fluxo novo cobriu toque em 360 e 390 px, gráfico restrito aos dias revelados, compra, venda, pausa, recarga, resultado, replay PTAX e backup. Navegação passou em 11 telas e seis larguras. Mercado simulado preservou as operações da carteira. As 44 cotações versionadas foram comparadas com a série do Banco Central.
 

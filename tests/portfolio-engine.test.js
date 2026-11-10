@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { executeTrade, initialCash, markPortfolio, quantityUnits, replayPortfolio } from '../js/core/portfolio-engine.js';
+import { executeMarketTrade, executeTrade, initialCash, markPortfolio, portfolioRisk, quantityUnits, replayPortfolio, saleAvailabilityDay } from '../js/core/portfolio-engine.js';
 import { marketDate } from '../js/core/market-engine.js';
 import { assetById } from '../js/data/ativos.js';
 
@@ -67,4 +67,52 @@ test('cripto aceita seis casas e arredonda frações de centavo sem gerar resíd
   assert.equal(replayPortfolio(trades).holdings.size, 0);
   assert.equal(trades[1].costSold + trades[2].costSold, trades[0].gross);
   assert.throws(() => executeTrade([], order('small', 'buy', 1, 100, 0, 'BTC')), /pelo menos/);
+});
+
+test('compra cobra taxa, incorpora ao custo e arredonda a meio centavo para cima', () => {
+  const trades = executeMarketTrade([], order('compra', 'buy', 1, 1500));
+  const [buy] = trades;
+  assert.equal(buy.fees, 2);
+  assert.equal(buy.net, 1502);
+  assert.equal(buy.cashAfter, initialCash - 1502);
+  assert.equal(replayPortfolio(trades).holdings.get('PETR4').cost, 1502);
+  assert.equal(markPortfolio(trades, () => 1500).unrealized, -2);
+  assert.throws(() => executeMarketTrade([], order('sem-taxa', 'buy', 100, 50000)), /Saldo fictício insuficiente/);
+});
+
+test('vendas parciais e integrais no mesmo dia liberam o líquido uma vez, após avançar', () => {
+  let trades = executeMarketTrade([], order('compra', 'buy', 100, 49950));
+  const available = trades[0].cashAfter;
+  trades = executeMarketTrade(trades, order('venda-1', 'sell', 40, 49950));
+  trades = executeMarketTrade(trades, order('venda-2', 'sell', 60, 49950));
+  assert.equal(trades[1].cashAfter, available);
+  assert.equal(trades[1].costSold, 1_999_998);
+  assert.equal(trades[2].costSold, 2_999_997);
+  assert.equal(saleAvailabilityDay(trades[2]), 1);
+  const pending = trades[1].net + trades[2].net;
+  const atSale = markPortfolio(trades, () => 49950, undefined, 0);
+  assert.equal(atSale.cash, available);
+  assert.equal(atSale.pendingCash, pending);
+  assert.equal(atSale.wealth, initialCash - trades.reduce((total, record) => total + record.fees, 0));
+  assert.equal(atSale.positions.length, 0);
+  assert.throws(() => executeMarketTrade(trades, order('cedo', 'buy', 1, 49950)), /valor a receber/);
+  const after = markPortfolio(trades, () => 49950, undefined, 1);
+  assert.equal(after.cash, available + pending);
+  assert.equal(after.pendingCash, 0);
+  assert.equal(after.wealth, atSale.wealth);
+  assert.equal(markPortfolio(trades, () => 49950, undefined, 2).cash, after.cash);
+  const reinvested = executeMarketTrade(trades, order('reinvestir', 'buy', 1, 49950, 1));
+  assert.equal(reinvested.at(-1).cashBefore, after.cash);
+  assert.equal(replayPortfolio(reinvested).cash, after.cash - reinvested.at(-1).net);
+});
+
+test('risco compara concentração sobre o patrimônio, queda desde o pico e taxas', () => {
+  let trades = executeMarketTrade([], order('petr', 'buy', 50, 30000));
+  trades = executeMarketTrade(trades, order('vale', 'buy', 10, 30000, 0, 'VALE3'));
+  const summary = markPortfolio(trades, () => 30000);
+  const risk = portfolioRisk(summary, [{ value: 50000 }, { value: 52000 }, { value: 39000 }], trades);
+  assert.deepEqual(risk.largestAsset, { label: 'PETR4', share: 1500000 / summary.wealth });
+  assert.deepEqual(risk.largestCategory, { label: 'Ações', share: 1800000 / summary.wealth });
+  assert.equal(risk.drawdown, .25);
+  assert.equal(risk.fees, 1800);
 });

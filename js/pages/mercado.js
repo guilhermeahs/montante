@@ -1,8 +1,9 @@
 import { openAssetDetails } from '../components/asset-details.js';
-import { dateTime, moneyCents, profitClass } from '../components/portfolio-ui.js';
+import { balanceCards, dateTime, moneyCents, profitClass } from '../components/portfolio-ui.js';
 import { openTrade } from '../components/trade.js';
 import { escapeHtml, normalizeSearch, percent } from '../core/format.js';
 import { modes } from '../core/market-engine.js';
+import { marketPortfolio } from '../core/portfolio-engine.js';
 import { categories } from '../data/ativos.js';
 import { configureMarket, stepMarket } from '../services/market-clock.js';
 import { DemoMarketProvider } from '../services/market-provider.js';
@@ -15,14 +16,18 @@ export function renderMarket(main) {
     <header class="page-intro">
       <p class="eyebrow">Investir · Mercado fictício</p>
       <h1>Mercado simulado</h1>
-      <p class="lead">Explore cotações fictícias, escolha um ativo e pratique com saldo virtual.</p>
+      <p class="lead">Pratique com cotações fictícias. Alguns movimentos afetam vários ativos de uma vez. O gráfico revela apenas os dias que já passaram.</p>
     </header>
+    <section class="section" aria-label="Saldo da carteira">
+      <div id="market-balances" class="metric-grid"></div>
+      <p class="muted">O valor a receber já faz parte do patrimônio. Ele entra no saldo disponível no próximo dia simulado.</p>
+    </section>
     <section class="card market-clock" aria-label="Controles do mercado simulado">
       <div class="market-clock-status"><p id="market-time" class="muted"></p><a href="#carteira">Ver minha carteira</a></div>
       <details id="market-clock-controls">
         <summary>Relógio da simulação</summary>
         <div class="stacked section">
-          <p class="muted">Cada avanço corresponde a um dia no mercado fictício.</p>
+          <p class="muted">Cada avanço corresponde a um dia no mercado fictício. No modo imprevisível, os períodos de alta, queda e calmaria aparecem sem aviso.</p>
           <div class="two-cards">
             <div class="field"><label for="market-scenario">Cenário de preços</label><select id="market-scenario">${Object.entries(modes).map(([id, mode]) => `<option value="${id}">${mode.label}</option>`).join('')}</select></div>
             <div class="field"><label for="market-speed">Velocidade</label><select id="market-speed"><option value="normal">Normal · 8 s por dia</option><option value="fast">Rápida · 2 s por dia</option></select></div>
@@ -86,6 +91,7 @@ export function renderMarket(main) {
   function showState(next) {
     state = next;
     provider = new DemoMarketProvider(state.market);
+    query('#market-balances').innerHTML = balanceCards(marketPortfolio(next.operations, next.market.ticks.at(-1)));
     query('#market-time').textContent = `${dateTime(provider.timestamp())} · ${state.market.paused ? 'Pausado' : 'Em andamento'}`;
     query('#market-scenario').value = state.market.scenario;
     query('#market-speed').value = state.market.speed;

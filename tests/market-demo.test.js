@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { advanceMarket, initialMarket, retention, validateMarket } from '../js/core/market-engine.js';
-import { initialCash, portfolioHistory, replayPortfolio } from '../js/core/portfolio-engine.js';
+import { executeMarketTrade, initialCash, marketPortfolio, portfolioHistory, replayPortfolio } from '../js/core/portfolio-engine.js';
+import { assets, categories } from '../js/data/ativos.js';
 import { parseBackup, exampleState, serializeBackup } from '../js/services/demo.js';
 import { DemoMarketProvider } from '../js/services/market-provider.js';
 import { emptyState, validateState } from '../js/services/storage.js';
@@ -30,6 +31,29 @@ test('relógio e cenários afetam somente novos pontos, com preços positivos', 
   assert.equal(portfolioHistory(state.operations, up.ticks).length, 3);
 });
 
+test('o cenário padrão combina calmaria, movimentos amplos e oscilações de uma categoria', () => {
+  function sample(seed) {
+    let market = initialMarket(seed);
+    return Array.from({ length: 180 }, () => {
+      const previous = market.ticks.at(-1);
+      market = advanceMarket(market);
+      const current = market.ticks.at(-1);
+      return categories.map(category => {
+        const returns = assets.filter(asset => asset.category === category)
+          .map(({ index }) => current.prices[index] / previous.prices[index] - 1);
+        return returns.reduce((total, rate) => total + rate, 0) / returns.length;
+      });
+    });
+  }
+  const rates = sample(42);
+  assert.deepEqual(rates, sample(42));
+  assert.notDeepEqual(rates, sample(98));
+  assert.ok(rates.some(day => day.every(rate => rate > .0125)));
+  assert.ok(rates.some(day => day.every(rate => rate < -.0125)));
+  assert.ok(rates.some(day => day.every(rate => Math.abs(rate) < .007)));
+  assert.ok(sample(98).some(([stocks, ...others]) => Math.abs(stocks) > .016 && others.every(rate => Math.abs(rate) < .01)));
+});
+
 test('histórico tem retenção limitada sem apagar as operações', () => {
   const state = exampleState();
   let market = state.market;
@@ -49,6 +73,28 @@ test('backup restaura favoritos, relógio, perfil, simulações e extrato audit�
   assert.throws(() => parseBackup('{'), /JSON/);
   assert.throws(() => parseBackup('x'.repeat(1024 * 1024 + 1)), /MiB/);
   assert.throws(() => validateState({ ...state, favorites: ['<script>'] }), /favoritos/);
+});
+
+test('backup v5 preserva a venda a receber e mantém o extrato v4 com a regra anterior', () => {
+  const previous = exampleState();
+  const migrated = parseBackup(JSON.stringify({ kind: 'montante-backup', state: { ...previous, version: 4 } }));
+  assert.deepEqual(migrated.operations, previous.operations);
+  assert.deepEqual(migrated.market, previous.market);
+  const quote = new DemoMarketProvider(previous.market).quote('PETR4');
+  const operations = executeMarketTrade(migrated.operations, {
+    ...quote, id: 'venda-pendente', assetId: quote.id, side: 'sell', units: 5
+  });
+  const current = { ...migrated, operations };
+  const restored = parseBackup(serializeBackup(current));
+  assert.deepEqual(restored, current);
+  const before = marketPortfolio(restored.operations, restored.market.ticks.at(-1));
+  assert.equal(before.pendingCash, operations.at(-1).net);
+  const next = advanceMarket(restored.market);
+  const after = marketPortfolio(restored.operations, next.ticks.at(-1));
+  assert.equal(after.pendingCash, 0);
+  assert.equal(after.cash, before.cash + before.pendingCash);
+  const tampered = { ...operations.at(-1), fees: 0 };
+  assert.throws(() => validateState({ ...current, operations: [...operations.slice(0, -1), tampered] }), /extrato/);
 });
 
 test('exemplo é reproduzível e restauração inicial remove a carteira e o histórico', () => {

@@ -1,4 +1,4 @@
-import { executeTrade, quantityUnits, replayPortfolio } from '../core/portfolio-engine.js';
+import { executeMarketTrade, quantityUnits, replayPortfolio } from '../core/portfolio-engine.js';
 import { escapeHtml } from '../core/format.js';
 import { DemoMarketProvider } from '../services/market-provider.js';
 import { store, transact } from '../services/storage.js';
@@ -23,7 +23,8 @@ export async function openTrade(id, side, onSuccess) {
   openDialog(`<form novalidate>
     <h2 id="dialog-title">${sideLabel(side)} · ${asset.id}</h2>
     <p>${escapeHtml(asset.name)} · Cotação congelada de <strong>${moneyCents(quote.cents)}</strong> em ${dateTime(quote.timestamp)}.</p>
-    <p class="muted">A operação movimenta apenas saldo virtual. Relógio pausado durante a negociação. Taxas e impostos zerados na demonstração.${side === 'sell' ? ' Posição disponível: ' + quantity(asset, holdings) + '.' : ''}</p>
+    <p class="muted">A operação movimenta apenas saldo virtual. Taxa simulada de 0,10%. O relógio fica pausado durante a negociação.
+      ${side === 'sell' ? 'A venda libera o dinheiro no próximo dia simulado. Posição disponível: ' + quantity(asset, holdings) + '.' : ''}</p>
     ${field('trade-quantity', 'Quantidade', asset.scale === 1 ? '1' : '0,001', { mode: asset.scale === 1 ? 'numeric' : 'decimal', help: asset.scale === 1 ? 'Negociação em unidades inteiras.' : 'Até seis casas decimais.' })}
     <p class="muted" data-preview aria-live="polite"></p>
     <p class="error" role="alert"></p>
@@ -40,8 +41,9 @@ export async function openTrade(id, side, onSuccess) {
     });
     function showPreview() {
       try {
-        const record = executeTrade(state.operations, order()).at(-1);
-        preview.textContent = `Bruto: ${moneyCents(record.gross)} · Taxas: ${moneyCents(record.fees)} · Líquido: ${moneyCents(record.net)} · Caixa antes: ${moneyCents(record.cashBefore)} · Depois: ${moneyCents(record.cashAfter)}.`;
+        const record = executeMarketTrade(state.operations, order()).at(-1);
+        const totalLabel = side === 'buy' ? 'Total a pagar' : 'Valor a receber';
+        preview.textContent = `Valor da ordem: ${moneyCents(record.gross)} · Taxa: ${moneyCents(record.fees)} · ${totalLabel}: ${moneyCents(record.net)} · Saldo disponível após a ordem: ${moneyCents(record.cashAfter)}.`;
         error.textContent = '';
       } catch (failure) {
         preview.textContent = '';
@@ -58,9 +60,9 @@ export async function openTrade(id, side, onSuccess) {
         await transact(current => {
           const live = new DemoMarketProvider(current.market).quote(id);
           if (live.day !== quote.day || live.cents !== quote.cents) throw new Error('A cotação mudou em outra aba. Feche e abra a ordem para confirmar a nova cotação.');
-          const updated = executeTrade(current.operations, confirmedOrder);
+          const updated = executeMarketTrade(current.operations, confirmedOrder);
           const confirmed = updated.at(-1);
-          const presented = executeTrade(state.operations, confirmedOrder).at(-1);
+          const presented = executeMarketTrade(state.operations, confirmedOrder).at(-1);
           if (confirmed.cashBefore !== presented.cashBefore || confirmed.costSold !== presented.costSold) {
             throw new Error('A carteira mudou em outra aba. Feche e abra a ordem para revisar os valores.');
           }

@@ -55,7 +55,7 @@ async (page) => {
   await modal().getByLabel('Quantidade', { exact: true }).fill('1000000');
   await expect('dialog .error', 'Saldo fictício insuficiente');
   await modal().getByLabel('Quantidade', { exact: true }).fill('10');
-  await expect('dialog [data-preview]', 'Líquido:');
+  await expect('dialog [data-preview]', 'Total a pagar:');
   const otherTab = await page.context().newPage();
   try {
     await otherTab.goto(origin + '/#mercado');

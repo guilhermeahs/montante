@@ -30,7 +30,7 @@ npm test
 
 **Simular** usa valores hipotéticos. Permite salvar projeções, exportar CSV, comparar Poupança, CDB e Tesouro Selic e estimar aportes e poder de compra. O rascunho do Simulador acompanha a navegação da aba.
 
-**Investir** permite comprar e vender 18 ativos fictícios com saldo inicial virtual de R$ 50.000,00. Acompanhe posições, distribuição, desempenho e extrato.
+**Investir** permite comprar e vender 18 ativos com cotações fictícias e saldo inicial virtual de R$ 50.000,00. O cenário padrão combina movimentos do mercado, da categoria e de cada ativo. Novas operações cobram 0,10% de taxa simulada. O dinheiro de uma venda entra no saldo disponível no próximo dia simulado. Na Visão geral, acompanhe concentração, maior queda recente e taxas pagas.
 
 **Desafios históricos** é uma prática separada com R$ 10.000 virtuais. A rodada pode ter alta, queda ou passar sem choque forte. O gráfico revela um dia por vez. No fim, compare suas decisões com manter a posição ou ficar em caixa e acesse os replays reais do dólar de março e novembro de 2020.
 
