@@ -62,6 +62,8 @@ Os marcos da reorganização foram enviados à `main`, incluindo Aprender e Conf
 
 # Publicação
 
+Em 10/11/2026, o Mercado com risco do commit `f29213cebe1861770cfb8e02ca0223642504265a` foi enviado à `main` e publicado no Cloudflare Pages. O teste de risco, a regressão de Investir e os Desafios históricos passaram na prévia e em produção no Edge. Duas regressões públicas iniciadas logo após o deploy expiraram e passaram em sessões novas. Os 36 arquivos no endereço público conferem com o pacote validado. [Prévia](https://c935055f.montante-educacao.pages.dev/) · [Deploy de produção](https://52aed73b.montante-educacao.pages.dev/) · [Mercado simulado](https://montante-educacao.pages.dev/#mercado).
+
 Em 10/11/2026, as rodadas surpresa do commit `eb5894c80bebda96164f7bef3be15f3357500e43` foram enviadas à `main` e publicadas no Cloudflare Pages. O fluxo de Desafios históricos, com toque emulado em 360 e 390 px, e a regressão de Mercado, Carteira, Visão geral e Dados passaram no Edge por HTTPS na prévia e em produção, sem erros de console ou respostas HTTP de erro. O HTML, o CSS, a página do desafio e as cotações no endereço público conferem com o pacote publicado. [Prévia](https://14a2a6dd.montante-educacao.pages.dev/) · [Deploy de produção](https://a91d6cb5.montante-educacao.pages.dev/) · [Desafios históricos](https://montante-educacao.pages.dev/#desafios-historicos).
 
 Em 10/11/2026, os rótulos de negociação do commit `74916e4ac0a5dfb49e1f6ed0c3fdf549f377ddc7` foram publicados na produção do Cloudflare Pages. O fluxo de compra, venda parcial, saldo e extrato passou por HTTPS no Edge, sem erros no console. [Deploy dos rótulos de negociação](https://7a3c849b.montante-educacao.pages.dev/).
