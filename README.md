@@ -4,13 +4,13 @@ Simulador educacional de investimentos do projeto acadêmico A3. As projeções 
 
 ## Executar
 
-Na raiz, com Node.js 22+ e Python 3 instalados:
+Na raiz, com Node.js 22+ instalado:
 
 ```sh
 npm start
 ```
 
-Abra [http://127.0.0.1:4178](http://127.0.0.1:4178). Os módulos JavaScript usam HTTP. A aplicação estática dispensa dependências e etapa de build.
+Abra [http://127.0.0.1:4178](http://127.0.0.1:4178). O Node.js serve os arquivos por HTTP durante o desenvolvimento e executa as verificações. A aplicação usa HTML5, CSS3 e JavaScript no navegador. O projeto dispensa instalação de dependências e etapa de build.
 
 ```sh
 npm run lint

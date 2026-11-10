@@ -2,6 +2,8 @@
 
 10/11/2026 · branch `main`. Base remota `a6bd294`. Este marco cria a estrutura executável com Início e projeção calculada.
 
+`npm start` executa o servidor estático local em Node.js, no endereço `http://127.0.0.1:4178`. A aplicação roda no navegador.
+
 # Módulos concluídos
 
 - Início (`js/pages/inicio.js`) com identidade e gráfico do protótipo.
