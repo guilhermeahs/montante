@@ -7,7 +7,7 @@
 # Reorganização da experiência
 
 1. **Auditoria e checkpoint.** Base `d3dc3c5` conferida na `main` e no GitHub. As páginas dos dois PDFs foram revistas. `npm run lint`, 24 testes unitários e os três smoke tests no Edge passaram. As nove URLs diretas e o botão Voltar abriram as telas esperadas. A interface de origem descartava entradas ainda não calculadas ao sair do Simulador.
-2. Agrupar as rotas existentes em Início, Simular, Investir e Aprender, com Configurações fora do menu principal.
+2. **Navegação principal.** Início, Simular, Investir e Aprender agrupam as telas existentes. Configurações abre `#dados` fora do menu principal. Os nove hashes anteriores continuam válidos, com aliases `#simular` e `#investir`. Os quatro smoke tests passaram no Edge, com foco, estados ativos, Voltar/Avançar e seis larguras cobertos no teste de navegação.
 3. Dar dois caminhos claros à página inicial, mantendo a projeção do protótipo.
 4. Refinar os fluxos de Simular e Investir, preservando o contexto de formulários, listas e carteira.
 5. Organizar glossário e quiz. Rever Dados e demonstração dentro de Configurações.

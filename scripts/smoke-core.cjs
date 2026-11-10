@@ -62,7 +62,7 @@ async (page) => {
   await contains(page.locator('.bar-row').first(), '31.000,00');
   await page.getByRole('button', { name: 'Restaurar taxas padrão' }).click();
   await contains(page.locator('.bar-row').first(), '36.233,87');
-  await page.getByRole('link', { name: 'Simulador', exact: true }).click();
+  await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Simular', exact: true }).click();
   await page.getByRole('button', { name: 'Excluir', exact: true }).click();
   await page.getByRole('dialog').getByRole('button', { name: 'Excluir simulação' }).click();
   await page.getByText('Simulação excluída.', { exact: true }).waitFor();

@@ -14,7 +14,8 @@ async (page) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(origin);
   await page.evaluate(() => localStorage.removeItem('montante.state'));
-  await page.getByRole('link', { name: 'Metas e cenários', exact: true }).click();
+  await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Simular', exact: true }).click();
+  await page.getByRole('navigation', { name: 'Navegação de Simular' }).getByRole('link', { name: 'Metas e cenários', exact: true }).click();
   await includes('#goal-result', '39.924,92');
   verify(await page.locator('#clear-goal').isHidden(), 'Nova meta aparece sem uma meta em edição');
   const target = page.getByLabel('Valor-alvo (R$)', { exact: true });
@@ -45,7 +46,7 @@ async (page) => {
 
   await page.goto(origin + '/#painel');
   await includes('#dashboard-goals', 'Reserva do semestre');
-  await page.getByRole('link', { name: 'Aprender', exact: true }).click();
+  await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Aprender', exact: true }).click();
   await page.getByLabel('Buscar no glossário').fill('inflacao');
   await page.getByRole('heading', { name: 'Inflação', exact: true }).waitFor();
   await page.getByLabel('Buscar no glossário').fill('xyzabc');
