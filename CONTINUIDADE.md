@@ -4,6 +4,15 @@
 
 `npm start` executa o servidor estático local em Node.js, no endereço `http://127.0.0.1:4178`. A aplicação roda no navegador.
 
+# Reorganização da experiência
+
+1. **Auditoria e checkpoint.** Base `d3dc3c5` conferida na `main` e no GitHub. As páginas dos dois PDFs foram revistas. `npm run lint`, 24 testes unitários e os três smoke tests no Edge passaram. As nove URLs diretas e o botão Voltar abriram as telas esperadas. A interface de origem descartava entradas ainda não calculadas ao sair do Simulador.
+2. Agrupar as rotas existentes em Início, Simular, Investir e Aprender, com Configurações fora do menu principal.
+3. Dar dois caminhos claros à página inicial, mantendo a projeção do protótipo.
+4. Refinar os fluxos de Simular e Investir, preservando o contexto de formulários, listas e carteira.
+5. Organizar glossário e quiz. Rever Dados e demonstração dentro de Configurações.
+6. Validar navegação, dados existentes, responsividade e acessibilidade no navegador. Atualizar a documentação e enviar os marcos à `main`.
+
 # Módulos concluídos
 
 - Início (`js/pages/inicio.js`) com CTAs e gráfico do protótipo.
