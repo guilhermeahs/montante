@@ -8,6 +8,11 @@ import { takeComparison } from './simulador.js';
 let base = { ...example };
 let rates = { ...defaultRates };
 
+export function resetComparator() {
+  base = { ...example };
+  rates = { ...defaultRates };
+}
+
 export function renderComparator(main) {
   const selected = takeComparison();
   if (selected) {

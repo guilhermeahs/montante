@@ -44,15 +44,19 @@ export function askName(title, current, onSave) {
   </form>`, dialog => {
     const form = dialog.querySelector('form');
     form.elements.recordName.value = current;
-    form.addEventListener('submit', event => {
+    const submit = form.querySelector('[type="submit"]');
+    form.addEventListener('submit', async event => {
       event.preventDefault();
+      if (submit.disabled) return;
+      submit.disabled = true;
       const name = form.elements.recordName.value.trim();
       try {
         if (!name) throw new Error('Digite um nome.');
-        onSave(name);
+        await onSave(name);
         dialog.close();
       } catch (error) {
         dialog.querySelector('.error').textContent = error.message;
+        submit.disabled = false;
       }
     });
   });

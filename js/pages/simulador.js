@@ -4,7 +4,7 @@ import { drawChart, investmentLines } from '../components/chart.js';
 import { askName, confirmAction } from '../components/dialog.js';
 import { baseFields, durationField, field, listenForm, readBase, readNumber } from '../components/forms.js';
 import { exportCSV } from '../services/export.js';
-import { store } from '../services/storage.js';
+import { store, transact } from '../services/storage.js';
 
 let lastParams = { ...example };
 let unit = 'monthly';
@@ -14,6 +14,12 @@ export function takeComparison() {
   const selected = comparison;
   comparison = undefined;
   return selected;
+}
+
+export function resetSimulator() {
+  lastParams = { ...example };
+  unit = 'monthly';
+  comparison = undefined;
 }
 
 export function renderSimulator(main) {
@@ -135,8 +141,8 @@ export function renderSimulator(main) {
   simpleToggle.addEventListener('change', showChart);
 
   main.querySelector('#save-simulation').addEventListener('click', () => {
-    askName('Salvar simulação', '', name => {
-      store.update(state => ({ ...state, simulations: [...state.simulations, { id: crypto.randomUUID(), name, params: lastParams }] }));
+    askName('Salvar simulação', '', async name => {
+      await transact(state => ({ ...state, simulations: [...state.simulations, { id: crypto.randomUUID(), name, params: lastParams }] }));
       renderRecords();
       status.textContent = 'Simulação salva.';
     });
@@ -164,15 +170,15 @@ export function renderSimulator(main) {
           location.hash = 'comparador';
           break;
         case 'rename':
-          askName('Renomear simulação', item.name, name => {
-            store.update(state => ({ ...state, simulations: state.simulations.map(entry => entry.id === item.id ? { ...entry, name } : entry) }));
+          askName('Renomear simulação', item.name, async name => {
+            await transact(state => ({ ...state, simulations: state.simulations.map(entry => entry.id === item.id ? { ...entry, name } : entry) }));
             renderRecords();
             status.textContent = 'Simulação renomeada.';
           });
           break;
         case 'remove':
-          confirmAction('Excluir simulação', 'Excluir a simulação “' + item.name + '”?', 'Excluir simulação', () => {
-            store.update(state => ({ ...state, simulations: state.simulations.filter(entry => entry.id !== item.id) }));
+          confirmAction('Excluir simulação', 'Excluir a simulação “' + item.name + '”?', 'Excluir simulação', async () => {
+            await transact(state => ({ ...state, simulations: state.simulations.filter(entry => entry.id !== item.id) }));
             renderRecords();
             status.textContent = 'Simulação excluída.';
           });
@@ -184,4 +190,5 @@ export function renderSimulator(main) {
   });
   showResult();
   renderRecords();
+
 }
