@@ -35,7 +35,7 @@ Os seis marcos da reorganização foram implementados e validados localmente. A 
 
 # Próximas tarefas por prioridade
 
-1. Abrir a revisão local, entrar em Configurações, carregar a carteira de exemplo e ensaiar as duas jornadas com um aluno iniciante em desktop e celular físico.
+1. Abrir **Investir → Desafios históricos** com um aluno iniciante em um celular físico. Sortear uma rodada, avançar os dias, negociar e discutir o resultado antes de abrir um replay. Em seguida, ensaiar as jornadas de Simular e Mercado simulado.
 2. Fazer a verificação manual com leitor de tela, incluindo navegação secundária, gráfico e diálogos.
 3. Conferir no aparelho físico a rolagem dos gráficos, a interação por toque e os controles das tabelas.
 
@@ -58,6 +58,8 @@ Desafios históricos passou no `npm run lint` (46 arquivos), `npm test` (29 test
 Os marcos da reorganização foram enviados à `main`, incluindo Aprender e Configurações em `ecda377`. O checkout usa Git Credential Manager. Use `git status -sb`, `git log --oneline -6` e `git ls-remote origin refs/heads/main` para confirmar o commit de validação final.
 
 # Publicação
+
+Em 10/11/2026, as rodadas surpresa do commit `eb5894c80bebda96164f7bef3be15f3357500e43` foram enviadas à `main` e publicadas no Cloudflare Pages. O fluxo de Desafios históricos, com toque emulado em 360 e 390 px, e a regressão de Mercado, Carteira, Visão geral e Dados passaram no Edge por HTTPS na prévia e em produção, sem erros de console ou respostas HTTP de erro. O HTML, o CSS, a página do desafio e as cotações no endereço público conferem com o pacote publicado. [Prévia](https://14a2a6dd.montante-educacao.pages.dev/) · [Deploy de produção](https://a91d6cb5.montante-educacao.pages.dev/) · [Desafios históricos](https://montante-educacao.pages.dev/#desafios-historicos).
 
 Em 10/11/2026, os rótulos de negociação do commit `74916e4ac0a5dfb49e1f6ed0c3fdf549f377ddc7` foram publicados na produção do Cloudflare Pages. O fluxo de compra, venda parcial, saldo e extrato passou por HTTPS no Edge, sem erros no console. [Deploy dos rótulos de negociação](https://7a3c849b.montante-educacao.pages.dev/).
 
