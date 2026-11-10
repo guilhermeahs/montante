@@ -2,6 +2,8 @@
 
 Simulador educacional de investimentos do projeto acadêmico A3. As projeções são hipotéticas e o aplicativo funciona localmente, sem transações reais.
 
+[Abrir o Montante no Cloudflare Pages](https://montante-educacao.pages.dev/).
+
 ## Executar
 
 Na raiz, com Node.js 22+ instalado:
