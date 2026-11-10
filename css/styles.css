@@ -287,6 +287,7 @@ progress { display: block; width: 100%; margin: .5rem 0 1rem; accent-color: var(
 @media (max-width: 760px) {
   .challenge-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .challenge-metrics .metric.emphasis { grid-column: auto; }
+  .challenge-metrics .metric.emphasis strong { font-size: clamp(1.15rem, 5.5vw, 1.5rem); }
   .market-category-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #asset-sort .choice-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   #asset-sort label { justify-content: center; padding-inline: .35rem; text-align: center; }
