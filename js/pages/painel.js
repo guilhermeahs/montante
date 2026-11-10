@@ -20,7 +20,7 @@ export function renderDashboard(main) {
     <p id="dashboard-profile" class="eyebrow"></p><div id="dashboard-metrics"></div>
     <p id="dashboard-error" class="error" role="alert"></p>
     <section id="dashboard-first-trade" class="card empty-state section" hidden>
-      <h2>Faça sua primeira compra fictícia</h2>
+      <h2>Faça sua primeira compra</h2>
       <p>Escolha um ativo, consulte a cotação simulada e confirme a compra. A posição e o registro aparecerão em Minha carteira.</p>
       <a class="button" href="#mercado">Escolher um ativo</a>
     </section>

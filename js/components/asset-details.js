@@ -16,7 +16,7 @@ export function openAssetDetails(provider, id, { onBuy, backLabel, restoreFocus 
       <option value="1">1 dia</option><option value="7">7 dias</option><option value="30" selected>30 dias</option><option value="90">90 dias</option><option value="all">Histórico disponível</option>
     </select></div>
     <div data-asset-chart></div>
-    <div class="actions"><button type="button" data-invest>Comprar ficticiamente</button><button type="button" class="secondary" data-cancel autofocus>${backLabel}</button></div>
+    <div class="actions"><button type="button" data-invest>Comprar</button><button type="button" class="secondary" data-cancel autofocus>${backLabel}</button></div>
   </div>`, dialog => {
     const select = dialog.querySelector('select');
     const chart = dialog.querySelector('[data-asset-chart]');

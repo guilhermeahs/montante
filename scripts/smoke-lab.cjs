@@ -25,7 +25,7 @@ async (page) => {
   await page.evaluate(() => localStorage.removeItem('montante.state'));
   const primary = page.getByRole('navigation', { name: 'Navegação principal' });
   await primary.getByRole('link', { name: 'Investir', exact: true }).click();
-  await expect('#dashboard-first-trade', 'Faça sua primeira compra fictícia');
+  await expect('#dashboard-first-trade', 'Faça sua primeira compra');
   await expect('#dashboard-metrics', '50.000,00');
   await primary.getByRole('link', { name: 'Início', exact: true }).click();
   await page.getByRole('link', { name: 'Entrar no mercado simulado', exact: true }).click();
@@ -50,7 +50,8 @@ async (page) => {
   verify(await page.getByLabel('Somente favoritos').isChecked(), 'Filtro de favoritos se perdeu após fechar o ativo');
   await page.waitForFunction(() => document.activeElement?.dataset.detail === 'PETR4');
   await action('PETR4').click();
-  await confirm('Comprar ficticiamente');
+  await confirm('Comprar');
+  await expect('dialog', 'A operação movimenta apenas saldo virtual.');
   await modal().getByLabel('Quantidade', { exact: true }).fill('1000000');
   await expect('dialog .error', 'Saldo fictício insuficiente');
   await modal().getByLabel('Quantidade', { exact: true }).fill('10');
@@ -68,13 +69,13 @@ async (page) => {
   }
   await confirm('Cancelar');
   await action('PETR4').click();
-  await confirm('Comprar ficticiamente');
+  await confirm('Comprar');
   await modal().getByLabel('Quantidade', { exact: true }).fill('10');
   await modal().locator('form').evaluate(form => {
     form.requestSubmit();
     form.requestSubmit();
   });
-  await page.getByText('Compra simulada registrada.', { exact: true }).waitFor();
+  await page.getByText('Compra registrada.', { exact: true }).waitFor();
 
   await page.getByRole('link', { name: 'Ver minha carteira', exact: true }).click();
   verify(await page.locator('#portfolio-history tbody tr').count() === 1, 'Compra duplicada ou não registrada');
@@ -88,11 +89,12 @@ async (page) => {
   verify(page.url().endsWith('#carteira'), 'Detalhe do ativo mudou de tela');
   await page.waitForFunction(() => document.activeElement?.dataset.asset === 'PETR4');
   await action('Vender PETR4').click();
+  await expect('dialog', 'A operação movimenta apenas saldo virtual.');
   await modal().getByLabel('Quantidade', { exact: true }).fill('11');
   await expect('dialog .error', 'Quantidade superior');
   await modal().getByLabel('Quantidade', { exact: true }).fill('4');
   await confirm('Confirmar venda');
-  await page.getByText('Venda simulada registrada.', { exact: true }).waitFor();
+  await page.getByText('Venda registrada.', { exact: true }).waitFor();
   await expect('#positions', 'PETR4 6');
   verify(await page.locator('#portfolio-history tbody tr').count() === 2, 'Extrato de compra e venda');
 

@@ -21,9 +21,9 @@ export async function openTrade(id, side, onSuccess) {
   const holdings = replayPortfolio(state.operations).holdings.get(id)?.units ?? 0;
 
   openDialog(`<form novalidate>
-    <h2 id="dialog-title">${sideLabel(side)} simulada · ${asset.id}</h2>
+    <h2 id="dialog-title">${sideLabel(side)} · ${asset.id}</h2>
     <p>${escapeHtml(asset.name)} · Cotação congelada de <strong>${moneyCents(quote.cents)}</strong> em ${dateTime(quote.timestamp)}.</p>
-    <p class="muted">Relógio pausado durante a negociação. Taxas e impostos zerados na demonstração.${side === 'sell' ? ' Posição disponível: ' + quantity(asset, holdings) + '.' : ''}</p>
+    <p class="muted">A operação movimenta apenas saldo virtual. Relógio pausado durante a negociação. Taxas e impostos zerados na demonstração.${side === 'sell' ? ' Posição disponível: ' + quantity(asset, holdings) + '.' : ''}</p>
     ${field('trade-quantity', 'Quantidade', asset.scale === 1 ? '1' : '0,001', { mode: asset.scale === 1 ? 'numeric' : 'decimal', help: asset.scale === 1 ? 'Negociação em unidades inteiras.' : 'Até seis casas decimais.' })}
     <p class="muted" data-preview aria-live="polite"></p>
     <p class="error" role="alert"></p>
@@ -67,7 +67,7 @@ export async function openTrade(id, side, onSuccess) {
           return { ...current, operations: updated };
         });
         dialog.close();
-        onSuccess(sideLabel(side) + ' simulada registrada.');
+        onSuccess(sideLabel(side) + ' registrada.');
       } catch (failure) {
         error.textContent = failure.message;
         submit.disabled = false;

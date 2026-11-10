@@ -31,7 +31,7 @@ export function portfolioMetrics(summary, { overview = false } = {}) {
 }
 
 export function distribution(positions) {
-  if (!positions.length) return '<p class="muted">A distribuição aparece após a primeira compra fictícia.</p>';
+  if (!positions.length) return '<p class="muted">A distribuição aparece após a primeira compra.</p>';
   const total = positions.reduce((sum, position) => sum + position.marketValue, 0);
   if (!total) return '<p class="muted">As posições ainda somam R$ 0,00 pela marcação a centavos.</p>';
   const groups = Map.groupBy(positions, position => position.asset.category);
@@ -48,7 +48,7 @@ export function distribution(positions) {
 }
 
 export function operationTable(operations, provider) {
-  if (!operations.length) return '<p class="muted">Nenhuma operação fictícia registrada.</p>';
+  if (!operations.length) return '<p class="muted">Nenhuma operação registrada.</p>';
   return `<p class="table-hint muted">Deslize a tabela para ver o extrato completo.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Extrato das operações simuladas">
     <table><thead><tr><th>Data simulada</th><th>Operação</th><th>Ativo</th><th>Quantidade</th><th>Preço</th><th>Bruto</th><th>Taxas</th><th>Líquido</th><th>Caixa antes</th><th>Caixa depois</th><th>Realizado</th><th>ID</th></tr></thead>
       <tbody>${operations.map(order => `<tr><td>${dateTime(order.timestamp)}</td><td>${sideLabel(order.side)}</td><th scope="row">${order.assetId}</th>

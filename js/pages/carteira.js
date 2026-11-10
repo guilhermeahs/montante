@@ -55,7 +55,7 @@ export function renderPortfolio(main) {
         <td>${moneyCents(position.marketValue)}</td><td class="${profitClass(position.unrealized)}">${moneyCents(position.unrealized)}</td>
         <td><div class="actions"><button class="secondary small-button" data-side="buy" data-id="${position.asset.id}" data-portfolio-button="buy-${position.asset.id}" aria-label="Comprar ${position.asset.id}">Comprar</button>
         <button class="secondary small-button" data-side="sell" data-id="${position.asset.id}" data-portfolio-button="sell-${position.asset.id}" aria-label="Vender ${position.asset.id}">Vender</button></div></td>
-    </tr>`).join('')}</tbody></table></div>` : '<p class="muted">Nenhuma posição aberta. Escolha um ativo no Mercado simulado para fazer uma compra fictícia.</p>';
+    </tr>`).join('')}</tbody></table></div>` : '<p class="muted">Nenhuma posição aberta. Escolha um ativo no Mercado simulado para começar.</p>';
     const table = positions.querySelector('.table-wrap');
     if (table) table.scrollLeft = horizontal;
     if (focused) positions.querySelector(`[data-portfolio-button="${focused}"]`)?.focus({ preventScroll: true });

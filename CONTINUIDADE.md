@@ -13,6 +13,7 @@
 5. **Aprender e Configurações.** `#aprender` concentra conceitos e busca, e `#quiz` tem navegação própria e respostas persistidas. Configurações mantém `#dados`, com backup, demonstração, tema e restauração confirmada. Navegação, Aprender e dados passaram no Edge, incluindo retorno ao glossário, persistência do quiz e importação/exportação.
 6. **Regressão final.** Passaram a checagem de sintaxe, os 24 testes unitários e os quatro smoke tests no Edge. Foram abertas dez telas em seis larguras, com teclado, hashes anteriores, aliases, Voltar/Avançar, contraste dos CTAs nos dois temas, movimento reduzido e um estado v3 existente intacto. README, AGENTS e documentação técnica foram atualizados.
 7. **Gráficos e celular.** Gráficos receberam escala em reais, marcadores por série e valores do período selecionado. A interação funciona por toque, arraste, botões e teclado. Em telas estreitas, Simular leva ao resultado e as tabelas de Mercado e posições mantêm o código do ativo visível durante a rolagem horizontal. Lint, 24 testes unitários, quatro smoke tests e o smoke de toque em 360 e 390 px passaram no Edge.
+8. **Textos de negociação.** O detalhe do ativo usa “Comprar” e as confirmações de compra e venda explicam que a operação movimenta saldo virtual. Foram validados a compra, a venda parcial, o saldo e o extrato no Edge, além do lint e dos 24 testes unitários.
 
 # Módulos concluídos
 
