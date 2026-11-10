@@ -11,19 +11,23 @@ export const quantity = (asset, units) => number(units / asset.scale, 6);
 export const sideLabel = side => side === 'buy' ? 'Compra' : 'Venda';
 export const profitClass = value => value < 0 ? 'negative' : value > 0 ? 'positive' : '';
 
-export function portfolioMetrics(summary) {
+export function portfolioMetrics(summary, { overview = false } = {}) {
   const variation = (summary.wealth - initialCash) / initialCash * 100;
+  const totalResult = summary.realized + summary.unrealized;
   const metrics = [
     ['Patrimônio virtual', summary.wealth, 'emphasis'],
-    ['Saldo disponível', summary.cash],
+    ['Saldo disponível', summary.cash]
+  ];
+  if (overview) metrics.push(['Resultado da carteira', totalResult, profitClass(totalResult)]);
+  else metrics.push(
     ['Custo das posições', summary.invested],
     ['Posições a mercado', summary.marketValue],
     ['Resultado realizado', summary.realized, profitClass(summary.realized)],
     ['Resultado não realizado', summary.unrealized, profitClass(summary.unrealized)]
-  ];
+  );
   return `<div class="metric-grid portfolio-metrics">
     ${metrics.map(([label, value, tone = '']) => `<article class="card metric ${tone}"><p>${label}</p><strong>${moneyCents(value)}</strong></article>`).join('')}
-    </div><p class="section muted">Variação do patrimônio sobre o saldo fictício inicial de ${moneyCents(initialCash)}: <strong>${percent(variation)}</strong>. A carteira começa com um único crédito inicial e não recebe aportes das projeções.</p>`;
+    </div><p class="section muted">Variação sobre o saldo fictício inicial de ${moneyCents(initialCash)}: <strong>${percent(variation)}</strong>. Os aportes do simulador ficam nas projeções.</p>`;
 }
 
 export function distribution(positions) {

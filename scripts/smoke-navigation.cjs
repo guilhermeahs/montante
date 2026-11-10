@@ -10,12 +10,12 @@ async (page) => {
   const heading = name => page.getByRole('heading', { name, level: 1, exact: true });
   const screens = [
     ['inicio', 'Veja seu dinheiro crescer antes de investir.', 'Início'],
-    ['simulador', 'Parâmetros', 'Simular', 'Juros compostos'],
+    ['simulador', 'Simulador de juros compostos', 'Simular', 'Juros compostos'],
     ['comparador', 'Comparador de modalidades', 'Simular', 'Comparar modalidades'],
     ['metas', 'Metas e cenários', 'Simular', 'Metas e cenários'],
-    ['painel', 'Painel educacional', 'Investir', 'Visão geral'],
+    ['painel', 'Visão geral', 'Investir', 'Visão geral'],
     ['mercado', 'Mercado simulado', 'Investir', 'Mercado simulado'],
-    ['carteira', 'Carteira virtual', 'Investir', 'Minha carteira'],
+    ['carteira', 'Minha carteira', 'Investir', 'Minha carteira'],
     ['aprender', 'Aprender', 'Aprender'],
     ['dados', 'Dados e demonstração']
   ];

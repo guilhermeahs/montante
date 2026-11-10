@@ -21,6 +21,28 @@ async (page) => {
   await page.keyboard.press('Enter');
   verify(await page.evaluate(() => document.activeElement === document.querySelector('main') && location.hash === '#simulador'), 'Atalho de teclado perdeu o foco ou a rota');
   await contains(page.locator('#projection-metrics'), '39.924,92');
+  const initial = page.getByLabel('Valor inicial (R$)', { exact: true });
+  await initial.fill('1750');
+  await page.getByRole('link', { name: 'Definir uma meta', exact: true }).click();
+  await page.getByRole('heading', { name: 'Metas e cenários', level: 1 }).waitFor();
+  await page.goBack();
+  await page.getByRole('heading', { name: 'Simulador de juros compostos', level: 1 }).waitFor();
+  verify(await initial.inputValue() === '1750', 'Rascunho perdido ao voltar de Metas');
+  await contains(page.locator('#projection-draft'), 'Parâmetros editados');
+  await contains(page.locator('#projection-metrics'), '39.924,92');
+  await page.getByRole('button', { name: 'Simular', exact: true }).click();
+  await page.getByRole('link', { name: 'Comparar com estes valores', exact: true }).click();
+  await contains(page.locator('#comparison-base'), '1.750,00 iniciais');
+  verify(await page.locator('.bar-row').count() === 3, 'Comparar projeção atual deve mostrar três modalidades');
+  await page.getByRole('navigation', { name: 'Navegação de Simular' }).getByRole('link', { name: 'Juros compostos', exact: true }).click();
+  await initial.fill('1000');
+  await page.getByLabel('Aporte mensal (R$)', { exact: true }).fill('500');
+  await page.getByLabel('Taxa de juros (% ao mês)', { exact: true }).fill('0,8');
+  await page.getByLabel('Prazo (meses)', { exact: true }).fill('60');
+  await page.getByRole('button', { name: 'Simular', exact: true }).click();
+  for (const expected of ['39.924,92', '31.000,00', '8.924,92']) {
+    await contains(page.locator('#projection-metrics'), expected);
+  }
   await page.getByRole('checkbox', { name: 'Comparar com juros simples' }).check();
   await contains(page.locator('#projection-chart .legend'), 'Juros simples');
   await page.getByRole('checkbox', { name: 'Mostrar juros acumulados' }).check();
@@ -73,7 +95,7 @@ async (page) => {
     await page.setViewportSize({ width, height: 900 });
     for (const [route, title] of [
       ['inicio', 'Veja seu dinheiro crescer antes de investir.'],
-      ['simulador', 'Parâmetros'],
+      ['simulador', 'Simulador de juros compostos'],
       ['comparador', 'Comparador de modalidades']
     ]) {
       await page.goto(origin + '/#' + route);

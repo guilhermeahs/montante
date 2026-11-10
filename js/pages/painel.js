@@ -11,22 +11,33 @@ import { observeState, store } from '../services/storage.js';
 export function renderDashboard(main) {
   const state = store.read();
   main.innerHTML = `
-    <p class="eyebrow">Laboratório · 100% simulado</p>
-    <h1>Painel educacional</h1>
-    <p class="lead">Acompanhe o resultado da carteira virtual e acesse suas projeções em uma área separada.</p>
-    <div class="actions"><a class="button" href="#mercado">Explorar mercado</a><a class="button secondary" href="#carteira">Ver carteira</a><a class="button secondary" href="#simulador">Simular</a><a class="button secondary" href="#comparador">Comparar</a><a class="button secondary" href="#metas">Metas</a><a class="button secondary" href="#aprender">Aprender</a></div>
-    <p id="dashboard-profile" class="eyebrow section"></p><div id="dashboard-metrics" class="section"></div>
+    <header class="page-intro">
+      <p class="eyebrow">Investir · Mercado fictício</p>
+      <h1>Visão geral</h1>
+      <p class="lead">Pratique com saldo virtual. Compras e vendas mudam sua carteira, sem movimentar dinheiro real.</p>
+      <div class="actions"><a class="button" href="#mercado">Explorar mercado</a><a class="button secondary" href="#carteira">Ver minha carteira</a></div>
+    </header>
+    <p id="dashboard-profile" class="eyebrow"></p><div id="dashboard-metrics"></div>
     <p id="dashboard-error" class="error" role="alert"></p>
+    <section id="dashboard-first-trade" class="card empty-state section" hidden>
+      <h2>Faça sua primeira compra fictícia</h2>
+      <p>Escolha um ativo, consulte a cotação simulada e confirme a compra. A posição e o registro aparecerão em Minha carteira.</p>
+      <a class="button" href="#mercado">Escolher um ativo</a>
+    </section>
+    <section class="card section"><h2>Onde investi</h2><div id="dashboard-distribution"></div></section>
     <section class="card section">
       <h2>Evolução do patrimônio virtual</h2>
       <p class="muted">Últimos 90 dias simulados disponíveis desde o início da carteira. Cada ponto usa o caixa, o extrato e as cotações daquele dia.</p>
       <div id="dashboard-chart"></div>
     </section>
-    <section class="card section"><h2>Distribuição</h2><div id="dashboard-distribution"></div></section>
-    <section class="card section"><h2>Últimas operações</h2><div id="dashboard-operations"></div><a href="#carteira">Abrir extrato completo</a></section>
+    <section class="card section"><h2>Últimas operações</h2><div id="dashboard-operations"></div><a href="#carteira">Ver extrato em Minha carteira</a></section>
     <div class="two-cards section">
       <section class="card"><h2>Projeções salvas</h2><p class="muted">Projeções educacionais ficam separadas do saldo e das posições fictícias.</p><div id="dashboard-simulations"></div><a href="#simulador">Gerenciar simulações</a></section>
       <section class="card"><h2>Metas salvas</h2><div id="dashboard-goals"></div><a href="#metas">Gerenciar metas</a></section>
+    </div>
+    <div class="actions related-actions section">
+      <a href="#comparador">Comparar modalidades</a>
+      <a href="#aprender">Aprender sobre os ativos</a>
     </div>`;
 
   const query = selector => main.querySelector(selector);
@@ -35,7 +46,8 @@ export function renderDashboard(main) {
     const summary = markPortfolio(next.operations, asset => provider.quote(asset.id).cents);
     const history = portfolioHistory(next.operations, next.market.ticks);
     query('#dashboard-profile').textContent = next.profile === 'example' ? 'Carteira de exemplo acadêmico' : '';
-    query('#dashboard-metrics').innerHTML = portfolioMetrics(summary);
+    query('#dashboard-metrics').innerHTML = portfolioMetrics(summary, { overview: true });
+    query('#dashboard-first-trade').hidden = next.operations.length > 0;
     query('#dashboard-distribution').innerHTML = distribution(summary.positions);
     query('#dashboard-operations').innerHTML = operationTable(next.operations.slice(-5).reverse(), provider);
     const chart = query('#dashboard-chart');

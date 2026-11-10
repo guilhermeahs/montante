@@ -20,8 +20,11 @@ export function renderComparator(main) {
     rates = { ...defaultRates };
   }
   main.innerHTML = `
-    <h1>Comparador de modalidades</h1>
-    <p class="lead" id="comparison-base"></p>
+    <header class="page-intro">
+      <p class="eyebrow">Simular · Projeções</p>
+      <h1>Comparador de modalidades</h1>
+      <p class="lead" id="comparison-base"></p>
+    </header>
     <section class="card" aria-label="Montantes por modalidade"><div id="comparison-bars" class="comparison-bars" aria-live="polite"></div></section>
     <section id="comparison-cards" class="cards section" aria-label="Sobre cada modalidade"></section>
     <p class="muted section">Taxas ilustrativas. Resultados simulados, sem IR, IOF, taxas operacionais ou garantia de rentabilidade futura.</p>
@@ -44,7 +47,7 @@ export function renderComparator(main) {
 
   function renderResults(params, rateValues) {
     const results = compareModes(params, rateValues);
-    if (selected) results.push({
+    if (selected?.name) results.push({
       id: 'salva', label: selected.name, rate: selected.params.rate, color: 'var(--chart-purple)', line: 'var(--chart-purple)',
       description: 'Taxa da simulação salva aplicada à mesma base de cálculo.',
       result: project({ ...params, rate: selected.params.rate })

@@ -23,9 +23,17 @@ async (page) => {
   await page.setViewportSize({ width: 1440, height: 950 });
   await page.goto(origin);
   await page.evaluate(() => localStorage.removeItem('montante.state'));
+  const primary = page.getByRole('navigation', { name: 'Navegação principal' });
+  await primary.getByRole('link', { name: 'Investir', exact: true }).click();
+  await expect('#dashboard-first-trade', 'Faça sua primeira compra fictícia');
+  await expect('#dashboard-metrics', '50.000,00');
+  await primary.getByRole('link', { name: 'Início', exact: true }).click();
   await page.getByRole('link', { name: 'Entrar no mercado simulado', exact: true }).click();
   await expect('#market-time', 'Pausado');
   verify(await page.locator('#market-assets tbody tr').count() === 18, 'Catálogo incompleto');
+  await page.getByLabel('Buscar ativo').fill('nenhum-ticker');
+  await action('Limpar filtros').click();
+  verify(await page.locator('#market-assets tbody tr').count() === 18, 'Limpar filtros deve restaurar o catálogo');
   await page.getByLabel('Categoria', { exact: true }).selectOption('Criptomoedas');
   verify(await page.locator('#market-assets tbody tr').count() === 3, 'Filtro por categoria');
   await page.getByLabel('Categoria', { exact: true }).selectOption('');
@@ -38,6 +46,10 @@ async (page) => {
   await action('PETR4').click();
   await modal().getByLabel('Período do histórico').selectOption('90');
   await modal().getByRole('img', { name: /Histórico de preço simulado/ }).waitFor();
+  await confirm('Voltar aos ativos');
+  verify(await page.getByLabel('Somente favoritos').isChecked(), 'Filtro de favoritos se perdeu após fechar o ativo');
+  await page.waitForFunction(() => document.activeElement?.dataset.detail === 'PETR4');
+  await action('PETR4').click();
   await confirm('Comprar ficticiamente');
   await modal().getByLabel('Quantidade', { exact: true }).fill('1000000');
   await expect('dialog .error', 'Saldo fictício insuficiente');
@@ -46,6 +58,7 @@ async (page) => {
   const otherTab = await page.context().newPage();
   try {
     await otherTab.goto(origin + '/#mercado');
+    await otherTab.getByText('Relógio da simulação', { exact: true }).click();
     await otherTab.getByRole('button', { name: 'Avançar um dia', exact: true }).click();
     await otherTab.getByText(/02\/01\/2026.*Pausado/).waitFor();
     await confirm('Confirmar compra');
@@ -63,9 +76,17 @@ async (page) => {
   });
   await page.getByText('Compra simulada registrada.', { exact: true }).waitFor();
 
-  await page.getByRole('link', { name: 'Ver carteira virtual', exact: true }).click();
+  await page.getByRole('link', { name: 'Ver minha carteira', exact: true }).click();
   verify(await page.locator('#portfolio-history tbody tr').count() === 1, 'Compra duplicada ou não registrada');
   await expect('#positions', 'PETR4 10');
+  const purchasedMetrics = await read('#portfolio-metrics');
+  await page.reload();
+  await expect('#positions', 'PETR4 10');
+  verify(await read('#portfolio-metrics') === purchasedMetrics && await page.locator('#portfolio-history tbody tr').count() === 1, 'Saldo, posição ou extrato não persistiu');
+  await action('PETR4').click();
+  await confirm('Voltar à carteira');
+  verify(page.url().endsWith('#carteira'), 'Detalhe do ativo mudou de tela');
+  await page.waitForFunction(() => document.activeElement?.dataset.asset === 'PETR4');
   await action('Vender PETR4').click();
   await modal().getByLabel('Quantidade', { exact: true }).fill('11');
   await expect('dialog .error', 'Quantidade superior');
@@ -76,6 +97,7 @@ async (page) => {
   verify(await page.locator('#portfolio-history tbody tr').count() === 2, 'Extrato de compra e venda');
 
   await page.goto(origin + '/#mercado');
+  await page.getByText('Relógio da simulação', { exact: true }).click();
   await page.getByLabel('Cenário de preços').selectOption('up');
   const start = await read('#market-time');
   await action('Avançar um dia').click();
@@ -88,6 +110,7 @@ async (page) => {
   await expect('#market-time', 'Pausado');
   await page.reload();
   await expect('#market-time', 'Pausado');
+  await page.getByText('Relógio da simulação', { exact: true }).click();
   verify(await page.getByLabel('Velocidade', { exact: true }).inputValue() === 'fast', 'Velocidade persistida');
   verify(await action('Favoritar PETR4').getAttribute('aria-pressed') === 'true', 'Favorito não persistiu');
   await page.goto(origin + '/#painel');
@@ -142,8 +165,8 @@ async (page) => {
   for (const width of [360, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     for (const [route, title] of [
-      ['mercado', 'Mercado simulado'], ['carteira', 'Carteira virtual'],
-      ['painel', 'Painel educacional'], ['dados', 'Dados e demonstração']
+      ['mercado', 'Mercado simulado'], ['carteira', 'Minha carteira'],
+      ['painel', 'Visão geral'], ['dados', 'Dados e demonstração']
     ]) {
       await page.goto(origin + '/#' + route);
       await page.getByRole('heading', { level: 1, name: title, exact: true }).waitFor();

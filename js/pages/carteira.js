@@ -1,3 +1,4 @@
+import { openAssetDetails } from '../components/asset-details.js';
 import { confirmAction } from '../components/dialog.js';
 import { distribution, moneyCents, operationTable, portfolioMetrics, profitClass, quantity, sideLabel } from '../components/portfolio-ui.js';
 import { openTrade } from '../components/trade.js';
@@ -5,14 +6,15 @@ import { markPortfolio } from '../core/portfolio-engine.js';
 import { exportCSV } from '../services/export.js';
 import { DemoMarketProvider } from '../services/market-provider.js';
 import { observeState, store, transact } from '../services/storage.js';
-import { goToAsset } from './mercado.js';
 
 export function renderPortfolio(main) {
   let state = store.read();
   main.innerHTML = `
-    <p class="eyebrow">Laboratório · 100% simulado</p>
-    <h1>Carteira virtual</h1>
-    <p class="lead">Acompanhe seu saldo fictício, negociações e posições marcadas pelas cotações da simulação.</p>
+    <header class="page-intro">
+      <p class="eyebrow">Investir · Saldo virtual</p>
+      <h1>Minha carteira</h1>
+      <p class="lead">Acompanhe o saldo fictício, os ativos que você tem e o registro de cada compra e venda.</p>
+    </header>
     <p id="portfolio-profile" class="eyebrow"></p>
     <div id="portfolio-metrics"></div>
     <p id="portfolio-status" role="status"></p><p id="portfolio-error" class="error" role="alert"></p>
@@ -20,7 +22,7 @@ export function renderPortfolio(main) {
       <h2>Posições</h2>
       <p class="muted">Compras e vendas têm taxas e impostos zerados. O preço médio considera o custo remanescente.</p>
       <div id="positions"></div>
-      <div class="actions section"><a class="button" href="#mercado">Explorar mercado</a><a class="button secondary" href="#painel">Abrir painel</a></div>
+      <div class="actions section"><a class="button" href="#mercado">Explorar mercado</a><a class="button secondary" href="#painel">Ver visão geral</a></div>
     </section>
     <section class="card section"><h2>Distribuição da carteira</h2><div id="portfolio-distribution"></div></section>
     <section class="card section">
@@ -44,6 +46,7 @@ export function renderPortfolio(main) {
     query('#portfolio-distribution').innerHTML = distribution(summary.positions);
     query('#portfolio-history').innerHTML = operationTable(state.operations.slice().reverse(), provider);
     const focused = document.activeElement?.dataset.portfolioButton;
+    const horizontal = positions.querySelector('.table-wrap')?.scrollLeft ?? 0;
     positions.innerHTML = summary.positions.length ? `<div class="table-wrap" tabindex="0" role="region" aria-label="Posições em ativos">
       <table><thead><tr><th>Ativo</th><th>Quantidade</th><th>Preço médio</th><th>Cotação simulada</th><th>Custo</th><th>Valor a mercado</th><th>Não realizado</th><th>Negociar</th></tr></thead>
       <tbody>${summary.positions.map(position => `<tr>
@@ -52,23 +55,31 @@ export function renderPortfolio(main) {
         <td>${moneyCents(position.marketValue)}</td><td class="${profitClass(position.unrealized)}">${moneyCents(position.unrealized)}</td>
         <td><div class="actions"><button class="secondary small-button" data-side="buy" data-id="${position.asset.id}" data-portfolio-button="buy-${position.asset.id}" aria-label="Comprar ${position.asset.id}">Comprar</button>
         <button class="secondary small-button" data-side="sell" data-id="${position.asset.id}" data-portfolio-button="sell-${position.asset.id}" aria-label="Vender ${position.asset.id}">Vender</button></div></td>
-      </tr>`).join('')}</tbody></table></div>` : '<p class="muted">Nenhuma posição aberta. Faça uma compra fictícia no mercado.</p>';
+    </tr>`).join('')}</tbody></table></div>` : '<p class="muted">Nenhuma posição aberta. Escolha um ativo no Mercado simulado para fazer uma compra fictícia.</p>';
+    const table = positions.querySelector('.table-wrap');
+    if (table) table.scrollLeft = horizontal;
     if (focused) positions.querySelector(`[data-portfolio-button="${focused}"]`)?.focus({ preventScroll: true });
   }
 
-  positions.addEventListener('click', async event => {
+  async function trade(id, side) {
+    error.textContent = '';
+    try {
+      await openTrade(id, side, message => { status.textContent = message; });
+    } catch (failure) {
+      error.textContent = failure.message;
+    }
+  }
+
+  positions.addEventListener('click', event => {
     const button = event.target.closest('button');
     if (!button) return;
     const { asset, id, side } = button.dataset;
-    if (asset) goToAsset(asset);
-    if (side) {
-      error.textContent = '';
-      try {
-        await openTrade(id, side, message => { status.textContent = message; });
-      } catch (failure) {
-        error.textContent = failure.message;
-      }
-    }
+    if (asset) openAssetDetails(provider, asset, {
+      onBuy: id => trade(id, 'buy'),
+      backLabel: 'Voltar à carteira',
+      restoreFocus: () => positions.querySelector(`[data-asset="${asset}"]`)?.focus({ preventScroll: true })
+    });
+    if (side) trade(id, side);
   });
   query('#export-operations').addEventListener('click', () => {
     const headings = ['ID', 'Data simulada (UTC)', 'Operação', 'Ativo', 'Quantidade', 'Preço (R$)', 'Bruto (R$)', 'Taxas (R$)', 'Líquido (R$)', 'Caixa antes (R$)', 'Caixa depois (R$)', 'Realizado (R$)'];

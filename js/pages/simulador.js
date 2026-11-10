@@ -9,6 +9,7 @@ import { store, transact } from '../services/storage.js';
 let lastParams = { ...example };
 let unit = 'monthly';
 let comparison;
+let draft;
 
 export function takeComparison() {
   const selected = comparison;
@@ -20,20 +21,27 @@ export function resetSimulator() {
   lastParams = { ...example };
   unit = 'monthly';
   comparison = undefined;
+  draft = undefined;
 }
 
 export function renderSimulator(main) {
   const initialRate = unit === 'annual' ? annualFromMonthly(lastParams.rate) : lastParams.rate;
   main.innerHTML = `
+    <header class="page-intro">
+      <p class="eyebrow">Simular · Projeções</p>
+      <h1>Simulador de juros compostos</h1>
+      <p class="lead">Veja quanto o dinheiro pode render com o tempo. Esta projeção hipotética fica separada da sua carteira virtual.</p>
+    </header>
     <div class="sim-layout">
       <form class="card stacked" id="projection" novalidate>
-        <h1 class="form-title">Parâmetros</h1>
+        <h2 class="form-title">Parâmetros</h2>
         ${baseFields(lastParams)}
         ${field('rate', 'Taxa de juros (% ao mês)', initialRate)}
         <div class="field"><label for="rate-unit">Período da taxa</label><select id="rate-unit"><option value="monthly">Mensal</option><option value="annual">Anual efetiva</option></select></div>
         ${durationField(lastParams.months)}
         <button type="submit">Simular</button>
         <p id="projection-error" class="error" role="alert"></p>
+        <p id="projection-draft" class="muted form-note" role="status"></p>
       </form>
       <div>
         <section id="projection-metrics" class="metric-grid" aria-label="Resultado da simulação" aria-live="polite"></section>
@@ -56,6 +64,10 @@ export function renderSimulator(main) {
           <button id="save-simulation" type="button">Salvar simulação</button>
           <button id="export-simulation" class="secondary" type="button">Exportar evolução em CSV</button>
         </div>
+        <div class="actions related-actions">
+          <a id="compare-projection" href="#comparador">Comparar com estes valores</a>
+          <a href="#metas">Definir uma meta</a>
+        </div>
       </div>
     </div>
     <section class="section card">
@@ -72,7 +84,24 @@ export function renderSimulator(main) {
   const records = main.querySelector('#simulations');
   const interestToggle = main.querySelector('#show-interest');
   const simpleToggle = main.querySelector('#show-simple');
+  const draftMessage = main.querySelector('#projection-draft');
+  const draftInputs = ['initial', 'contribution', 'rate', 'months'].map(id => form.elements[id]);
   let result = project(lastParams);
+
+  function showDraft() {
+    draftMessage.textContent = draft ? 'Parâmetros editados. Clique em Simular para atualizar o resultado.' : '';
+  }
+
+  function rememberDraft() {
+    draft = draftInputs.map(input => input.value);
+    showDraft();
+  }
+
+  if (draft) draftInputs.forEach((input, index) => { input.value = draft[index]; });
+  showDraft();
+  form.addEventListener('input', event => {
+    if (draftInputs.includes(event.target)) rememberDraft();
+  });
 
   function showChart() {
     const lines = [...investmentLines];
@@ -127,6 +156,7 @@ export function renderSimulator(main) {
     } catch (failure) {
       error.textContent = failure.message;
     }
+    if (draft) rememberDraft();
   });
   listenForm(form, error, () => {
     const base = readBase(form);
@@ -135,10 +165,15 @@ export function renderSimulator(main) {
     const params = { ...base, rate };
     result = project(params);
     lastParams = params;
+    draft = undefined;
+    showDraft();
     showResult();
   });
   interestToggle.addEventListener('change', showChart);
   simpleToggle.addEventListener('change', showChart);
+  main.querySelector('#compare-projection').addEventListener('click', event => {
+    if (!event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) comparison = { params: lastParams };
+  });
 
   main.querySelector('#save-simulation').addEventListener('click', () => {
     askName('Salvar simulação', '', async name => {
@@ -161,6 +196,7 @@ export function renderSimulator(main) {
       switch (button.dataset.action) {
         case 'open':
           lastParams = item.params;
+          draft = undefined;
           renderSimulator(main);
           main.scrollIntoView();
           main.focus({ preventScroll: true });

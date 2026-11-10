@@ -118,6 +118,23 @@ button[hidden] { display: none; }
 .card { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: var(--space); min-width: 0; }
 .hero-amount { color: var(--ink); font-size: clamp(1.75rem, 3.4vw, 2.9rem); font-weight: 780; line-height: 1.15; margin: .25rem 0 1rem; letter-spacing: -.035em; }
 .section { margin-top: var(--space); }
+.page-intro { margin-bottom: var(--space); }
+.page-intro .eyebrow { margin-bottom: .55rem; }
+.page-intro .lead { margin-bottom: 0; max-width: 70ch; }
+.page-intro .actions { margin-top: 1rem; }
+.related-actions { margin-top: .85rem; column-gap: 1.2rem; }
+.related-actions a { display: inline-flex; align-items: center; min-height: 44px; }
+.form-note { font-size: .88rem; line-height: 1.4; }
+.empty-state { border-color: var(--control); background: var(--nav-active); }
+.empty-state p { max-width: 64ch; }
+.market-clock { padding: clamp(.85rem, 1.8vw, 1.25rem); }
+.market-clock-status { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .25rem 1rem; font-size: .9rem; }
+.market-clock-status p { margin: 0; }
+.market-clock-status a { display: inline-flex; align-items: center; min-height: 44px; }
+.market-clock summary { min-height: 44px; padding-block: .65rem; }
+.asset-detail > p, .asset-detail h2 { margin: 0; }
+.asset-quote > strong { font-size: 1.35rem; color: var(--ink); }
+.table-hint { display: none; font-size: .85rem; margin-bottom: .25rem; }
 .cards { display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .site-footer { border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; }
 .footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; padding-block: 1.6rem; }
@@ -199,6 +216,9 @@ progress { display: block; width: 100%; margin: .5rem 0 1rem; accent-color: var(
 }
 @media (max-width: 760px) {
   .cards, .two-cards, .home-steps { grid-template-columns: 1fr; }
+  .market-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .market-filters .field:first-child { grid-column: 1 / -1; }
+  .table-hint { display: block; }
   .hero { padding-top: 1rem; }
   .hero h1 { max-width: 16ch; }
   .bar-row { grid-template-columns: minmax(0, 1fr) auto; gap: .35rem .75rem; }
