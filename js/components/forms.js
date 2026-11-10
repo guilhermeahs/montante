@@ -11,13 +11,13 @@ export function field(id, label, value, { mode = 'decimal', help = '', format = 
   </div>`;
 }
 
-export function baseFields(values) {
-  return field('initial', 'Valor inicial (R$)', values.initial, { format: 'money' }) +
-    field('contribution', 'Aporte mensal (R$)', values.contribution, { format: 'money', help: 'Valor depositado no fim de cada mês.' });
+export function baseFields(values, prefix = '') {
+  return field(prefix + 'initial', 'Valor inicial (R$)', values.initial, { format: 'money' }) +
+    field(prefix + 'contribution', 'Aporte mensal (R$)', values.contribution, { format: 'money', help: 'Valor depositado no fim de cada mês.' });
 }
 
-export function durationField(months) {
-  return field('months', 'Prazo (meses)', months, { mode: 'numeric' });
+export function durationField(months, prefix = '') {
+  return field(prefix + 'months', 'Prazo (meses)', months, { mode: 'numeric' });
 }
 
 export function readNumber(form, key, { min = 0, max = Infinity, integer = false, grouped = false, cents = false } = {}) {
@@ -35,11 +35,11 @@ export function readNumber(form, key, { min = 0, max = Infinity, integer = false
   return value;
 }
 
-export function readBase(form) {
+export function readBase(form, prefix = '') {
   return {
-    initial: readNumber(form, 'initial', { max: 1e8, grouped: true, cents: true }),
-    contribution: readNumber(form, 'contribution', { max: 1e8, grouped: true, cents: true }),
-    months: readNumber(form, 'months', { min: 1, max: 600, integer: true })
+    initial: readNumber(form, prefix + 'initial', { max: 1e8, grouped: true, cents: true }),
+    contribution: readNumber(form, prefix + 'contribution', { max: 1e8, grouped: true, cents: true }),
+    months: readNumber(form, prefix + 'months', { min: 1, max: 600, integer: true })
   };
 }
 

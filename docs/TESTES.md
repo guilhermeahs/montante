@@ -11,7 +11,10 @@ Com o servidor aberto, rode o smoke test em uma sessão Playwright descartável.
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste open http://127.0.0.1:4178 --browser=msedge
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --filename scripts/smoke-core.cjs
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --filename scripts/smoke-lab.cjs
+npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --filename scripts/smoke-education.cjs
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste close
 ```
 
 O teste do laboratório percorre Mercado, Carteira, Painel e Dados e demonstração. Verifica filtros e favoritos, preços, validação de compras e vendas, extrato, persistência, relógio, backup e restauração nas mesmas larguras.
+
+O teste de educação percorre Metas e cenários, Aprender, Painel e Dados e demonstração. Verifica edição e exclusão de metas, premissas com prazos diferentes, gráfico, inflação, busca, respostas e reinício do quiz, tema e persistência.

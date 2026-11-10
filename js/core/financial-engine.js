@@ -1,4 +1,5 @@
 export const example = Object.freeze({ initial: 1000, contribution: 500, rate: 0.8, months: 60 });
+export const projectionLimit = 1e13;
 
 export function project({ initial, contribution, rate, months }) {
   if (![initial, contribution].every(value =>
@@ -20,7 +21,7 @@ export function project({ initial, contribution, rate, months }) {
     const opening = balance;
     const earned = opening * monthlyRate;
     balance = opening + earned + contribution;
-    if (!Number.isFinite(balance) || balance > 1e13) {
+    if (!Number.isFinite(balance) || balance > projectionLimit) {
       throw new RangeError('A projeção excede R$ 10 trilhões. Reduza o prazo, a taxa ou os valores.');
     }
     const invested = initial + contribution * month;

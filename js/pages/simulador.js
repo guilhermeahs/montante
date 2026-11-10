@@ -76,8 +76,8 @@ export function renderSimulator(main) {
 
   function showChart() {
     const lines = [...investmentLines];
-    if (interestToggle.checked) lines.push({ key: 'interest', label: 'Juros acumulados', color: '#1a5d99' });
-    if (simpleToggle.checked) lines.push({ key: 'simple', label: 'Juros simples', color: '#865398' });
+    if (interestToggle.checked) lines.push({ key: 'interest', label: 'Juros acumulados', color: 'var(--chart-blue)' });
+    if (simpleToggle.checked) lines.push({ key: 'simple', label: 'Juros simples', color: 'var(--chart-purple)' });
     drawChart(main.querySelector('#projection-chart'), result.series, lines);
   }
 

@@ -44,7 +44,24 @@ async (page) => {
   await expect('dialog .error', 'Saldo fictício insuficiente');
   await modal().getByLabel('Quantidade', { exact: true }).fill('10');
   await expect('dialog [data-preview]', 'Líquido:');
-  await confirm('Confirmar compra');
+  const otherTab = await page.context().newPage();
+  try {
+    await otherTab.goto(origin + '/#mercado');
+    await otherTab.getByRole('button', { name: 'Avançar um dia', exact: true }).click();
+    await otherTab.getByText(/02\/01\/2026.*Pausado/).waitFor();
+    await confirm('Confirmar compra');
+    await expect('dialog .error', 'A cotação mudou em outra aba');
+  } finally {
+    await otherTab.close();
+  }
+  await confirm('Cancelar');
+  await action('PETR4').click();
+  await confirm('Comprar ficticiamente');
+  await modal().getByLabel('Quantidade', { exact: true }).fill('10');
+  await modal().locator('form').evaluate(form => {
+    form.requestSubmit();
+    form.requestSubmit();
+  });
   await page.getByText('Compra simulada registrada.', { exact: true }).waitFor();
 
   await page.getByRole('link', { name: 'Ver carteira virtual', exact: true }).click();
@@ -125,9 +142,12 @@ async (page) => {
 
   for (const width of [360, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const route of ['mercado', 'carteira', 'painel', 'dados']) {
+    for (const [route, title] of [
+      ['mercado', 'Mercado simulado'], ['carteira', 'Carteira virtual'],
+      ['painel', 'Painel educacional'], ['dados', 'Dados e demonstração']
+    ]) {
       await page.goto(origin + '/#' + route);
-      await page.locator('main h1').waitFor();
+      await page.getByRole('heading', { level: 1, name: title, exact: true }).waitFor();
       verify(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), route + ' excede ' + width + ' px');
     }
   }

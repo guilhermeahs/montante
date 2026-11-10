@@ -21,7 +21,9 @@ O Início apresenta uma projeção calculada. O Simulador aceita taxas mensais o
 
 Em **Laboratório**, pratique com 18 ativos fictícios, acompanhe o relógio simulado e use R$ 50.000,00 virtuais para comprar e vender. Painel e carteira mostram posições, distribuição, desempenho e extrato. **Dados e demonstração** inclui roteiro acadêmico, carteira de exemplo reproduzível, backup JSON e restauração.
 
-Simulações, favoritos, mercado e carteira ficam no navegador deste endereço. Outro navegador ou computador tem armazenamento independente. Exporte e importe o backup para transferir o progresso.
+**Metas e cenários** calcula aportes, testa hipóteses e estima poder de compra com inflação ilustrativa. **Aprender** oferece glossário com busca e quiz com feedback.
+
+Simulações, metas, respostas, tema, favoritos, mercado e carteira ficam no navegador deste endereço. Outro navegador ou computador tem armazenamento independente. Exporte e importe o backup para transferir o progresso.
 
 Veja [CONTINUIDADE.md](CONTINUIDADE.md), [arquitetura](docs/ARQUITETURA.md), [regras financeiras](docs/REGRAS_FINANCEIRAS.md), [testes](docs/TESTES.md) e [referências](docs/REFERENCIAS.md).
 

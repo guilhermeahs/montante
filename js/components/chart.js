@@ -1,8 +1,8 @@
 import { escapeHtml, money } from '../core/format.js';
 
 export const investmentLines = [
-  { key: 'balance', label: 'Patrimônio total', color: '#08785e', fill: '#1bbd93' },
-  { key: 'invested', label: 'Total investido', color: '#9b5900', dashed: true }
+  { key: 'balance', label: 'Patrimônio total', color: 'var(--chart-green)', fill: 'var(--mint)' },
+  { key: 'invested', label: 'Total investido', color: 'var(--gold)', dashed: true }
 ];
 
 let chartSequence = 0;
@@ -11,7 +11,8 @@ export function drawChart(container, data, lines, options = {}) {
   if (data.length < 2) return;
   const { interactive = true, label = 'Evolução dos valores', period = (_, index) => 'Mês ' + index } = options;
   const id = 'chart-' + ++chartSequence;
-  const values = data.flatMap(point => lines.map(line => point[line.key]));
+  const values = data.flatMap(point => lines.map(line => point[line.key])).filter(Number.isFinite);
+  if (!values.length) return;
   const min = options.zoom ? Math.min(...values) : Math.min(0, ...values);
   const max = options.zoom ? Math.max(...values) : Math.max(0, ...values);
   const width = 600;
@@ -26,7 +27,8 @@ export function drawChart(container, data, lines, options = {}) {
     return `<line class="grid" x1="${left}" x2="${right}" y1="${row}" y2="${row}"/>`;
   }).join('');
   const paths = lines.map(line => {
-    const coords = data.map((point, index) => x(index).toFixed(2) + ',' + y(point[line.key]).toFixed(2)).join(' ');
+    const coords = data.flatMap((point, index) => Number.isFinite(point[line.key])
+      ? [x(index).toFixed(2) + ',' + y(point[line.key]).toFixed(2)] : []).join(' ');
     const area = line.fill ? `<polygon points="${left},${bottom} ${coords} ${right},${bottom}" fill="${line.fill}" opacity=".18"/>` : '';
     return area + `<polyline points="${coords}" fill="none" stroke="${line.color}" stroke-width="3" stroke-linejoin="round" ${line.dashed ? 'stroke-dasharray="6 5"' : ''}/>`;
   }).join('');
@@ -37,7 +39,7 @@ export function drawChart(container, data, lines, options = {}) {
   }).join('');
 
   container.innerHTML = `<figure class="chart"><svg viewBox="0 0 ${width} 248" role="img" aria-label="${escapeHtml(label)}">
-    ${grids}${paths}${interactive ? `<line data-marker stroke="#52615a" y1="${top}" y2="${bottom}"/>` : ''}${labels}</svg>
+    ${grids}${paths}${interactive ? `<line data-marker stroke="var(--muted)" y1="${top}" y2="${bottom}"/>` : ''}${labels}</svg>
     <figcaption class="legend">${lines.map(line => `<span><i style="--swatch:${line.color}"></i>${escapeHtml(line.label)}</span>`).join('')}</figcaption>
     ${interactive ? `<div class="chart-controls"><label class="muted" for="${id}">Explore o período do gráfico</label><input type="range" id="${id}" min="0" max="${data.length - 1}" value="${data.length - 1}"><output for="${id}" class="chart-readout"></output></div>` : ''}</figure>`;
 
@@ -48,7 +50,8 @@ export function drawChart(container, data, lines, options = {}) {
   const svg = container.querySelector('svg');
   function show(index, mark) {
     const point = data[index];
-    const values = period(point, index) + ' · ' + lines.map(line => line.label + ' ' + money(point[line.key])).join(' · ');
+    const values = period(point, index) + ' · ' + lines.map(line =>
+      line.label + ' ' + (Number.isFinite(point[line.key]) ? money(point[line.key]) : '—')).join(' · ');
     output.value = values;
     slider.setAttribute('aria-valuetext', values);
     marker.setAttribute('x1', x(index));

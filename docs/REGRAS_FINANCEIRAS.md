@@ -17,3 +17,9 @@
 - Valor de mercado é quantidade vezes cotação. Lucro não realizado é a diferença para o custo remanescente. Lucro realizado é a receita líquida de venda menos o custo baixado. Patrimônio é caixa mais valor de mercado.
 - A variação patrimonial usa o crédito inicial como referência. O histórico diário usa o extrato até aquele dia. O gráfico do painel mostra até 90 dias disponíveis.
 - Renda fixa permanece no comparador educacional. O mercado negociável usa quatro classes de ativos e 18 cotações fictícias.
+
+## Metas e cenários
+
+- A meta usa o montante projetado dividido pelo valor-alvo. O aporte mensal necessário desconta o crescimento do capital inicial e divide o restante pelo fator de uma série de aportes no fim do mês. O resultado é arredondado para cima em centavos.
+- O impacto de R$ 100 a mais por mês é R$ 100 multiplicados pelo mesmo fator de aportes. Resultados acima do limite da projeção aparecem como indisponíveis.
+- O poder de compra estimado é `valor nominal / (1 + inflação anual)^(meses / 12)`. A inflação é constante e ilustrativa. Cada hipótese pode ter taxas, aportes, prazos e capitais diferentes.

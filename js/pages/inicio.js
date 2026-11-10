@@ -23,13 +23,13 @@ export function renderHome(main) {
       <div class="cards">
         <article class="card"><h3>Simular</h3><p>Informe capital inicial, aportes, taxa e prazo para visualizar a projeção mês a mês.</p><a href="#simulador">Abrir simulador</a></article>
         <article class="card"><h3>Comparar</h3><p>Veja Poupança, CDB e Tesouro Selic lado a lado com a mesma base de cálculo.</p><a href="#comparador">Abrir comparador</a></article>
-        <article class="card"><h3>Aprender</h3><p>Separe o total depositado dos rendimentos e veja o efeito de juros sobre juros.</p></article>
+        <article class="card"><h3>Aprender</h3><p>Separe o total depositado dos rendimentos e veja o efeito de juros sobre juros.</p><a href="#aprender">Explorar glossário e quiz</a></article>
       </div>
     </section>
     <section class="card section">
       <p class="eyebrow">Laboratório Montante</p><h2>Pratique com dinheiro fictício</h2>
       <p>Experimente o mercado, acompanhe a carteira virtual e apresente exemplos reproduzíveis.</p>
-      <div class="actions"><a class="button secondary" href="#painel">Abrir painel</a><a href="#mercado">Mercado</a><a href="#carteira">Carteira</a><a href="#dados">Dados e demonstração</a></div>
+      <div class="actions"><a class="button secondary" href="#painel">Abrir painel</a><a href="#mercado">Mercado</a><a href="#carteira">Carteira</a><a href="#metas">Metas e cenários</a><a href="#dados">Dados e demonstração</a></div>
     </section>`;
   drawChart(main.querySelector('[data-home-chart]'), result.series, investmentLines, { interactive: false, label: 'Patrimônio e total investido, do mês 0 ao mês 60' });
 }

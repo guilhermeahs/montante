@@ -45,7 +45,7 @@ export function renderComparator(main) {
   function renderResults(params, rateValues) {
     const results = compareModes(params, rateValues);
     if (selected) results.push({
-      id: 'salva', label: selected.name, rate: selected.params.rate, color: '#865398', line: '#865398',
+      id: 'salva', label: selected.name, rate: selected.params.rate, color: 'var(--chart-purple)', line: 'var(--chart-purple)',
       description: 'Taxa da simulação salva aplicada à mesma base de cálculo.',
       result: project({ ...params, rate: selected.params.rate })
     });

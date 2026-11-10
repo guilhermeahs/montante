@@ -5,7 +5,10 @@ import { renderDashboard } from './pages/painel.js';
 import { renderMarket } from './pages/mercado.js';
 import { renderPortfolio } from './pages/carteira.js';
 import { renderData } from './pages/dados.js';
+import { renderGoals } from './pages/metas.js';
+import { renderEducation } from './pages/aprender.js';
 import { startClock } from './services/market-clock.js';
+import { observeState, store } from './services/storage.js';
 
 const routes = new Map([
   ['inicio', { label: 'Início', render: renderHome }],
@@ -14,6 +17,8 @@ const routes = new Map([
   ['painel', { label: 'Painel', render: renderDashboard, lab: true }],
   ['mercado', { label: 'Mercado', render: renderMarket, lab: true }],
   ['carteira', { label: 'Carteira', render: renderPortfolio, lab: true }],
+  ['metas', { label: 'Metas e cenários', render: renderGoals, lab: true }],
+  ['aprender', { label: 'Aprender', render: renderEducation, lab: true }],
   ['dados', { label: 'Dados e demonstração', render: renderData, lab: true }]
 ]);
 const main = document.querySelector('main');
@@ -51,6 +56,11 @@ function renderRoute() {
 }
 
 labNav.addEventListener('click', () => { menu.open = false; });
+document.querySelector('.skip').addEventListener('click', event => {
+  event.preventDefault();
+  main.focus();
+  main.scrollIntoView();
+});
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && menu.open) {
     menu.open = false;
@@ -58,5 +68,8 @@ document.addEventListener('keydown', event => {
   }
 });
 window.addEventListener('hashchange', renderRoute);
+function applyTheme(state) { document.documentElement.dataset.theme = state.theme; }
+try { applyTheme(store.read()); } catch { /* O tema claro fica disponível em caso de armazenamento inválido. */ }
+observeState(applyTheme);
 renderRoute();
 startClock();

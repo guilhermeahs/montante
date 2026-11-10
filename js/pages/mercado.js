@@ -2,7 +2,7 @@ import { drawChart } from '../components/chart.js';
 import { openDialog } from '../components/dialog.js';
 import { dateTime, moneyCents, profitClass, shortDate } from '../components/portfolio-ui.js';
 import { openTrade } from '../components/trade.js';
-import { escapeHtml, percent } from '../core/format.js';
+import { escapeHtml, normalizeSearch, percent } from '../core/format.js';
 import { modes } from '../core/market-engine.js';
 import { categories } from '../data/ativos.js';
 import { configureMarket, stepMarket } from '../services/market-clock.js';
@@ -33,7 +33,7 @@ function openAsset(provider, id, onTrade) {
     const chart = dialog.querySelector('[data-asset-chart]');
     function show() {
       const history = provider.history(id, select.value === 'all' ? undefined : Number(select.value));
-      drawChart(chart, history, [{ key: 'value', label: 'Cotação simulada', color: '#08785e', fill: '#1bbd93' }], {
+      drawChart(chart, history, [{ key: 'value', label: 'Cotação simulada', color: 'var(--chart-green)', fill: 'var(--mint)' }], {
         label: 'Histórico de preço simulado de ' + id, zoom: true, period: point => shortDate(point.timestamp)
       });
     }
@@ -87,10 +87,9 @@ export function renderMarket(main) {
 
   function renderAssets() {
     const focused = document.activeElement?.dataset.marketButton;
-    const normalized = text => text.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
-    const term = normalized(search.value.trim());
+    const term = normalizeSearch(search.value.trim());
     const items = provider.list().filter(asset =>
-      (!term || normalized(asset.id + ' ' + asset.name).includes(term)) &&
+      (!term || normalizeSearch(asset.id + ' ' + asset.name).includes(term)) &&
       (!category.value || category.value === asset.category) &&
       (!onlyFavorites.checked || state.favorites.includes(asset.id))
     ).map(asset => ({ asset, quote: provider.quote(asset.id) }));

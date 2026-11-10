@@ -20,7 +20,8 @@ export function exampleState() {
   return {
     ...state, profile: 'example', market, operations,
     favorites: ['PETR4', 'BOVA11'],
-    simulations: [{ id: 'demo-simulacao', name: 'Projeção em cinco anos', params: example }]
+    simulations: [{ id: 'demo-simulacao', name: 'Projeção em cinco anos', params: example }],
+    goals: [{ id: 'demo-meta', name: 'Reserva financeira', target: 40000, params: example }]
   };
 }
 

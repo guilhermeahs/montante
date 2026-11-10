@@ -17,6 +17,9 @@ async (page) => {
   await page.goto(origin);
   await page.evaluate(() => localStorage.removeItem('montante.state'));
   await page.getByRole('link', { name: 'Começar a simular' }).click();
+  await page.getByRole('link', { name: 'Pular para o conteúdo' }).focus();
+  await page.keyboard.press('Enter');
+  verify(await page.evaluate(() => document.activeElement === document.querySelector('main') && location.hash === '#simulador'), 'Atalho de teclado perdeu o foco ou a rota');
   await contains(page.locator('#projection-metrics'), '39.924,92');
   await page.getByRole('checkbox', { name: 'Comparar com juros simples' }).check();
   await contains(page.locator('#projection-chart .legend'), 'Juros simples');
@@ -68,9 +71,13 @@ async (page) => {
   const widths = [360, 390, 768, 1024, 1440];
   for (const width of widths) {
     await page.setViewportSize({ width, height: 900 });
-    for (const route of ['inicio', 'simulador', 'comparador']) {
+    for (const [route, title] of [
+      ['inicio', 'Veja seu dinheiro crescer antes de investir.'],
+      ['simulador', 'Parâmetros'],
+      ['comparador', 'Comparador de modalidades']
+    ]) {
       await page.goto(origin + '/#' + route);
-      await page.locator('main h1').waitFor();
+      await page.getByRole('heading', { level: 1, name: title, exact: true }).waitFor();
       const layout = await page.evaluate(() => ({ w: document.documentElement.scrollWidth, viewport: innerWidth, display: getComputedStyle(document.querySelector('.header-inner')).display }));
       verify(layout.w <= layout.viewport && layout.display === 'grid', 'Layout/CSS em ' + route + ' a ' + width + ' px: ' + JSON.stringify(layout));
     }
