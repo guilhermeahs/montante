@@ -20,3 +20,13 @@ npx --yes --package @playwright/cli playwright-cli -s=montante-teste close
 - **Projeções.** Início, Juros compostos, Comparar modalidades e Metas e cenários. Cobre os valores de referência, rascunho ao voltar de Metas, envio dos valores ao Comparador, validação, simulações salvas e CSV.
 - **Investir.** Visão geral, Mercado simulado, Minha carteira e Dados e demonstração. Cobre carteira vazia, filtros e favoritos, retorno dos detalhes, compra, venda parcial, recarga, extrato, relógio, backup e restauração.
 - **Educação.** Metas e cenários, Conceitos e glossário, Quiz educativo, Visão geral e Dados e demonstração. Cobre metas, inflação, busca, retorno ao glossário, respostas persistidas, reinício do quiz e tema.
+
+## Interação no celular
+
+```sh
+npx --yes --package @playwright/cli playwright-cli -s=montante-toque open http://127.0.0.1:4178 --browser=msedge --mobile
+npx --yes --package @playwright/cli playwright-cli -s=montante-toque run-code --filename scripts/smoke-mobile.cjs
+npx --yes --package @playwright/cli playwright-cli -s=montante-toque close
+```
+
+O teste emula toque em 360 e 390 px. Percorre períodos pelo gráfico, pelos botões e pelo teclado, confere o foco no resultado e verifica se o código do ativo continua visível na tabela ao rolar horizontalmente.

@@ -44,7 +44,7 @@ export function renderSimulator(main) {
         <p id="projection-draft" class="muted form-note" role="status"></p>
       </form>
       <div>
-        <section id="projection-metrics" class="metric-grid" aria-label="Resultado da simulação" aria-live="polite"></section>
+        <section id="projection-metrics" class="metric-grid" aria-label="Resultado da simulação" aria-live="polite" tabindex="-1"></section>
         <section class="card section">
           <h2>Evolução do patrimônio</h2>
           <div id="projection-chart"></div>
@@ -168,6 +168,11 @@ export function renderSimulator(main) {
     draft = undefined;
     showDraft();
     showResult();
+    if (window.matchMedia('(max-width: 600px)').matches) {
+      const metrics = main.querySelector('#projection-metrics');
+      metrics.focus({ preventScroll: true });
+      metrics.scrollIntoView({ block: 'start' });
+    }
   });
   interestToggle.addEventListener('change', showChart);
   simpleToggle.addEventListener('change', showChart);

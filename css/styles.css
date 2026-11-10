@@ -140,15 +140,32 @@ button[hidden] { display: none; }
 .footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; padding-block: 1.6rem; }
 .footer-inner strong { color: var(--ink); }
 .chart { margin: .6rem 0 0; }
-.chart svg { display: block; width: 100%; height: auto; }
-.chart text { fill: var(--muted); font: 16px var(--font); }
+.chart-currency { font-size: .75rem; font-weight: 700; margin-bottom: .55rem; }
+.chart-frame { display: grid; grid-template-columns: minmax(3.1rem, auto) minmax(0, 1fr); gap: .45rem .6rem; }
+.chart-axis { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; font-variant-numeric: tabular-nums; }
+.chart-axis span { transform: translateY(calc(var(--tick-position) - 50%)); white-space: nowrap; }
+.chart-axis, .chart-periods { font-size: .78rem; color: var(--muted); }
+.chart-plot { position: relative; height: clamp(9.5rem, 30vw, 17rem); }
+.home-chart .chart-plot { height: clamp(8rem, 18vw, 13.5rem); }
+.chart-plot svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.chart-plot-interactive { touch-action: pan-y pinch-zoom; cursor: crosshair; }
+.chart-periods { grid-column: 2; display: flex; justify-content: space-between; gap: .3rem; }
 .chart line.grid { stroke: var(--border); }
+.chart-crosshair, .chart-point { position: absolute; pointer-events: none; }
+.chart-crosshair { inset-block: 0; border-left: 1px dashed var(--muted); }
+.chart-point { width: .7rem; height: .7rem; border: 2px solid var(--surface); border-radius: 50%; background: var(--series); transform: translate(-50%, -50%); box-shadow: 0 0 0 1px var(--series); }
 .legend { display: flex; flex-wrap: wrap; gap: .4rem 1rem; margin-top: .4rem; color: var(--muted); font-size: .83rem; }
 .legend span { display: inline-flex; align-items: center; gap: .35rem; }
-.legend i { width: 1em; border-top: 2px solid var(--swatch); }
-.chart-readout { font-size: .85rem; color: var(--muted); }
-.chart-controls { margin-top: .9rem; display: grid; gap: .25rem; }
-.chart-controls input { width: 100%; accent-color: var(--green); }
+.legend i { width: 1.2em; border-top: 2px solid var(--swatch); }
+.legend .legend-dash { border-top-style: dashed; }
+.chart-controls { margin-top: 1rem; display: grid; gap: .45rem; }
+.chart-controls label { font-size: .87rem; font-weight: 600; color: var(--muted); }
+.chart-scrubber { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; gap: .7rem; align-items: center; }
+.chart-scrubber button { min-width: 44px; padding: 0; font-size: 1.4rem; line-height: 1; touch-action: manipulation; }
+.chart-scrubber input { width: 100%; margin: 0; min-height: 44px; accent-color: var(--green); }
+.chart-readout { display: grid; gap: .3rem; padding: .65rem .85rem; border-radius: 10px; background: var(--bg); font-size: .85rem; overflow-wrap: anywhere; }
+.chart-values { display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
+.chart-values > span { display: inline-flex; flex-wrap: wrap; gap: .2rem .4rem; }
 .sim-layout { display: grid; grid-template-columns: minmax(240px, .56fr) minmax(0, 1fr); align-items: start; gap: var(--space); }
 .form-title { font-size: clamp(1.4rem, 2.2vw, 1.9rem); }
 .stacked { display: grid; grid-template-columns: minmax(0, 1fr); gap: .9rem; align-content: start; }
@@ -230,6 +247,9 @@ progress { display: block; width: 100%; margin: .5rem 0 1rem; accent-color: var(
   .market-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .market-filters .field:first-child { grid-column: 1 / -1; }
   .table-hint { display: block; }
+  .table-wrap.sticky-name tr > :first-child { position: sticky; left: 0; z-index: 1; }
+  .table-wrap.sticky-name tbody th { background: var(--surface); }
+  .table-wrap.sticky-name small { display: inline-block; max-width: 10ch; white-space: normal; }
   .hero { padding-top: 1rem; }
   .hero h1 { max-width: 16ch; }
   .bar-row { grid-template-columns: minmax(0, 1fr) auto; gap: .35rem .75rem; }
@@ -249,5 +269,8 @@ progress { display: block; width: 100%; margin: .5rem 0 1rem; accent-color: var(
   .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .metric { min-height: auto; }
   .metric.emphasis { grid-column: 1 / -1; }
-  .chart text { font-size: 22px; }
+  .chart-values { display: grid; grid-template-columns: 1fr; }
+  .chart-values > span { justify-content: space-between; }
+  .chart-options label { display: inline-flex; align-items: center; gap: .4rem; min-height: 44px; }
+  .market-filters .field select { padding-inline: .4rem; }
 }

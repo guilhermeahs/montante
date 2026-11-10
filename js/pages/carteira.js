@@ -47,7 +47,7 @@ export function renderPortfolio(main) {
     query('#portfolio-history').innerHTML = operationTable(state.operations.slice().reverse(), provider);
     const focused = document.activeElement?.dataset.portfolioButton;
     const horizontal = positions.querySelector('.table-wrap')?.scrollLeft ?? 0;
-    positions.innerHTML = summary.positions.length ? `<div class="table-wrap" tabindex="0" role="region" aria-label="Posições em ativos">
+    positions.innerHTML = summary.positions.length ? `<p class="table-hint muted">Deslize a tabela para ver detalhes e negociar.</p><div class="table-wrap sticky-name" tabindex="0" role="region" aria-label="Posições em ativos">
       <table><thead><tr><th>Ativo</th><th>Quantidade</th><th>Preço médio</th><th>Cotação simulada</th><th>Custo</th><th>Valor a mercado</th><th>Não realizado</th><th>Negociar</th></tr></thead>
       <tbody>${summary.positions.map(position => `<tr>
         <th scope="row"><button class="text-button" data-asset="${position.asset.id}" data-portfolio-button="asset-${position.asset.id}">${position.asset.id}</button></th>

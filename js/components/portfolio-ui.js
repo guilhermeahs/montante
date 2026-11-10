@@ -49,7 +49,7 @@ export function distribution(positions) {
 
 export function operationTable(operations, provider) {
   if (!operations.length) return '<p class="muted">Nenhuma operação fictícia registrada.</p>';
-  return `<div class="table-wrap" tabindex="0" role="region" aria-label="Extrato das operações simuladas">
+  return `<p class="table-hint muted">Deslize a tabela para ver o extrato completo.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Extrato das operações simuladas">
     <table><thead><tr><th>Data simulada</th><th>Operação</th><th>Ativo</th><th>Quantidade</th><th>Preço</th><th>Bruto</th><th>Taxas</th><th>Líquido</th><th>Caixa antes</th><th>Caixa depois</th><th>Realizado</th><th>ID</th></tr></thead>
       <tbody>${operations.map(order => `<tr><td>${dateTime(order.timestamp)}</td><td>${sideLabel(order.side)}</td><th scope="row">${order.assetId}</th>
         <td>${quantity(provider.metadata(order.assetId), order.units)}</td><td>${moneyCents(order.cents)}</td><td>${moneyCents(order.gross)}</td>

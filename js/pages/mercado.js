@@ -73,7 +73,7 @@ export function renderMarket(main) {
       return;
     }
     list.innerHTML = `<p class="table-hint muted">Deslize a tabela para ver todas as colunas.</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Cotações simuladas">
+      <div class="table-wrap sticky-name" tabindex="0" role="region" aria-label="Cotações simuladas">
       <table><thead><tr><th>Ativo</th><th>Preço simulado</th><th>Variação diária</th><th>Categoria</th><th>Favorito</th></tr></thead><tbody>
       ${items.map(({ asset, quote }) => `<tr><th scope="row"><button class="text-button" data-market-button="detail-${asset.id}" data-detail="${asset.id}">${asset.id}</button><br><small class="muted">${escapeHtml(asset.name)}</small></th>
         <td>${moneyCents(quote.cents)}</td><td class="${profitClass(quote.difference)}">${percent(quote.changePercent)} · ${moneyCents(quote.difference)}</td><td>${asset.category}</td>

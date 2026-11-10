@@ -12,6 +12,7 @@
 4. **Simular e Investir.** O Simulador conserva os campos editados ao voltar de Metas e pode enviar os valores calculados ao Comparador. Investir abre uma visão geral com patrimônio, saldo, resultado e uma primeira ação para carteira vazia. A cotação de um ativo abre em diálogo na lista ou na carteira e devolve o foco à origem. No Edge passaram os fluxos de rascunho, valor de referência, compra, recarga, venda parcial, filtros, relógio e extrato.
 5. **Aprender e Configurações.** `#aprender` concentra conceitos e busca, e `#quiz` tem navegação própria e respostas persistidas. Configurações mantém `#dados`, com backup, demonstração, tema e restauração confirmada. Navegação, Aprender e dados passaram no Edge, incluindo retorno ao glossário, persistência do quiz e importação/exportação.
 6. **Regressão final.** Passaram a checagem de sintaxe, os 24 testes unitários e os quatro smoke tests no Edge. Foram abertas dez telas em seis larguras, com teclado, hashes anteriores, aliases, Voltar/Avançar, contraste dos CTAs nos dois temas, movimento reduzido e um estado v3 existente intacto. README, AGENTS e documentação técnica foram atualizados.
+7. **Gráficos e celular.** Gráficos receberam escala em reais, marcadores por série e valores do período selecionado. A interação funciona por toque, arraste, botões e teclado. Em telas estreitas, Simular leva ao resultado e as tabelas de Mercado e posições mantêm o código do ativo visível durante a rolagem horizontal. Lint, 24 testes unitários, quatro smoke tests e o smoke de toque em 360 e 390 px passaram no Edge.
 
 # Módulos concluídos
 
@@ -33,7 +34,7 @@ Os seis marcos da reorganização foram implementados e validados localmente. A 
 
 1. Abrir a revisão local, entrar em Configurações, carregar a carteira de exemplo e ensaiar as duas jornadas com um aluno iniciante em desktop e celular físico.
 2. Fazer a verificação manual com leitor de tela, incluindo navegação secundária, gráfico e diálogos.
-3. Promover a revisão ao projeto existente do Cloudflare Pages quando for a hora de atualizar o link público.
+3. Conferir no aparelho físico a rolagem dos gráficos, a interação por toque e os controles das tabelas.
 
 # Contratos e arquitetura
 
