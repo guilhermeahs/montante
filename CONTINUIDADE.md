@@ -60,6 +60,8 @@ Os dados salvos ficam vinculados ao navegador e à origem HTTP. O relógio autom
 
 # Testes executados
 
+**Posição visível nos Desafios históricos.** O resumo no topo mostra as unidades da cesta ou os dólares na posição. Nos replays, o caixa continua em reais e tem uma conversão informativa pela PTAX do dia, separada dos lotes comprados. Lint, 35 testes do Node e os smokes de navegação e Desafios passaram localmente. O smoke validou atualização após compra, venda parcial e total, conversão após avanço de dia e restauração por backup em 360 e 390 px.
+
 **Venda total nos Desafios históricos.** A página identifica a rodada em andamento ou a última rodada concluída. O atalho Nova rodada surpresa leva ao sorteio, e a confirmação inicia do Dia 0 com uma carteira própria. Vender tudo usa o mesmo motor da venda parcial e confirma o total antes de negociar. Quando a rodada termina ou a posição zera, a tela explica a indisponibilidade. Lint, 35 testes do Node e o smoke dos Desafios em 360 e 390 px passaram localmente, incluindo retorno à rodada salva, compra, venda parcial e total, cancelamento, replay e backup.
 
 Mercado com risco passou no lint (47 arquivos), nos 34 testes do Node e em sete smoke tests locais no Edge. O fluxo novo cobriu duas vendas no mesmo dia, taxa, recarga, outra aba, compra bloqueada até a liberação do saldo e reinvestimento com toque em 360 e 390 px. A navegação cobriu 11 telas em seis larguras.

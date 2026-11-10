@@ -219,6 +219,8 @@ button[hidden] { display: none; }
 .error:empty, [role="status"]:empty { display: none; }
 .eyebrow:empty { display: none; }
 .metric-grid { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: clamp(.65rem, 1.5vw, 1.25rem); }
+.challenge-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.challenge-metrics small { display: block; margin-top: .4rem; }
 .metric { padding: clamp(.75rem, 2vw, 1.6rem); min-height: 8.5rem; }
 .metric p { color: var(--muted); font-size: .9rem; margin-bottom: .25rem; }
 .metric strong { display: block; font-size: clamp(1.1rem, 1.8vw, 1.7rem); line-height: 1.12; overflow-wrap: anywhere; }
@@ -283,6 +285,8 @@ progress { display: block; width: 100%; margin: .5rem 0 1rem; accent-color: var(
   .hero, .sim-layout { grid-template-columns: 1fr; }
 }
 @media (max-width: 760px) {
+  .challenge-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .challenge-metrics .metric.emphasis { grid-column: auto; }
   .market-category-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #asset-sort .choice-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   #asset-sort label { justify-content: center; padding-inline: .35rem; text-align: center; }

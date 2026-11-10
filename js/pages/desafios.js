@@ -7,6 +7,8 @@ import { advanceChallenge, allocations, challengeView, createChallenge, historic
 import { observeState, store, transact } from '../services/storage.js';
 
 const rate = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 4, maximumFractionDigits: 4 });
+const dollars = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'USD' });
+const moneyDollars = amount => dollars.format(amount).replace('\u00a0', ' ');
 const labelForDay = (point, index) => point.date ? point.date.split('-').reverse().join('/') : 'Dia ' + index;
 
 export function renderChallenges(main) {
@@ -36,7 +38,7 @@ export function renderChallenges(main) {
           <button type="button" id="challenge-see-result" hidden>Ver resultado</button>
         </div>
       </div>
-      <div id="challenge-metrics" class="metric-grid section"></div>
+      <div id="challenge-metrics" class="metric-grid challenge-metrics section"></div>
       <div class="two-cards section">
         <section class="card">
           <h2>Preço revelado</h2>
@@ -121,7 +123,11 @@ export function renderChallenges(main) {
     const label = replay ? 'Dólar por US$ 1' : 'Preço da cesta';
     query('#challenge-metrics').innerHTML = `
       <article class="card metric emphasis"><p>Patrimônio da rodada</p><strong>${moneyCents(portfolio.wealth)}</strong></article>
-      <article class="card metric"><p>Saldo desta rodada</p><strong>${moneyCents(portfolio.cash)}</strong></article>
+      <article class="card metric" id="challenge-cash"><p>Saldo desta rodada · em reais</p><strong>${moneyCents(portfolio.cash)}</strong>
+        ${replay ? `<small class="muted">Equivale a ${moneyDollars(portfolio.cash * 100 / quote.cents)} pela PTAX do dia.</small>` : ''}</article>
+      <article class="card metric" id="challenge-holdings"><p>${replay ? 'Dólares na posição' : 'Unidades da cesta'}</p>
+        <strong>${replay ? moneyDollars(units * 100) : units.toLocaleString('pt-BR')}</strong>
+        <small class="muted">${replay ? units + (units === 1 ? ' lote de US$ 100' : ' lotes de US$ 100') : moneyCents(portfolio.marketValue) + ' em ativos'}</small></article>
       <article class="card metric"><p>${label}</p><strong>${replay ? rate.format(quote.cents / 10000) : moneyCents(quote.cents)}</strong></article>`;
     query('#challenge-position').textContent = `${units} ${unit} · ${moneyCents(portfolio.marketValue)} em posição. Exposição inicial de até ${run.allocation}%.`;
     query('#challenge-orders').innerHTML = run.orders.length ? run.orders.map(order => `<li>

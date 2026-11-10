@@ -32,17 +32,23 @@ async page => {
   verify(await page.getByRole('button', { name: /^Replay:/ }).count() === 0, 'Replay anunciado antes do resultado');
   verify((await page.locator('#challenge-metrics').innerText()).includes('10.000,00'), 'Saldo total inicial');
   verify((await page.locator('#challenge-metrics').innerText()).includes('Saldo desta rodada'), 'Falta distinguir a carteira da rodada');
+  await waitText('#challenge-holdings', 'Unidades da cesta');
+  verify(await page.locator('#challenge-holdings strong').innerText() === '75', 'Quantidade inicial não aparece no resumo');
+  await waitText('#challenge-cash', '2.500,00');
+  verify(!(await page.locator('#challenge-cash').innerText()).includes('US$'), 'A cesta usa caixa em reais');
   verify((await page.locator('#challenge-position').innerText()).includes('75%'), 'Exposição selecionada não aplicada');
   await tap(button('Comprar'));
   const dialog = page.getByRole('dialog');
   await dialog.getByLabel('Quantidade (unidades da cesta)').fill('2');
   await dialog.getByRole('button', { name: 'Confirmar compra' }).click();
   await waitText('#challenge-feedback', 'Compra registrada');
+  verify(await page.locator('#challenge-holdings strong').innerText() === '77', 'Compra não atualizou a quantidade do resumo');
   await button('Reproduzir').click();
   await waitText('#challenge-day', 'Dia 1');
   await button('Vender').click();
   await dialog.getByRole('button', { name: 'Confirmar venda' }).click();
   await waitText('#challenge-feedback', 'Venda registrada');
+  verify(await page.locator('#challenge-holdings strong').innerText() === '76', 'Venda parcial não atualizou a quantidade do resumo');
   await button('Reproduzir').waitFor();
   await page.reload();
   await waitText('#challenge-day', 'Dia 1');
@@ -68,6 +74,7 @@ async page => {
   await dialog.getByRole('button', { name: 'Confirmar venda total' }).click();
   await waitText('#challenge-feedback', 'Venda total registrada');
   await waitText('#challenge-position', '0 unidades da cesta');
+  verify(await page.locator('#challenge-holdings strong').innerText() === '0', 'Venda total não zerou a quantidade do resumo');
   await waitText('#challenge-trade-help', 'Compre antes de vender');
   verify(await button('Vender').isDisabled() && await button('Vender tudo').isDisabled(), 'Venda disponível sem posição');
   const liquidation = await page.evaluate(() => JSON.parse(localStorage.getItem('montante.state')).challenge.orders.at(-1));
@@ -93,8 +100,14 @@ async page => {
   await dialog.getByRole('button', { name: 'Substituir rodada' }).click();
   await waitText('#challenge-day', '28/02/2020');
   await waitText('#challenge-metrics', '4,4987');
+  await waitText('#challenge-holdings', 'US$ 1.600,00');
+  await waitText('#challenge-holdings', '16 lotes de US$ 100');
+  await waitText('#challenge-cash', 'R$ 2.802,08');
+  await waitText('#challenge-cash', 'Equivale a US$ 622,86');
   await advance('02/03/2020');
   await waitText('#challenge-metrics', '4,4946');
+  await waitText('#challenge-cash', 'Equivale a US$ 623,43');
+  await waitText('#challenge-holdings', 'US$ 1.600,00');
   verify(await page.locator('#challenge-chart .chart-scrubber input').getAttribute('max') === '1', 'Replay expõe data futura');
   verify(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Overflow a 390 px');
 
@@ -112,9 +125,14 @@ async page => {
   await page.getByText('Backup importado.', { exact: true }).waitFor();
   await page.goto(base + '#desafios-historicos');
   await waitText('#challenge-day', '02/03/2020');
+  await waitText('#challenge-holdings', 'US$ 1.600,00');
   await tap(button('Vender tudo'));
   await dialog.getByText(/Quantidade a vender: \d+ \(lotes de US\$ 100\)\./).waitFor();
   await dialog.getByRole('button', { name: 'Cancelar' }).click();
+  await tap(button('Vender tudo'));
+  await dialog.getByRole('button', { name: 'Confirmar venda total' }).click();
+  await waitText('#challenge-holdings', 'US$ 0,00');
+  await waitText('#challenge-cash', 'R$ 9.993,44');
 
   const previous = await page.evaluate(() => JSON.parse(localStorage.getItem('montante.state')).challenge.id);
   await tap(button('Nova rodada surpresa'));
