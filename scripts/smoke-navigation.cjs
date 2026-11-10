@@ -23,6 +23,12 @@ async (page) => {
   await page.goto(url);
   await heading(screens[0][1]).waitFor();
   verify(JSON.stringify(await primary.getByRole('link').allTextContents()) === JSON.stringify(['Início', 'Simular', 'Investir', 'Aprender']), 'Destinos principais');
+  const start = page.getByRole('link', { name: 'Começar uma simulação', exact: true });
+  const practice = page.getByRole('link', { name: 'Entrar no mercado simulado', exact: true });
+  verify(await start.getAttribute('href') === '#simulador' && await practice.getAttribute('href') === '#mercado', 'Jornadas do Início');
+  verify((await page.locator('.home-chart .hero-amount').innerText()).includes('39.925'), 'Projeção ilustrativa do Início');
+  await page.setViewportSize({ width: 360, height: 800 });
+  verify(await practice.evaluate(link => link.getBoundingClientRect().bottom <= innerHeight), 'Segunda jornada fora da primeira área visível');
   await page.keyboard.press('Tab');
   verify(await page.getByRole('link', { name: 'Pular para o conteúdo' }).evaluate(link => link === document.activeElement), 'Primeiro foco deve ser o atalho');
   const simulate = primary.getByRole('link', { name: 'Simular', exact: true });

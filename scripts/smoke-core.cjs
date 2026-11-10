@@ -16,7 +16,7 @@ async (page) => {
   };
   await page.goto(origin);
   await page.evaluate(() => localStorage.removeItem('montante.state'));
-  await page.getByRole('link', { name: 'Começar a simular' }).click();
+  await page.getByRole('link', { name: 'Começar uma simulação' }).click();
   await page.getByRole('link', { name: 'Pular para o conteúdo' }).focus();
   await page.keyboard.press('Enter');
   verify(await page.evaluate(() => document.activeElement === document.querySelector('main') && location.hash === '#simulador'), 'Atalho de teclado perdeu o foco ou a rota');

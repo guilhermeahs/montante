@@ -23,8 +23,7 @@ async (page) => {
   await page.setViewportSize({ width: 1440, height: 950 });
   await page.goto(origin);
   await page.evaluate(() => localStorage.removeItem('montante.state'));
-  await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Investir', exact: true }).click();
-  await page.getByRole('navigation', { name: 'Navegação de Investir' }).getByRole('link', { name: 'Mercado simulado', exact: true }).click();
+  await page.getByRole('link', { name: 'Entrar no mercado simulado', exact: true }).click();
   await expect('#market-time', 'Pausado');
   verify(await page.locator('#market-assets tbody tr').count() === 18, 'Catálogo incompleto');
   await page.getByLabel('Categoria', { exact: true }).selectOption('Criptomoedas');

@@ -8,7 +8,7 @@
 
 1. **Auditoria e checkpoint.** Base `d3dc3c5` conferida na `main` e no GitHub. As páginas dos dois PDFs foram revistas. `npm run lint`, 24 testes unitários e os três smoke tests no Edge passaram. As nove URLs diretas e o botão Voltar abriram as telas esperadas. A interface de origem descartava entradas ainda não calculadas ao sair do Simulador.
 2. **Navegação principal.** Início, Simular, Investir e Aprender agrupam as telas existentes. Configurações abre `#dados` fora do menu principal. Os nove hashes anteriores continuam válidos, com aliases `#simular` e `#investir`. Os quatro smoke tests passaram no Edge, com foco, estados ativos, Voltar/Avançar e seis larguras cobertos no teste de navegação.
-3. Dar dois caminhos claros à página inicial, mantendo a projeção do protótipo.
+3. **Início.** Duas jornadas com CTAs para juros compostos e Mercado simulado, gráfico calculado pelo motor existente e três passos de apoio. Navegação, Simular e Investir passaram no Edge. As capturas de 360 e 1440 px confirmaram o contraste e os dois CTAs na área inicial após o ajuste de espaçamento mobile.
 4. Refinar os fluxos de Simular e Investir, preservando o contexto de formulários, listas e carteira.
 5. Organizar glossário e quiz. Rever Dados e demonstração dentro de Configurações.
 6. Validar navegação, dados existentes, responsividade e acessibilidade no navegador. Atualizar a documentação e enviar os marcos à `main`.
