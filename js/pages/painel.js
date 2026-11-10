@@ -36,12 +36,6 @@ export function renderDashboard(main) {
         <a href="#aprender">Ver conceitos no glossário</a>
       </details>
     </section>
-    <section class="card empty-state section" id="dashboard-challenges">
-      <p class="eyebrow">Exercício separado · Rodada surpresa</p>
-      <h2>Desafios históricos</h2>
-      <p>Pratique como reagir a oscilações inspiradas em fatos reais. O episódio só é revelado depois que a rodada termina.</p>
-      <a class="button secondary" href="#desafios-historicos">Abrir Desafios históricos</a>
-    </section>
     <section class="card section"><h2>Onde investi</h2><div id="dashboard-distribution"></div></section>
     <section class="card section">
       <h2>Evolução do patrimônio virtual</h2>

@@ -28,7 +28,7 @@
 **Controles com a identidade Montante.** Categorias, ordenação, cenário, velocidade, período de gráfico, tema e exposição usam opções visíveis com rádios nativos e estilo compartilhado. Favoritos e as opções de gráfico usam caixas estilizadas. O estado e as regras financeiras foram preservados. O teste no Edge cobriu toque em 360 e 390 px, teclado, temas, ordenação e filtros.
 
 - Mercado com risco (`#mercado`, `#carteira`, `#painel`). O cenário padrão combina oscilações gerais, por categoria e por ativo, com períodos de turbulência sorteados pela semente. Novas ordens cobram 0,10% de taxa simulada. O valor líquido da venda fica a receber até o dia seguinte. A Visão geral explica concentração, maior queda recente e taxas pagas.
-- Desafios históricos (`#desafios-historicos`) entra em Investir com rodadas surpresa de alta, queda ou sem choque forte. A inspiração é revelada no resultado, que libera os replays da PTAX de março e novembro de 2020. A carteira do desafio é isolada e incluída nos backups desde a versão 4. O plano inicial de anunciar alta ou queda antes da prática foi substituído pela rodada surpresa a pedido do usuário.
+- O modo Desafios históricos saiu de Investir. Links para `#desafios-historicos` abrem o Mercado simulado. O estado anterior continua compatível com backups, com a rodada separada do extrato.
 
 - Início (`js/pages/inicio.js`) com CTAs e gráfico do protótipo.
 - Simulador (`js/pages/simulador.js`) com juros compostos, comparação de juros simples, tabela, gráfico interativo, cenários salvos e CSV.
@@ -59,6 +59,8 @@ Leia `docs/ARQUITETURA.md`, `docs/REGRAS_FINANCEIRAS.md`, `docs/REFERENCIAS.md` 
 Os dados salvos ficam vinculados ao navegador e à origem HTTP. O relógio automático depende de uma aba visível. O histórico de cotações conserva até 366 pontos diários. Renda fixa é explorada no Comparador. Testes com leitor de tela, usuários e celulares físicos seguem pendentes.
 
 # Testes executados
+
+**Investir simplificado e detalhes de ativos.** Investir fica com Visão geral, Mercado simulado e Minha carteira. O detalhe mantém o X visível ao rolar e fecha por clique ou toque fora e por Escape, com foco de volta ao ativo. A Carteira mostra a quantidade abaixo do código e também no topo do detalhe. Lint, 35 testes do Node e os smokes locais de navegação, Investir, relógio, risco e mobile passaram. A rodada legada foi preservada ao abrir o endereço antigo. Toque e rolagem foram verificados a 360 e 390 px.
 
 **Replay do dólar sem revelar o episódio.** O resultado abre um novo sorteio entre os dois recortes históricos versionados. Durante o replay, o título é neutro e o gráfico e as ordens usam dias numerados. O evento e as datas reais aparecem na conclusão. O smoke local validou os dois recortes, incluindo cotações e conversões, ausência do título e das datas antes do resultado e a revelação ao terminar. Lint e 35 testes do Node passaram.
 

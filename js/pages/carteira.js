@@ -18,7 +18,6 @@ export function renderPortfolio(main) {
     </header>
     <p id="portfolio-profile" class="eyebrow"></p>
     <div id="portfolio-metrics"></div>
-    ${portfolioHelp}
     <p id="portfolio-status" role="status"></p><p id="portfolio-error" class="error" role="alert"></p>
     <section class="card section">
       <h2>Posições</h2>
@@ -26,6 +25,7 @@ export function renderPortfolio(main) {
       <div id="positions"></div>
       <div class="actions section"><a class="button" href="#mercado">Explorar mercado</a><a class="button secondary" href="#painel">Ver visão geral</a></div>
     </section>
+    ${portfolioHelp}
     <section class="card section"><h2>Distribuição da carteira</h2><div id="portfolio-distribution"></div></section>
     <section class="card section">
       <h2>Extrato de operações</h2>
@@ -38,12 +38,13 @@ export function renderPortfolio(main) {
   const error = query('#portfolio-error');
   const positions = query('#positions');
   let provider;
+  let summary;
 
   function show(next) {
     state = next;
     provider = new DemoMarketProvider(state.market);
     const tick = state.market.ticks.at(-1);
-    const summary = marketPortfolio(state.operations, tick);
+    summary = marketPortfolio(state.operations, tick);
     query('#portfolio-profile').textContent = state.profile === 'example' ? 'Carteira de exemplo acadêmico' : '';
     query('#portfolio-metrics').innerHTML = portfolioMetrics(summary, { day: tick.day });
     query('#portfolio-distribution').innerHTML = distribution(summary.positions);
@@ -51,10 +52,11 @@ export function renderPortfolio(main) {
     const focused = document.activeElement?.dataset.portfolioButton;
     const horizontal = positions.querySelector('.table-wrap')?.scrollLeft ?? 0;
     positions.innerHTML = summary.positions.length ? `<p class="table-hint muted">Deslize a tabela para ver detalhes e negociar.</p><div class="table-wrap sticky-name" tabindex="0" role="region" aria-label="Posições em ativos">
-      <table><thead><tr><th>Ativo</th><th>Quantidade</th><th>Preço médio</th><th>Cotação simulada</th><th>Custo</th><th>Valor a mercado</th><th>Não realizado</th><th>Negociar</th></tr></thead>
+      <table><thead><tr><th>Ativo e quantidade</th><th>Preço médio</th><th>Cotação simulada</th><th>Custo</th><th>Valor a mercado</th><th>Não realizado</th><th>Negociar</th></tr></thead>
       <tbody>${summary.positions.map(position => `<tr>
-        <th scope="row"><button class="text-button" data-asset="${position.asset.id}" data-portfolio-button="asset-${position.asset.id}">${position.asset.id}</button></th>
-        <td>${quantity(position.asset, position.units)}</td><td>${moneyCents(position.average)}</td><td>${moneyCents(position.cents)}</td><td>${moneyCents(position.cost)}</td>
+        <th scope="row"><button class="text-button" data-asset="${position.asset.id}" data-portfolio-button="asset-${position.asset.id}">${position.asset.id}</button>
+          <span class="position-quantity">${quantity(position.asset, position.units)} ${position.units === position.asset.scale ? 'unidade' : 'unidades'}</span></th>
+        <td>${moneyCents(position.average)}</td><td>${moneyCents(position.cents)}</td><td>${moneyCents(position.cost)}</td>
         <td>${moneyCents(position.marketValue)}</td><td class="${profitClass(position.unrealized)}">${moneyCents(position.unrealized)}</td>
         <td><div class="actions"><button class="secondary small-button" data-side="buy" data-id="${position.asset.id}" data-portfolio-button="buy-${position.asset.id}" aria-label="Comprar ${position.asset.id}">Comprar</button>
         <button class="secondary small-button" data-side="sell" data-id="${position.asset.id}" data-portfolio-button="sell-${position.asset.id}" aria-label="Vender ${position.asset.id}">Vender</button></div></td>
@@ -78,8 +80,8 @@ export function renderPortfolio(main) {
     if (!button) return;
     const { asset, id, side } = button.dataset;
     if (asset) openAssetDetails(provider, asset, {
+      position: summary.positions.find(position => position.asset.id === asset),
       onBuy: id => trade(id, 'buy'),
-      backLabel: 'Voltar à carteira',
       restoreFocus: () => positions.querySelector(`[data-asset="${asset}"]`)?.focus({ preventScroll: true })
     });
     if (side) trade(id, side);

@@ -125,13 +125,6 @@ button[hidden] { display: none; }
 .related-actions { margin-top: .85rem; column-gap: 1.2rem; }
 .related-actions a { display: inline-flex; align-items: center; min-height: 44px; }
 .form-note { font-size: .88rem; line-height: 1.4; }
-.challenge-top { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
-.challenge-top h2 { margin-bottom: .35rem; }
-.challenge-top .eyebrow { margin-bottom: .4rem; }
-.challenge-comparison { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: .6rem; margin-block: 1rem; }
-.challenge-comparison > div { display: grid; gap: .25rem; background: var(--bg); border-radius: 10px; padding: .8rem; }
-.challenge-comparison strong { color: var(--ink); font-size: 1.2rem; }
-.challenge-license { margin-top: .75rem; font-size: .85rem; }
 .empty-state { border-color: var(--control); background: var(--nav-active); }
 .empty-state p { max-width: 64ch; }
 .market-clock { padding: clamp(.85rem, 1.8vw, 1.25rem); }
@@ -219,8 +212,6 @@ button[hidden] { display: none; }
 .error:empty, [role="status"]:empty { display: none; }
 .eyebrow:empty { display: none; }
 .metric-grid { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: clamp(.65rem, 1.5vw, 1.25rem); }
-.challenge-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.challenge-metrics small { display: block; margin-top: .4rem; }
 .metric { padding: clamp(.75rem, 2vw, 1.6rem); min-height: 8.5rem; }
 .metric p { color: var(--muted); font-size: .9rem; margin-bottom: .25rem; }
 .metric strong { display: block; font-size: clamp(1.1rem, 1.8vw, 1.7rem); line-height: 1.12; overflow-wrap: anywhere; }
@@ -248,6 +239,20 @@ thead th { color: var(--ink); background: var(--bg); }
 dialog { width: min(92%, 520px); max-height: 90vh; padding: var(--space); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); background: var(--surface); }
 dialog::backdrop { background: rgb(16 42 38 / .55); }
 dialog form { display: grid; gap: .9rem; }
+.asset-dialog { padding: 0; }
+.asset-dialog-bar {
+  position: sticky; top: 0; z-index: 1; display: flex; justify-content: flex-end;
+  padding: .65rem var(--space); background: var(--surface);
+}
+.asset-dialog-close { width: 44px; height: 44px; padding: 0; }
+.asset-detail { padding: 0 var(--space) var(--space); }
+.asset-holding {
+  display: grid; gap: .15rem; padding: .7rem .85rem; border-radius: 10px;
+  background: var(--nav-active); color: var(--ink);
+}
+.asset-holding span { font-size: .85rem; }
+.asset-holding strong { font-size: 1.35rem; overflow-wrap: anywhere; }
+.position-quantity { display: block; color: var(--green); font-size: .95rem; font-weight: 750; }
 .two-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
 .portfolio-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (min-width: 901px) {
@@ -285,9 +290,6 @@ progress { display: block; width: 100%; margin: .5rem 0 1rem; accent-color: var(
   .hero, .sim-layout { grid-template-columns: 1fr; }
 }
 @media (max-width: 760px) {
-  .challenge-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .challenge-metrics .metric.emphasis { grid-column: auto; }
-  .challenge-metrics .metric.emphasis strong { font-size: clamp(1.15rem, 5.5vw, 1.5rem); }
   .market-category-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #asset-sort .choice-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   #asset-sort label { justify-content: center; padding-inline: .35rem; text-align: center; }
@@ -311,7 +313,6 @@ progress { display: block; width: 100%; margin: .5rem 0 1rem; accent-color: var(
   #section-nav a { flex: 1; padding-inline: .3rem; font-size: .82rem; }
 }
 @media (max-width: 600px) {
-  .challenge-top { grid-template-columns: minmax(0, 1fr); }
   .hero > div > .eyebrow { font-size: .72rem; letter-spacing: .025em; }
   .home-journeys { grid-template-columns: 1fr; }
   .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

@@ -25,18 +25,18 @@ npm test
 | --- | --- |
 | Início | Duas formas de começar e gráfico calculado (`#inicio`) |
 | Simular | Juros compostos (`#simulador`), Comparar modalidades (`#comparador`), Metas e cenários (`#metas`) |
-| Investir | Visão geral (`#painel`), Desafios históricos (`#desafios-historicos`), Mercado simulado (`#mercado`), Minha carteira (`#carteira`) |
+| Investir | Visão geral (`#painel`), Mercado simulado (`#mercado`), Minha carteira (`#carteira`) |
 | Aprender | Conceitos e glossário (`#aprender`), Quiz e atividades (`#quiz`) |
 
 **Simular** usa valores hipotéticos. Em Metas e cenários, informe valor e prazo para estimar o aporte mensal. A taxa padrão é zero, e o nome só é pedido como opção ao salvar. Também é possível exportar projeções em CSV, comparar Poupança, CDB e Tesouro Selic e estimar poder de compra. O rascunho do Simulador acompanha a navegação da aba.
 
 **Investir** separa Ações, FIIs, ETFs e Criptomoedas no catálogo de 18 ativos fictícios. A Carteira principal começa com R$ 50.000 virtuais. A confirmação de uma ordem segura o relógio automático e conserva a preferência de pausa. Novas operações cobram 0,10% de taxa simulada. O dinheiro da venda tem data de crédito visível e fica disponível no próximo dia simulado. Na Visão geral, acompanhe concentração, maior queda recente e taxas pagas.
 
-**Desafios históricos** é uma prática separada com R$ 10.000 virtuais. A rodada pode ter alta, queda ou passar sem choque forte. O gráfico revela um dia por vez. No fim, compare suas decisões com manter a posição ou ficar em caixa e sorteie um replay do dólar. O episódio e as datas reais aparecem ao concluir o replay.
+**Minha carteira** mostra a quantidade junto ao código de cada ativo. Ao abrir um ativo, o detalhe destaca a posição e pode ser fechado pelo X, por Escape ou com um clique fora. O antigo endereço dos Desafios históricos abre o Mercado simulado.
 
 **Configurações** abre **Dados e demonstração** (`#dados`), com roteiro acadêmico, carteira de exemplo, backup JSON, restauração e tema. Os endereços antigos continuam válidos. `#simular` e `#investir` também abrem as entradas de cada jornada.
 
-Simulações, metas, respostas, tema, favoritos, mercado, carteira e a rodada dos Desafios históricos ficam no navegador deste endereço. Outro navegador ou computador tem armazenamento independente. Exporte e importe o backup para transferir o progresso.
+Simulações, metas, respostas, tema, favoritos, mercado e carteira ficam no navegador deste endereço. Outro navegador ou computador tem armazenamento independente. Exporte e importe o backup para transferir o progresso. Backups com rodadas históricas continuam compatíveis.
 
 Veja [CONTINUIDADE.md](CONTINUIDADE.md), [arquitetura](docs/ARQUITETURA.md), [regras financeiras](docs/REGRAS_FINANCEIRAS.md), [testes](docs/TESTES.md) e [referências](docs/REFERENCIAS.md).
 

@@ -13,6 +13,7 @@ import { observeState, store, transact } from '../services/storage.js';
 export function renderMarket(main) {
   let state = store.read();
   let provider = new DemoMarketProvider(state.market);
+  let summary;
   main.innerHTML = `
     <header class="page-intro">
       <p class="eyebrow">Investir · Carteira principal</p>
@@ -120,7 +121,7 @@ export function renderMarket(main) {
     state = next;
     provider = new DemoMarketProvider(state.market);
     const tick = next.market.ticks.at(-1);
-    const summary = marketPortfolio(next.operations, tick);
+    summary = marketPortfolio(next.operations, tick);
     query('#market-balances').innerHTML = balanceCards(summary);
     if (!summary.pendingCash && receivable.contains(document.activeElement)) clock.querySelector('summary').focus();
     receivable.hidden = !summary.pendingCash;
@@ -159,8 +160,8 @@ export function renderMarket(main) {
       search.focus();
     }
     if (detail) openAssetDetails(provider, detail, {
+      position: summary.positions.find(position => position.asset.id === detail),
       onBuy: trade,
-      backLabel: 'Voltar aos ativos',
       restoreFocus: () => list.querySelector(`[data-detail="${detail}"]`)?.focus({ preventScroll: true })
     });
     if (favorite) handle(() => transact(current => {

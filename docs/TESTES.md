@@ -1,7 +1,5 @@
 # Testes
 
-Desafios históricos usa o mesmo perfil descartável dos outros testes. Execute `scripts/smoke-challenges.cjs` com Edge aberto via `playwright-cli open http://127.0.0.1:4178 --browser=msedge --mobile`. O teste cobre sorteio, avanço manual e automático, compra, venda, pausa, recarga, ausência de preços futuros, comparativo, replay PTAX e backup, com toque a 360 e 390 px.
-
 - `npm run lint` verifica a sintaxe dos módulos e scripts JavaScript.
 - `npm test` executa os testes do Node para projeção, comparador, persistência, CSV, mercado, carteira e backup.
 - `npm start` sobe o servidor estático em `http://127.0.0.1:4178`.
@@ -19,9 +17,9 @@ npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste close
 ```
 
-- **Navegação.** Onze telas em 360, 390, 601, 768, 1024 e 1440 px. Cobre hashes existentes, aliases, estados ativos, foco visível, Voltar/Avançar, áreas de toque, contraste dos CTAs nos dois temas, movimento reduzido e leitura de estado v3 sem regravação.
+- **Navegação.** Dez telas em 360, 390, 601, 768, 1024 e 1440 px. Cobre hashes existentes, aliases, estados ativos, foco visível, Voltar/Avançar, contraste dos CTAs, movimento reduzido e leitura de estados com rodada legada e sem regravação.
 - **Projeções.** Início, Juros compostos, Comparar modalidades e Metas e cenários. Cobre os valores de referência, rascunho ao voltar de Metas, envio dos valores ao Comparador, validação, simulações salvas e CSV.
-- **Investir.** Visão geral, Mercado simulado, Minha carteira e Dados e demonstração. Cobre categorias, teclado, filtros e favoritos, detalhes de risco, compra, venda parcial, recarga, extrato, relógio, backup e restauração.
+- **Investir.** Visão geral, Mercado simulado, Minha carteira e Dados e demonstração. Cobre categorias, filtros, favoritos, detalhe do ativo com a posição atual, fechamento pelo X, Escape ou clique fora, compra, venda parcial, extrato, relógio e backup.
 - **Relógio.** Verifica suspensão durante a ordem, retomada após cancelar, comprar ou vender, recarga e pausa explícita feita em outra aba.
 - **Educação.** Metas e cenários, Conceitos e glossário, Quiz educativo, Visão geral e Dados e demonstração. Cobre aporte de R$ 8.333,34 para R$ 300 mil em 36 meses, salvamento sem nome, edição de meta antiga, inflação, busca, respostas persistidas e tema.
 

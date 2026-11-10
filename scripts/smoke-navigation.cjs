@@ -33,7 +33,6 @@ async (page) => {
     ['comparador', 'Comparador de modalidades', 'Simular', 'Comparar modalidades'],
     ['metas', 'Metas e cenários', 'Simular', 'Metas e cenários'],
     ['painel', 'Visão geral', 'Investir', 'Visão geral'],
-    ['desafios-historicos', 'Desafios históricos', 'Investir', 'Desafios históricos'],
     ['mercado', 'Mercado simulado', 'Investir', 'Mercado simulado'],
     ['carteira', 'Minha carteira', 'Investir', 'Minha carteira'],
     ['aprender', 'Conceitos e glossário', 'Aprender', 'Conceitos e glossário'],
@@ -80,6 +79,11 @@ async (page) => {
   await heading(screens[1][1]).waitFor();
   await page.goto(url + '#investir');
   await heading(screens[4][1]).waitFor();
+  verify(JSON.stringify(await nav('Investir').getByRole('link').allTextContents()) ===
+    JSON.stringify(['Visão geral', 'Mercado simulado', 'Minha carteira']), 'Investir deve ter três destinos');
+  verify(await page.getByRole('link', { name: /Desafios históricos/ }).count() === 0, 'Atalho para o desafio continua visível');
+  await page.goto(url + '#desafios-historicos');
+  await heading('Mercado simulado').waitFor();
 
   const saved = await page.evaluate(async () => {
     const { exampleState } = await import('/js/services/demo.js');
@@ -117,6 +121,17 @@ async (page) => {
     }
   }
   verify(await page.evaluate(() => localStorage.getItem('montante.state')) === saved, 'A navegação alterou o estado existente');
+  const withChallenge = await page.evaluate(async () => {
+    const { exampleState } = await import('/js/services/demo.js');
+    const { createChallenge } = await import('/js/core/challenges.js');
+    const state = { ...exampleState(), challenge: createChallenge({ id: 'rodada-salva', seed: 3, allocation: 50 }) };
+    const json = JSON.stringify(state);
+    localStorage.setItem('montante.state', json);
+    return json;
+  });
+  await page.goto(url + '#desafios-historicos');
+  await heading('Mercado simulado').waitFor();
+  verify(await page.evaluate(() => localStorage.getItem('montante.state')) === withChallenge, 'O endereço antigo alterou a rodada salva');
   verify(errors.length === 0, JSON.stringify(errors));
-  return 'NAV OK: 11 telas, 6 larguras, dados v3 preservados, contraste nos dois temas, movimento reduzido, teclado, hashes e histórico.';
+  return 'NAV OK: 10 telas, 6 larguras, dados v3 e rodada legada preservados, contraste, teclado, hashes e histórico.';
 }
