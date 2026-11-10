@@ -2,11 +2,11 @@ import { escapeHtml, inputNumber, number, parseBR } from '../core/format.js';
 
 const brMoneyInput = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function field(id, label, value, { mode = 'decimal', help = '', format = 'number' } = {}) {
+export function field(id, label, value, { mode = 'decimal', help = '', format = 'number', required = true } = {}) {
   const formatted = typeof value !== 'number' ? value : format === 'money' ? brMoneyInput.format(value) : inputNumber(value);
   return `<div class="field">
     <label for="${id}">${label}</label>
-    <input id="${id}" name="${id}" inputmode="${mode}" value="${escapeHtml(formatted)}" ${help ? `aria-describedby="${id}-help"` : ''} required>
+    <input id="${id}" name="${id}" inputmode="${mode}" value="${escapeHtml(formatted)}"${help ? ` aria-describedby="${id}-help"` : ''}${required ? ' required' : ''}>
     ${help ? `<small id="${id}-help">${help}</small>` : ''}
   </div>`;
 }
@@ -27,6 +27,7 @@ export function readNumber(form, key, { min = 0, max = Infinity, integer = false
   const excessiveDecimals = cents && Number(value.toFixed(2)) !== value;
   if (!Number.isFinite(value) || value < min || value > max || (integer && !Number.isInteger(value)) || excessiveDecimals) {
     input.setAttribute('aria-invalid', 'true');
+    input.closest('details')?.setAttribute('open', '');
     input.focus();
     const label = input.labels[0].textContent;
     throw new RangeError(`${label}. Informe ${integer ? 'um número inteiro' : 'um número'} ${max === Infinity ? 'maior ou igual a ' + number(min) : 'entre ' + number(min) + ' e ' + number(max)}${cents ? ', com até duas casas decimais' : ''}.`);

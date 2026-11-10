@@ -1,15 +1,17 @@
-import { drawChart } from '../components/chart.js';
+import { drawChart, investmentLines } from '../components/chart.js';
 import { confirmAction } from '../components/dialog.js';
 import { baseFields, durationField, field, listenForm, readBase, readNumber } from '../components/forms.js';
-import { example } from '../core/financial-engine.js';
+import { project } from '../core/financial-engine.js';
 import { escapeHtml, inputNumber, money, percent } from '../core/format.js';
 import { projectGoal, projectScenario, scenarios } from '../core/planning.js';
 import { observeState, store, transact } from '../services/storage.js';
 
+const defaultGoal = { initial: 0, contribution: 0, rate: 0, months: '' };
+
 function goalCards(goals) {
   return goals.length ? goals.map(item => {
     const result = projectGoal(item.target, item.params);
-    return `<li><div><strong>${escapeHtml(item.name)}</strong><br><span class="muted">${money(result.balance)} de ${money(item.target)} · ${percent(result.reach)} · ${item.params.months} meses</span></div>
+    return `<li><div><strong>${escapeHtml(item.name)}</strong><br><span class="muted">${result.required === null ? 'Aporte fora do limite de projeção' : money(result.required) + ' por mês'} · ${item.params.months} meses</span></div>
       <div class="actions"><button class="secondary" data-edit-goal="${item.id}">Editar</button><button class="secondary" data-delete-goal="${item.id}">Excluir</button></div></li>`;
   }).join('') : '<li class="muted">Nenhuma meta salva neste navegador.</li>';
 }
@@ -26,16 +28,29 @@ export function renderGoals(main) {
     </header>
     <div class="two-cards">
       <form id="goal-form" class="card stacked" novalidate>
-        <h2>Calcule uma meta</h2>
-        <div class="field"><label for="goal-name">Nome da meta</label><input id="goal-name" maxlength="80" value="Minha meta" required></div>
-        ${field('goal-target', 'Valor-alvo (R$)', 40000, { format: 'money' })}
-        ${baseFields(example, 'goal-')}
-        ${field('goal-rate', 'Taxa hipotética (% ao mês)', example.rate)}
-        ${durationField(example.months, 'goal-')}
-        <div class="actions"><button type="submit">Projetar meta</button><button type="submit" class="secondary" value="save" id="save-goal">Salvar meta</button><button type="button" class="secondary" id="clear-goal" hidden>Nova meta</button></div>
+        <h2>Quanto preciso guardar?</h2>
+        ${field('goal-target', 'Quanto você quer ter? (R$)', '', { format: 'money' })}
+        ${field('goal-months', 'Em quanto tempo? (meses)', '', { mode: 'numeric' })}
+        <details id="goal-options">
+          <summary>Personalizar cálculo</summary>
+          <div class="stacked section">
+            ${field('goal-initial', 'Quanto já tem investido? (R$)', 0, { format: 'money' })}
+            ${field('goal-rate', 'Rentabilidade hipotética (% ao mês)', 0, { help: 'Use 0% para calcular sem rendimentos. Uma taxa positiva serve como exemplo.' })}
+            ${field('goal-contribution', 'Aporte mensal atual ou planejado (R$)', '', { format: 'money', required: false, help: 'Opcional. Preencha para comparar com o aporte necessário.' })}
+          </div>
+        </details>
+        <div class="actions"><button type="submit">Calcular meu aporte mensal</button><button type="button" class="secondary" id="clear-goal" hidden>Nova meta</button></div>
+        <details id="goal-save-options">
+          <summary>Salvar esta meta</summary>
+          <div class="stacked section">
+            <div class="field"><label for="goal-name">Nome da meta (opcional)</label><input id="goal-name" maxlength="80" placeholder="Ex.: Comprar um carro"></div>
+            <div><button type="submit" class="secondary" value="save" id="save-goal">Salvar meta</button></div>
+          </div>
+        </details>
         <p class="error" role="alert" id="goal-error"></p>
       </form>
-      <section class="card stacked"><h2>Projeção da meta</h2><div id="goal-result" aria-live="polite"></div><p class="muted">Estimativa com taxa constante, aporte no fim do mês e sem impostos. O aporte necessário indica o total a depositar por mês.</p></section>
+      <section class="card stacked"><h2 id="goal-result-title" tabindex="-1">Aporte mensal necessário</h2><div id="goal-result" aria-live="polite"></div>
+        <p class="muted">Projeção com taxa constante e depósitos no fim do mês. A estimativa exclui impostos e inflação.</p></section>
     </div>
     <section class="card section"><h2>Metas salvas</h2><p id="goal-status" role="status"></p><ul class="record-list" id="goals"></ul></section>
     <section class="card section stacked">
@@ -58,30 +73,49 @@ export function renderGoals(main) {
   const form = query('#goal-form');
   const status = query('#goal-status');
   const list = query('#goals');
-  function show(result) {
-    const gap = Number(result.gap.toFixed(2));
-    const difference = gap === 0 ? 'Alvo atingido na projeção.' : (gap < 0 ? 'Faltam ' : 'Acima do alvo: ') + money(Math.abs(gap)) + '.';
-    query('#goal-result').innerHTML = `<p class="hero-amount">${money(result.balance)}</p>
-      <label for="goal-progress">Projeção de alcance: <strong>${percent(result.reach)}</strong></label>
-      <progress id="goal-progress" max="100" value="${Math.min(100, result.reach)}"></progress>
-      <p>${difference}</p>
-      <p>Aporte mensal necessário: <strong>${result.required === null ? 'fora do limite de projeção' : money(result.required)}</strong>.</p>`;
+  const output = query('#goal-result');
+  const advanced = query('#goal-options');
+  const emptyResult = 'Informe o valor e o prazo para calcular.';
+
+  function show(target, params, hasContribution) {
+    const { required, balance } = projectGoal(target, params);
+    const { initial, months, rate, contribution } = params;
+    const duration = months + (months === 1 ? ' mês' : ' meses');
+    const assumption = rate === 0 ? 'Sem considerar rendimentos.' : `Com rentabilidade hipotética de ${percent(rate, 6)} ao mês.`;
+    const noYield = rate === 0 ? null : projectGoal(target, { ...params, rate: 0 }).required;
+    const projected = hasContribution || required !== null ? project({ ...params, contribution: hasContribution ? contribution : required }) : null;
+    const difference = required === null ? 0 : Number((contribution - required).toFixed(2));
+    const gap = Number((target - balance).toFixed(2));
+    output.innerHTML = `<p class="hero-amount">${required === null ? 'Fora do limite de projeção' : money(required) + ' por mês'}</p>
+      <p>Para chegar a <strong>${money(target)}</strong> em ${duration}, começando com ${money(initial)}. ${assumption}</p>
+      ${required === 0 ? '<p>O valor inicial já alcança a meta no prazo considerado. O aporte adicional é zero.</p>' : ''}
+      ${noYield === null ? '' : `<p>Sem considerar rendimentos, o aporte seria <strong>${money(noYield)} por mês</strong>.</p>`}
+      ${hasContribution && required !== null ? `<p>Seu aporte informado de ${money(contribution)} por mês
+        ${difference === 0 ? 'é igual ao necessário.' : `está ${money(Math.abs(difference))} ${difference < 0 ? 'abaixo' : 'acima'} do necessário.`}
+        ${gap > 0 ? `Nesse ritmo, faltariam ${money(gap)} no fim do prazo.` : 'A meta é alcançada na projeção.'}</p>` : ''}
+      ${projected ? `<details><summary>Ver evolução e valores</summary>
+        <p>Com o aporte ${hasContribution ? 'informado' : 'necessário'}, o total projetado é <strong>${money(projected.balance)}</strong>.
+          Total investido: ${money(projected.invested)}. Rendimentos estimados: ${money(projected.interest)}.</p>
+        <div id="goal-chart"></div></details>` : ''}`;
+    if (projected) drawChart(query('#goal-chart'), projected.series, investmentLines, { label: 'Evolução projetada da meta' });
   }
-  function load(item) {
+  function load(item, hasContribution = item?.params.contribution > 0) {
     editingId = item?.id;
-    const { initial, contribution, rate, months } = item?.params ?? example;
-    form.elements['goal-name'].value = item?.name ?? 'Minha meta';
-    form.elements['goal-target'].value = inputNumber(item?.target ?? 40000);
+    const { initial, contribution, rate, months } = item?.params ?? defaultGoal;
+    form.elements['goal-name'].value = item?.name ?? '';
+    form.elements['goal-target'].value = item ? inputNumber(item.target) : '';
     form.elements['goal-initial'].value = inputNumber(initial);
-    form.elements['goal-contribution'].value = inputNumber(contribution);
+    form.elements['goal-contribution'].value = hasContribution ? inputNumber(contribution) : '';
     form.elements['goal-rate'].value = inputNumber(rate);
     form.elements['goal-months'].value = months;
+    advanced.open = initial > 0 || rate > 0 || hasContribution;
+    query('#goal-save-options').open = Boolean(item);
     query('#clear-goal').hidden = !item;
     query('#save-goal').textContent = item ? 'Salvar alterações' : 'Salvar meta';
     query('#goal-error').textContent = '';
     for (const input of form.querySelectorAll('[aria-invalid]')) input.removeAttribute('aria-invalid');
-    show(projectGoal(item?.target ?? 40000, { initial, contribution, rate, months }));
-    if (item) form.elements['goal-name'].focus();
+    if (item) show(item.target, item.params, hasContribution);
+    else output.textContent = emptyResult;
   }
   function showState(next) {
     state = next;
@@ -91,16 +125,21 @@ export function renderGoals(main) {
     list.innerHTML = goalCards(next.goals);
   }
   listenForm(form, query('#goal-error'), async event => {
-    const name = form.elements['goal-name'].value.trim();
     const target = readNumber(form, 'goal-target', { min: .01, max: 1e8, grouped: true, cents: true });
-    const params = { ...readBase(form, 'goal-'), rate: readNumber(form, 'goal-rate', { max: 100 }) };
-    const result = projectGoal(target, params);
-    show(result);
-    if (event.submitter?.value !== 'save') return;
-    if (!name || name.length > 80) {
-      form.elements['goal-name'].focus();
-      throw new Error('Digite um nome com até 80 caracteres.');
+    const months = readNumber(form, 'goal-months', { min: 1, max: 600, integer: true });
+    const hasContribution = Boolean(form.elements['goal-contribution'].value.trim());
+    const currency = { max: 1e8, grouped: true, cents: true };
+    const params = {
+      months, initial: readNumber(form, 'goal-initial', currency),
+      rate: readNumber(form, 'goal-rate', { max: 100 }),
+      contribution: hasContribution ? readNumber(form, 'goal-contribution', currency) : 0
+    };
+    show(target, params, hasContribution);
+    if (event.submitter?.value !== 'save') {
+      query('#goal-result-title').focus();
+      return;
     }
+    const name = form.elements['goal-name'].value.trim() || 'Meta de ' + money(target);
     const save = query('#save-goal');
     if (save.disabled) return;
     save.disabled = true;
@@ -113,17 +152,26 @@ export function renderGoals(main) {
         return { ...current, goals: existingId ? current.goals.map(entry => entry.id === id ? item : entry) : [...current.goals, item] };
       });
       status.textContent = existingId ? 'Meta atualizada.' : 'Meta salva.';
-      if (editingId === existingId) load(item);
+      if (editingId === existingId) load(item, hasContribution);
     } finally {
       save.disabled = false;
     }
   });
-  query('#clear-goal').addEventListener('click', () => load());
+  form.addEventListener('input', event => {
+    if (event.target.id !== 'goal-name') output.textContent = emptyResult;
+  });
+  query('#clear-goal').addEventListener('click', () => {
+    load();
+    form.elements['goal-target'].focus();
+  });
   list.addEventListener('click', event => {
     const { editGoal, deleteGoal } = event.target.closest('button')?.dataset ?? {};
     const item = state.goals.find(entry => entry.id === (editGoal ?? deleteGoal));
     if (!item) return;
-    if (editGoal) load(item);
+    if (editGoal) {
+      load(item);
+      form.elements['goal-target'].focus();
+    }
     if (deleteGoal) confirmAction('Excluir meta', 'Excluir a meta “' + item.name + '”?', 'Excluir meta', async () => {
       await transact(current => ({ ...current, goals: current.goals.filter(entry => entry.id !== deleteGoal) }));
       if (editingId === deleteGoal) load();

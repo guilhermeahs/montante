@@ -15,6 +15,18 @@ test('meta usa o menor aporte em centavos que alcança o alvo', () => {
   assert.equal(projectGoal(500, example).required, 0);
 });
 
+test('aporte mensal para R$ 300 mil em 36 meses usa centavo suficiente e premissas editáveis', () => {
+  const params = { months: 36, rate: 0, initial: 0, contribution: 0 };
+  assert.equal(projectGoal(300000, params).required, 8333.34);
+  assert.ok(project({ ...params, contribution: 8333.33 }).balance < 300000);
+  assert.ok(project({ ...params, contribution: 8333.34 }).balance >= 300000);
+  assert.equal(projectGoal(300000, { ...params, initial: 100000 }).required, 5555.56);
+  assert.ok(projectGoal(300000, { ...params, initial: 100000, rate: .5 }).required < 5555.56);
+  assert.equal(projectGoal(300000, { ...params, months: 1 }).required, 300000);
+  assert.equal(projectGoal(.01, { ...params, months: 600 }).required, .01);
+  assert.equal(projectGoal(300000, { ...params, initial: 300000 }).required, 0);
+});
+
 test('cenário calcula efeito de aporte e desconta inflação pelo prazo efetivo', () => {
   const params = { ...example, months: 12 };
   const { real, result, extra } = projectScenario(params, 10);
