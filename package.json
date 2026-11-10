@@ -1,0 +1,11 @@
+{
+  "name": "montante",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "python -m http.server 4178 --bind 127.0.0.1",
+    "test": "node --test",
+    "lint": "node scripts/check.mjs"
+  }
+}
