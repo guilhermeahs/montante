@@ -4,6 +4,7 @@ import { renderComparator } from './pages/comparador.js';
 import { renderDashboard } from './pages/painel.js';
 import { renderMarket } from './pages/mercado.js';
 import { renderPortfolio } from './pages/carteira.js';
+import { renderChallenges } from './pages/desafios.js';
 import { renderData } from './pages/dados.js';
 import { renderGoals } from './pages/metas.js';
 import { renderEducation, renderQuiz } from './pages/aprender.js';
@@ -16,6 +17,7 @@ const routes = new Map([
   ['comparador', { label: 'Comparar modalidades', render: renderComparator }],
   ['metas', { label: 'Metas e cenários', render: renderGoals }],
   ['painel', { label: 'Visão geral', render: renderDashboard }],
+  ['desafios-historicos', { label: 'Desafios históricos', render: renderChallenges }],
   ['mercado', { label: 'Mercado simulado', render: renderMarket }],
   ['carteira', { label: 'Minha carteira', render: renderPortfolio }],
   ['aprender', { label: 'Conceitos e glossário', render: renderEducation }],
@@ -25,7 +27,7 @@ const routes = new Map([
 const sections = [
   { label: 'Início', entry: 'inicio' },
   { label: 'Simular', entry: 'simulador', tabs: ['simulador', 'comparador', 'metas'] },
-  { label: 'Investir', entry: 'painel', tabs: ['painel', 'mercado', 'carteira'] },
+  { label: 'Investir', entry: 'painel', tabs: ['painel', 'desafios-historicos', 'mercado', 'carteira'] },
   { label: 'Aprender', entry: 'aprender', tabs: ['aprender', 'quiz'] }
 ];
 const aliases = new Map([['simular', 'simulador'], ['investir', 'painel']]);

@@ -1,5 +1,11 @@
 # Regras financeiras
 
+## Desafios históricos
+
+- Cada rodada começa com R$ 10.000 de saldo virtual. A posição inicial é a maior quantidade inteira de unidades ou lotes dentro do percentual selecionado. O restante fica em caixa.
+- No replay, uma unidade negociada corresponde a US$ 100. Multiplicar a PTAX com quatro casas por 100 resulta em um valor exato em centavos por lote. A mesma taxa de referência vale para compra e venda no exercício, com taxas e impostos zerados.
+- O resultado de manter usa a posição inicial até o último preço revelado. Ficar em caixa conserva os R$ 10.000 iniciais. A maior queda é o máximo de `(pico anterior − patrimônio do dia) / pico anterior`, com patrimônio marcado ao preço de cada dia.
+
 - Aportes são creditados ao fim do mês. Para cada período, calculamos o rendimento sobre o saldo de abertura e depois somamos o aporte. O saldo do mês 0 é o capital inicial.
 - A taxa mensal é um percentual efetivo constante. Taxa anual efetiva é convertida por `(1 + taxa anual)^(1/12) − 1`, com taxas expressas como fração nessa fórmula.
 - Juros simples usam a mesma base. O capital inicial rende por todos os meses, e cada aporte rende pelo número de meses entre o depósito e o fim do prazo, sem reinvestir rendimentos.

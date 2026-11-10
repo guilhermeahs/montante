@@ -17,7 +17,13 @@ export function renderDashboard(main) {
       <p class="lead">Pratique com saldo virtual. Compras e vendas mudam sua carteira, sem movimentar dinheiro real.</p>
       <div class="actions"><a class="button" href="#mercado">Explorar mercado</a><a class="button secondary" href="#carteira">Ver minha carteira</a></div>
     </header>
-    <p id="dashboard-profile" class="eyebrow"></p><div id="dashboard-metrics"></div>
+    <section class="card empty-state section">
+      <p class="eyebrow">Novo · Rodada surpresa</p>
+      <h2>Desafios históricos</h2>
+      <p>Pratique como reagir a oscilações inspiradas em fatos reais. O episódio só é revelado depois que a rodada termina.</p>
+      <a class="button" href="#desafios-historicos">Abrir Desafios históricos</a>
+    </section>
+    <p id="dashboard-profile" class="eyebrow section"></p><div id="dashboard-metrics" class="section"></div>
     <p id="dashboard-error" class="error" role="alert"></p>
     <section id="dashboard-first-trade" class="card empty-state section" hidden>
       <h2>Faça sua primeira compra</h2>

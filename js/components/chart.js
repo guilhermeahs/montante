@@ -27,7 +27,8 @@ function chartScale(values, zoom) {
 
 export function drawChart(container, data, lines, options = {}) {
   if (data.length < 2) return;
-  const { interactive = true, label = 'Evolução dos valores', period = (_, index) => 'Mês ' + index } = options;
+  const { interactive = true, label = 'Evolução dos valores', period = (_, index) => 'Mês ' + index,
+    formatValue = money } = options;
   const id = 'chart-' + ++chartSequence;
   const values = data.flatMap(point => lines.map(line => point[line.key])).filter(Number.isFinite);
   if (!values.length) return;
@@ -97,7 +98,7 @@ export function drawChart(container, data, lines, options = {}) {
     const text = lines.map((line, position) => {
       const value = point[line.key];
       const present = Number.isFinite(value);
-      const amount = present ? money(value) : '—';
+      const amount = present ? formatValue(value) : '—';
       readouts[position].textContent = amount;
       points[position].hidden = !present;
       if (present) {

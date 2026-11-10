@@ -60,7 +60,7 @@ export function renderData(main) {
     feedback.textContent = message;
   }
   query('#load-demo').addEventListener('click', () => {
-    confirmAction('Carregar carteira de exemplo', 'Simulações, favoritos, mercado, metas e carteira atuais serão substituídos pelos dados de exemplo. Exporte um backup se quiser guardá-los.', 'Carregar exemplo',
+    confirmAction('Carregar carteira de exemplo', 'Os dados locais, incluindo a rodada dos Desafios históricos, serão substituídos pelos dados de exemplo. Exporte um backup para guardar seu progresso.', 'Carregar exemplo',
       () => apply(exampleState(), demoStatus, 'Carteira de exemplo carregada. Abra a Visão geral de Investir ou Minha carteira.'));
   });
   query('#reset-demo').addEventListener('click', () => {

@@ -17,6 +17,8 @@
 
 # Módulos concluídos
 
+- Desafios históricos (`#desafios-historicos`) entra em Investir com rodadas surpresa de alta, queda ou sem choque forte. A inspiração é revelada no resultado, que libera os replays da PTAX de março e novembro de 2020. A carteira do desafio é isolada e incluída nos backups v4. O plano inicial de anunciar alta ou queda antes da prática foi substituído pela rodada surpresa a pedido do usuário.
+
 - Início (`js/pages/inicio.js`) com CTAs e gráfico do protótipo.
 - Simulador (`js/pages/simulador.js`) com juros compostos, comparação de juros simples, tabela, gráfico interativo, cenários salvos e CSV.
 - Comparador (`js/pages/comparador.js`) com taxas editáveis, três modalidades e inclusão opcional da taxa de uma simulação salva.
@@ -39,13 +41,15 @@ Os seis marcos da reorganização foram implementados e validados localmente. A 
 
 # Contratos e arquitetura
 
-Leia `docs/ARQUITETURA.md`, `docs/REGRAS_FINANCEIRAS.md` e `docs/REFERENCIAS.md`. Projeções usam taxa mensal percentual. A carteira é derivada do extrato em centavos, com preços congelados. A reorganização preserva a chave `montante.state`, o formato v3 e os nove hashes existentes. O estado v3 migra versões 1 e 2 e permite backup local validado.
+Leia `docs/ARQUITETURA.md`, `docs/REGRAS_FINANCEIRAS.md`, `docs/REFERENCIAS.md` e `docs/DADOS_HISTORICOS.md`. Projeções usam taxa mensal percentual. A carteira é derivada do extrato em centavos, com preços congelados. O estado v4 preserva a chave `montante.state` e os hashes existentes. Backups v1 a v3 migram com o desafio vazio e preservam os dados anteriores.
 
 # Bugs e limitações conhecidos
 
 Os dados salvos ficam vinculados ao navegador e à origem HTTP. O relógio automático depende de uma aba visível. O histórico de cotações conserva até 366 pontos diários. Renda fixa é explorada no Comparador. Testes com leitor de tela, usuários e celulares físicos seguem pendentes.
 
 # Testes executados
+
+Desafios históricos passou no `npm run lint` (46 arquivos), `npm test` (29 testes) e nos smoke tests locais no Edge. O fluxo novo cobriu toque em 360 e 390 px, gráfico restrito aos dias revelados, compra, venda, pausa, recarga, resultado, replay PTAX e backup. Navegação passou em 11 telas e seis larguras. Mercado simulado preservou as operações da carteira. As 44 cotações versionadas foram comparadas com a série do Banco Central.
 
 24 testes unitários passaram e a checagem de sintaxe cobriu 40 arquivos JavaScript. Os quatro smoke tests passaram no Edge em 360, 390, 601, 768, 1024 e 1440 px, sem erros no console ou recursos ausentes. A referência de R$ 1.000 mais R$ 500 por mês, a 0,8% por 60 meses, continuou dando R$ 39.924,92 de montante, R$ 31.000,00 investidos e R$ 8.924,92 de juros. Os testes cobriram compra, venda parcial, extrato, recarga e backup. As capturas confirmaram as duas jornadas do Início e a leitura dos principais fluxos em desktop e mobile. Comandos em `docs/TESTES.md`.
 

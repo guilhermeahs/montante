@@ -1,5 +1,7 @@
 # Testes
 
+Desafios históricos usa o mesmo perfil descartável dos outros testes. Execute `scripts/smoke-challenges.cjs` com Edge aberto via `playwright-cli open http://127.0.0.1:4178 --browser=msedge --mobile`. O teste cobre sorteio, avanço manual e automático, compra, venda, pausa, recarga, ausência de preços futuros, comparativo, replay PTAX e backup, com toque a 360 e 390 px.
+
 - `npm run lint` verifica a sintaxe dos módulos e scripts JavaScript.
 - `npm test` executa os testes do Node para projeção, comparador, persistência, CSV, mercado, carteira e backup.
 - `npm start` sobe o servidor estático em `http://127.0.0.1:4178`.

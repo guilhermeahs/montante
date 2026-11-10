@@ -10,7 +10,9 @@ As rotas por hash são agrupadas em Início, Simular, Investir e Aprender. O cab
 
 A carteira é reconstruída do extrato em `portfolio-engine.js`. Operações trazem quantidade em unidades escaladas e cotação em centavos com timestamp congelado. Páginas e componentes usam a mesma fotografia de mercado e a mesma regra de marcação. Mercado e Minha carteira compartilham o diálogo de detalhes de ativos. Cada tela conserva o contexto e recupera o foco ao fechar.
 
-`storage.js` valida um documento local versionado. Operações usam uma gravação indivisível com Web Locks onde disponíveis para serializar abas. A versão 3 aceita as versões 1 e 2, preservando os campos existentes e preenchendo os novos com os padrões. O armazenamento local comporta os limites de 366 dias, 500 ordens, 100 simulações e 100 metas. `demo.js` valida backup, restauração e exemplos sem rede. Os dados são independentes por navegador e origem.
+`storage.js` valida um documento local versionado. Operações usam uma gravação indivisível com Web Locks onde disponíveis para serializar abas. A versão 4 aceita backups das versões 1 a 3 e inicia os Desafios históricos vazios nesses casos. O armazenamento local comporta os limites de 366 dias, 500 ordens, 100 simulações e 100 metas. `demo.js` valida backup, restauração e exemplos sem rede. Os dados são independentes por navegador e origem.
+
+`challenges.js` resolve a rodada a partir da semente e entrega à tela só os preços revelados e, ao fim, o relatório. As ordens e o cursor ficam em `challenge`, separados do extrato do Mercado simulado. O motor de carteira usa o contexto de ativo, calendário e caixa inicial de cada modo. O replay usa o recorte versionado `historico-ptax.js`. Veja a [origem e a licença dos dados](DADOS_HISTORICOS.md).
 
 `planning.js` calcula metas, cenários e inflação com o mesmo motor do Simulador. `educacao.js` contém glossário e quiz. Metas, respostas e tema ficam no documento local e no backup. Campos de trabalho ainda não salvos e premissas de comparação editadas duram a sessão.
 

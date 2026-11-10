@@ -7,6 +7,11 @@ const maxQuantity = 1e12;
 const maxCash = 1e15;
 const maxAssetPosition = 10000;
 const operationKeys = ['id', 'side', 'assetId', 'units', 'cents', 'day', 'timestamp', 'gross', 'fees', 'net', 'cashBefore', 'cashAfter', 'costSold', 'realized'];
+const marketContext = {
+  openingCash: initialCash,
+  assetFor: id => assetById.get(id),
+  timestampFor: marketDate
+};
 
 function roundedRatio(value, numerator, denominator) {
   const divisor = BigInt(denominator);
@@ -27,13 +32,13 @@ export function quantityUnits(text, asset) {
   return units;
 }
 
-function checkOrder(order, portfolio) {
-  const asset = assetById.get(order?.assetId);
+function checkOrder(order, portfolio, context) {
+  const asset = context.assetFor(order?.assetId);
   if (!asset || typeof order.id !== 'string' || !/^[a-zA-Z0-9-]{1,80}$/.test(order.id) || !['buy', 'sell'].includes(order.side) ||
       !Number.isSafeInteger(order.units) || order.units < 1 || order.units > maxQuantity ||
       !Number.isInteger(order.cents) || order.cents < 1 || order.cents > maxPrice ||
       !Number.isInteger(order.day) || order.day < 0 || order.day > 1e6 ||
-      order.timestamp !== marketDate(order.day) || order.day < portfolio.day) throw new Error('Ordem inválida.');
+      order.timestamp !== context.timestampFor(order.day) || order.day < portfolio.day) throw new Error('Ordem inválida.');
   if (portfolio.ids.has(order.id)) throw new Error('Essa ordem já foi executada.');
   const gross = roundedRatio(order.cents, order.units, asset.scale);
   if (gross < 1) throw new Error('O valor da ordem deve ser de pelo menos R$ 0,01.');
@@ -65,27 +70,27 @@ function applyOrder(portfolio, { record, position }) {
   else portfolio.holdings.delete(record.assetId);
 }
 
-export function replayPortfolio(operations) {
+export function replayPortfolio(operations, context = marketContext) {
   if (!Array.isArray(operations) || operations.length > maxOperations) throw new Error('Extrato inválido ou no limite de 500 operações.');
-  const portfolio = { cash: initialCash, realized: 0, holdings: new Map(), ids: new Set(), day: 0 };
+  const portfolio = { cash: context.openingCash, realized: 0, holdings: new Map(), ids: new Set(), day: 0 };
   for (const order of operations) {
-    const checked = checkOrder(order, portfolio);
+    const checked = checkOrder(order, portfolio, context);
     if (!operationKeys.every(key => checked.record[key] === order[key])) throw new Error('Os valores do extrato não correspondem às ordens.');
     applyOrder(portfolio, checked);
   }
   return portfolio;
 }
 
-export function executeTrade(operations, order) {
+export function executeTrade(operations, order, context = marketContext) {
   if (operations.length >= maxOperations) throw new Error('A carteira atingiu o limite de 500 operações.');
-  const portfolio = replayPortfolio(operations);
-  return [...operations, checkOrder(order, portfolio).record];
+  const portfolio = replayPortfolio(operations, context);
+  return [...operations, checkOrder(order, portfolio, context).record];
 }
 
-export function markPortfolio(operations, quoteFor) {
-  const { cash, holdings, realized } = replayPortfolio(operations);
+export function markPortfolio(operations, quoteFor, context = marketContext) {
+  const { cash, holdings, realized } = replayPortfolio(operations, context);
   const positions = [...holdings].map(([id, holding]) => {
-    const asset = assetById.get(id);
+    const asset = context.assetFor(id);
     const cents = quoteFor(asset);
     const marketValue = roundedRatio(cents, holding.units, asset.scale);
     return { asset, ...holding, cents, marketValue, average: holding.cost * asset.scale / holding.units, unrealized: marketValue - holding.cost };

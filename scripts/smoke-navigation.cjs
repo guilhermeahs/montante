@@ -33,6 +33,7 @@ async (page) => {
     ['comparador', 'Comparador de modalidades', 'Simular', 'Comparar modalidades'],
     ['metas', 'Metas e cenários', 'Simular', 'Metas e cenários'],
     ['painel', 'Visão geral', 'Investir', 'Visão geral'],
+    ['desafios-historicos', 'Desafios históricos', 'Investir', 'Desafios históricos'],
     ['mercado', 'Mercado simulado', 'Investir', 'Mercado simulado'],
     ['carteira', 'Minha carteira', 'Investir', 'Minha carteira'],
     ['aprender', 'Conceitos e glossário', 'Aprender', 'Conceitos e glossário'],
@@ -82,7 +83,8 @@ async (page) => {
 
   const saved = await page.evaluate(async () => {
     const { exampleState } = await import('/js/services/demo.js');
-    const sample = { ...exampleState(), theme: 'dark', answers: { juros: 1 } };
+    const { challenge, ...legacy } = exampleState();
+    const sample = { ...legacy, version: 3, theme: 'dark', answers: { juros: 1 } };
     const json = JSON.stringify(sample);
     localStorage.setItem('montante.state', json);
     return json;
@@ -116,5 +118,5 @@ async (page) => {
   }
   verify(await page.evaluate(() => localStorage.getItem('montante.state')) === saved, 'A navegação alterou o estado existente');
   verify(errors.length === 0, JSON.stringify(errors));
-  return 'NAV OK: 10 telas, 6 larguras, dados v3 preservados, contraste nos dois temas, movimento reduzido, teclado, hashes e histórico.';
+  return 'NAV OK: 11 telas, 6 larguras, dados v3 preservados, contraste nos dois temas, movimento reduzido, teclado, hashes e histórico.';
 }
