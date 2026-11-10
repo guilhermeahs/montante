@@ -80,6 +80,8 @@ Os marcos da reorganização foram enviados à `main`, incluindo Aprender e Conf
 
 # Publicação
 
+Em 10/11/2026, a revisão `aecfe31a1192b14c8f17ef910c8f37ec750d7ba1` foi publicada com Investir simplificado, quantidade em destaque e fechamento do detalhe do ativo pelo X, Escape ou toque fora. Navegação, Investir e mobile passaram no Edge em prévia e produção. Os 35 arquivos do domínio público correspondem ao pacote validado. [Prévia](https://a37febfd.montante-educacao.pages.dev/) · [Produção](https://fad0e4ff.montante-educacao.pages.dev/#carteira).
+
 Em 10/11/2026, a revisão `9e764873ced2088fdf9a334325663c631ef7f652` publicou o resumo de quantidade, caixa e posição nos Desafios e o sorteio do replay do dólar com identificação do episódio só no resultado. O smoke passou em prévia e no domínio público, com toque emulado em 360 e 390 px. Os 36 arquivos públicos correspondem ao pacote validado. [Prévia](https://ea377f06.montante-educacao.pages.dev/) · [Produção](https://c5baa5b8.montante-educacao.pages.dev/#desafios-historicos).
 
 Em 10/11/2026, a revisão `43d7815d663ffedcf9a6412805576b4e8d09bc78` adicionou Vender tudo e distinguiu a rodada salva de um novo sorteio. O smoke dos Desafios passou em prévia e no domínio público por HTTPS com toque emulado em 360 e 390 px. Os 36 arquivos de produção correspondem ao pacote validado. [Prévia](https://14c3966d.montante-educacao.pages.dev/) · [Produção](https://3a0cac23.montante-educacao.pages.dev/#desafios-historicos).
