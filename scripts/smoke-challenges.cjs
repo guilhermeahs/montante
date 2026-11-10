@@ -10,6 +10,20 @@ async page => {
     ([query, expected]) => document.querySelector(query)?.innerText.includes(expected), [selector, text], { timeout: 7000 }
   );
   const tap = locator => locator.tap();
+  const drawReplay = async seed => {
+    await page.evaluate(value => {
+      const getRandomValues = crypto.getRandomValues;
+      crypto.getRandomValues = array => {
+        crypto.getRandomValues = getRandomValues;
+        array[0] = value;
+        return array;
+      };
+    }, seed);
+    await tap(button('Sortear replay do dólar'));
+    await page.getByRole('dialog').getByRole('button', { name: 'Substituir rodada' }).click();
+    await waitText('#challenge-mode', 'Replay surpresa do dólar');
+    await waitText('#challenge-day', 'Rodada em andamento · Dia 0');
+  };
   const advance = async day => {
     await button('Avançar um dia').click();
     await waitText('#challenge-day', day);
@@ -29,7 +43,7 @@ async page => {
   await tap(button('Sortear rodada'));
   await waitText('#challenge-day', 'Dia 0');
   verify(await page.locator('#challenge-result').isHidden(), 'Referência histórica apareceu antes da hora');
-  verify(await page.getByRole('button', { name: /^Replay:/ }).count() === 0, 'Replay anunciado antes do resultado');
+  verify(await button('Sortear replay do dólar').count() === 0, 'Replay anunciado antes do resultado');
   verify((await page.locator('#challenge-metrics').innerText()).includes('10.000,00'), 'Saldo total inicial');
   verify((await page.locator('#challenge-metrics').innerText()).includes('Saldo desta rodada'), 'Falta distinguir a carteira da rodada');
   await waitText('#challenge-holdings', 'Unidades da cesta');
@@ -96,19 +110,19 @@ async page => {
   verify(JSON.stringify(savedOrders) === JSON.stringify(marketOrders), 'Mercado simulado foi afetado');
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await tap(button('Replay: Dólar em alta · março de 2020'));
-  await dialog.getByRole('button', { name: 'Substituir rodada' }).click();
-  await waitText('#challenge-day', '28/02/2020');
+  await drawReplay(0);
   await waitText('#challenge-metrics', '4,4987');
   await waitText('#challenge-holdings', 'US$ 1.600,00');
   await waitText('#challenge-holdings', '16 lotes de US$ 100');
   await waitText('#challenge-cash', 'R$ 2.802,08');
   await waitText('#challenge-cash', 'Equivale a US$ 622,86');
-  await advance('02/03/2020');
+  await advance('Dia 1');
   await waitText('#challenge-metrics', '4,4946');
   await waitText('#challenge-cash', 'Equivale a US$ 623,43');
   await waitText('#challenge-holdings', 'US$ 1.600,00');
   verify(await page.locator('#challenge-chart .chart-scrubber input').getAttribute('max') === '1', 'Replay expõe data futura');
+  verify(await page.locator('#challenge-chart [data-chart-period]').innerText() === 'Dia 1', 'Data real aparece antes do resultado');
+  verify(!/2020|Dólar em alta|Dólar em queda/.test(await page.locator('#challenge-run').innerText()), 'Replay revela o episódio antes do resultado');
   verify(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Overflow a 390 px');
 
   await page.goto(base + '#dados');
@@ -124,7 +138,7 @@ async page => {
   await dialog.getByRole('button', { name: 'Substituir dados' }).click();
   await page.getByText('Backup importado.', { exact: true }).waitFor();
   await page.goto(base + '#desafios-historicos');
-  await waitText('#challenge-day', '02/03/2020');
+  await waitText('#challenge-day', 'Rodada em andamento · Dia 1');
   await waitText('#challenge-holdings', 'US$ 1.600,00');
   await tap(button('Vender tudo'));
   await dialog.getByText(/Quantidade a vender: \d+ \(lotes de US\$ 100\)\./).waitFor();
@@ -133,6 +147,19 @@ async page => {
   await dialog.getByRole('button', { name: 'Confirmar venda total' }).click();
   await waitText('#challenge-holdings', 'US$ 0,00');
   await waitText('#challenge-cash', 'R$ 9.993,44');
+  await page.getByText('Operações desta rodada', { exact: true }).click();
+  await waitText('#challenge-orders', 'Dia 1');
+  verify(!(await page.locator('#challenge-orders').innerText()).includes('02/03/2020'), 'Extrato adiantou a data real');
+  for (let day = 2; day < 22; day++) await advance('Dia ' + day);
+  await advance('Última rodada concluída');
+  await waitText('#challenge-mode', 'Dólar em alta · março de 2020');
+  await waitText('#challenge-orders', '02/03/2020');
+  await waitText('#challenge-result', '15,56%');
+  verify(await page.locator('#challenge-chart [data-chart-period]').innerText() === '31/03/2020', 'Data final do replay não aparece no resultado');
+
+  await drawReplay(1);
+  await waitText('#challenge-metrics', '5,7718');
+  verify(!/2020|Dólar em queda/.test(await page.locator('#challenge-run').innerText()), 'Replay da queda revelou o episódio');
 
   const previous = await page.evaluate(() => JSON.parse(localStorage.getItem('montante.state')).challenge.id);
   await tap(button('Nova rodada surpresa'));
@@ -148,5 +175,5 @@ async page => {
   await waitText('#challenge-position', '0 unidades da cesta');
   await waitText('#challenge-metrics', '10.000,00');
   verify(errors.length === 0, JSON.stringify(errors));
-  return 'DESAFIOS OK: rodada salva e nova, compra, venda parcial e total, pausa, recarga, resultado, replay, backup e toque em 360/390 px.';
+  return 'DESAFIOS OK: quantidade, caixa e posição em dólares, replay sorteado sem spoiler, compra, vendas, recarga, backup e toque em 360/390 px.';
 }

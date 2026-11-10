@@ -60,6 +60,8 @@ Os dados salvos ficam vinculados ao navegador e à origem HTTP. O relógio autom
 
 # Testes executados
 
+**Replay do dólar sem revelar o episódio.** O resultado abre um novo sorteio entre os dois recortes históricos versionados. Durante o replay, o título é neutro e o gráfico e as ordens usam dias numerados. O evento e as datas reais aparecem na conclusão. O smoke local validou os dois recortes, incluindo cotações e conversões, ausência do título e das datas antes do resultado e a revelação ao terminar. Lint e 35 testes do Node passaram.
+
 **Posição visível nos Desafios históricos.** O resumo no topo mostra as unidades da cesta ou os dólares na posição. Nos replays, o caixa continua em reais e tem uma conversão informativa pela PTAX do dia, separada dos lotes comprados. Lint, 35 testes do Node e os smokes de navegação e Desafios passaram localmente. O smoke validou atualização após compra, venda parcial e total, conversão após avanço de dia e restauração por backup em 360 e 390 px.
 
 **Venda total nos Desafios históricos.** A página identifica a rodada em andamento ou a última rodada concluída. O atalho Nova rodada surpresa leva ao sorteio, e a confirmação inicia do Dia 0 com uma carteira própria. Vender tudo usa o mesmo motor da venda parcial e confirma o total antes de negociar. Quando a rodada termina ou a posição zera, a tela explica a indisponibilidade. Lint, 35 testes do Node e o smoke dos Desafios em 360 e 390 px passaram localmente, incluindo retorno à rodada salva, compra, venda parcial e total, cancelamento, replay e backup.

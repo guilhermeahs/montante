@@ -32,7 +32,7 @@ npm test
 
 **Investir** separa Ações, FIIs, ETFs e Criptomoedas no catálogo de 18 ativos fictícios. A Carteira principal começa com R$ 50.000 virtuais. A confirmação de uma ordem segura o relógio automático e conserva a preferência de pausa. Novas operações cobram 0,10% de taxa simulada. O dinheiro da venda tem data de crédito visível e fica disponível no próximo dia simulado. Na Visão geral, acompanhe concentração, maior queda recente e taxas pagas.
 
-**Desafios históricos** é uma prática separada com R$ 10.000 virtuais. A rodada pode ter alta, queda ou passar sem choque forte. O gráfico revela um dia por vez. No fim, compare suas decisões com manter a posição ou ficar em caixa e acesse os replays reais do dólar de março e novembro de 2020.
+**Desafios históricos** é uma prática separada com R$ 10.000 virtuais. A rodada pode ter alta, queda ou passar sem choque forte. O gráfico revela um dia por vez. No fim, compare suas decisões com manter a posição ou ficar em caixa e sorteie um replay do dólar. O episódio e as datas reais aparecem ao concluir o replay.
 
 **Configurações** abre **Dados e demonstração** (`#dados`), com roteiro acadêmico, carteira de exemplo, backup JSON, restauração e tema. Os endereços antigos continuam válidos. `#simular` e `#investir` também abrem as entradas de cada jornada.
 

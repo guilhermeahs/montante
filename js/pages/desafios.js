@@ -9,7 +9,7 @@ import { observeState, store, transact } from '../services/storage.js';
 const rate = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 4, maximumFractionDigits: 4 });
 const dollars = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'USD' });
 const moneyDollars = amount => dollars.format(amount).replace('\u00a0', ' ');
-const labelForDay = (point, index) => point.date ? point.date.split('-').reverse().join('/') : 'Dia ' + index;
+const replayEpisodes = [...historicalEvents].filter(([, event]) => event.rows).map(([id]) => id);
 
 export function renderChallenges(main) {
   let run = store.read().challenge;
@@ -104,11 +104,13 @@ export function renderChallenges(main) {
 
     const { revealed, portfolio, finished, result: summary } = challengeView(run);
     const replay = run.kind === 'replay';
+    const labelForDay = (point, index) => replay && finished ? point.date.split('-').reverse().join('/') : 'Dia ' + index;
     const quote = revealed.at(-1);
     const units = portfolio.positions[0]?.units ?? 0;
     const unit = replay ? 'lotes de US$ 100' : 'unidades da cesta';
     query('#challenge-source').textContent = replay ? 'PTAX histórica · Saldo virtual' : 'Preços simulados · Rodada surpresa';
-    query('#challenge-mode').textContent = replay ? historicalEvents.get(run.episode).title : 'Rodada surpresa';
+    query('#challenge-mode').textContent = replay ?
+      (finished ? historicalEvents.get(run.episode).title : 'Replay surpresa do dólar') : 'Rodada surpresa';
     query('#challenge-day').textContent = finished ? 'Última rodada concluída' : 'Rodada em andamento · ' + labelForDay(quote, run.day);
     advance.disabled = play.disabled = finished;
     advance.hidden = play.hidden = finished;
@@ -170,10 +172,9 @@ export function renderChallenges(main) {
       <p>${replay ? 'Variação histórica no recorte' : 'Variação na rodada simulada'}: <strong>${percent(summary.marketChange * 100)}</strong>.
         <a href="${summary.event.source}" target="_blank" rel="noopener">${summary.event.sourceLabel}</a></p>
       <div class="actions">
-        ${[...historicalEvents].filter(([, event]) => event.rows).map(([episode, event]) =>
-          `<button class="secondary" type="button" data-replay="${episode}">Replay: ${event.title}</button>`
-        ).join('')}
+        <button class="secondary" type="button" data-replay>Sortear replay do dólar</button>
       </div>
+      <p class="muted">O replay revela o episódio e as datas reais ao terminar.</p>
       <p class="muted challenge-license">Os replays usam dados do Banco Central sob <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">ODbL 1.0</a>.
         As operações são exercícios com saldo virtual.</p>`;
   }
@@ -196,10 +197,12 @@ export function renderChallenges(main) {
     }
   }
 
-  function start(episode = null) {
+  function start(replay = false) {
     const previous = run?.id;
+    const seed = crypto.getRandomValues(new Uint32Array(1))[0];
+    const episode = replay ? replayEpisodes[seed % replayEpisodes.length] : null;
     const next = createChallenge({ id: crypto.randomUUID(), allocation: Number(choiceValue(query('#challenge-allocation'))),
-      seed: crypto.getRandomValues(new Uint32Array(1))[0], episode });
+      seed, episode });
     async function replace() {
       if (!active) return;
       await transact(state => {
@@ -293,8 +296,7 @@ export function renderChallenges(main) {
   sell.addEventListener('click', () => trade('sell'));
   sellAll.addEventListener('click', () => trade('sell', true));
   result.addEventListener('click', event => {
-    const episode = event.target.closest('[data-replay]')?.dataset.replay;
-    if (episode) start(episode);
+    if (event.target.closest('[data-replay]')) start(true);
   });
   show(run);
   const unobserve = observeState(state => show(state.challenge), failure => { error.textContent = failure.message; });
