@@ -30,6 +30,7 @@ async page => {
   verify(await page.locator('#challenge-result').isHidden(), 'Referência histórica apareceu antes da hora');
   verify(await page.getByRole('button', { name: /^Replay:/ }).count() === 0, 'Replay anunciado antes do resultado');
   verify((await page.locator('#challenge-metrics').innerText()).includes('10.000,00'), 'Saldo total inicial');
+  verify((await page.locator('#challenge-metrics').innerText()).includes('Saldo desta rodada'), 'Falta distinguir a carteira da rodada');
   await tap(button('Comprar'));
   const dialog = page.getByRole('dialog');
   await dialog.getByLabel('Quantidade (unidades da cesta)').fill('2');

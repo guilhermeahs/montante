@@ -60,7 +60,7 @@ export function renderChallenges(main) {
     </section>
     <section class="card stacked section challenge-setup">
       <h2>Nova rodada surpresa</h2>
-      <p class="muted">Você começa com R$ 10.000 virtuais. Escolha quanto colocar na cesta de ações antes de conhecer o cenário.</p>
+      <p class="muted">Cada rodada começa com R$ 10.000 virtuais, separados da carteira principal. Escolha quanto colocar na cesta de ações antes de conhecer o cenário.</p>
       <div class="field"><label for="challenge-allocation">Exposição inicial</label><select id="challenge-allocation">${allocations.map(value =>
         `<option value="${value}"${value === 50 ? ' selected' : ''}>Até ${value}% do saldo</option>`
       ).join('')}</select></div>
@@ -112,8 +112,8 @@ export function renderChallenges(main) {
     if (finished) stop();
     const label = replay ? 'Dólar por US$ 1' : 'Preço da cesta';
     query('#challenge-metrics').innerHTML = `
-      <article class="card metric emphasis"><p>Seu patrimônio</p><strong>${moneyCents(portfolio.wealth)}</strong></article>
-      <article class="card metric"><p>Saldo em caixa</p><strong>${moneyCents(portfolio.cash)}</strong></article>
+      <article class="card metric emphasis"><p>Patrimônio da rodada</p><strong>${moneyCents(portfolio.wealth)}</strong></article>
+      <article class="card metric"><p>Saldo desta rodada</p><strong>${moneyCents(portfolio.cash)}</strong></article>
       <article class="card metric"><p>${label}</p><strong>${replay ? rate.format(quote.cents / 10000) : moneyCents(quote.cents)}</strong></article>`;
     query('#challenge-position').textContent = `${units} ${unit} · ${moneyCents(portfolio.marketValue)} em posição. Exposição inicial de até ${run.allocation}%.`;
     query('#challenge-orders').innerHTML = run.orders.length ? run.orders.map(order => `<li>

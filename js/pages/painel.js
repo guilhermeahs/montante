@@ -12,7 +12,7 @@ export function renderDashboard(main) {
   const state = store.read();
   main.innerHTML = `
     <header class="page-intro">
-      <p class="eyebrow">Investir · Mercado fictício</p>
+      <p class="eyebrow">Investir · Carteira principal</p>
       <h1>Visão geral</h1>
       <p class="lead">Acompanhe sua carteira e pratique com saldo virtual.</p>
       <div class="actions"><a class="button" href="#mercado">Explorar mercado</a><a class="button secondary" href="#carteira">Ver minha carteira</a></div>
@@ -61,11 +61,12 @@ export function renderDashboard(main) {
   const query = selector => main.querySelector(selector);
   function show(next) {
     const provider = new DemoMarketProvider(next.market);
-    const summary = marketPortfolio(next.operations, next.market.ticks.at(-1));
+    const tick = next.market.ticks.at(-1);
+    const summary = marketPortfolio(next.operations, tick);
     const history = portfolioHistory(next.operations, next.market.ticks);
     const { largestAsset, largestCategory, drawdown, fees } = portfolioRisk(summary, history, next.operations);
     query('#dashboard-profile').textContent = next.profile === 'example' ? 'Carteira de exemplo acadêmico' : '';
-    query('#dashboard-metrics').innerHTML = portfolioMetrics(summary, { overview: true });
+    query('#dashboard-metrics').innerHTML = portfolioMetrics(summary, { overview: true, day: tick.day });
     query('#dashboard-first-trade').hidden = next.operations.length > 0;
     query('#dashboard-risk').innerHTML = `
       ${largestAsset ? `<p><strong>${percent(largestAsset.share * 100)}</strong> do patrimônio está em ${escapeHtml(largestAsset.label)}.

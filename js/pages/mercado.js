@@ -1,5 +1,5 @@
 import { openAssetDetails } from '../components/asset-details.js';
-import { balanceCards, dateTime, moneyCents, profitClass } from '../components/portfolio-ui.js';
+import { balanceCards, dateTime, moneyCents, profitClass, receivableText } from '../components/portfolio-ui.js';
 import { openTrade } from '../components/trade.js';
 import { escapeHtml, normalizeSearch, percent } from '../core/format.js';
 import { modes } from '../core/market-engine.js';
@@ -14,13 +14,16 @@ export function renderMarket(main) {
   let provider = new DemoMarketProvider(state.market);
   main.innerHTML = `
     <header class="page-intro">
-      <p class="eyebrow">Investir · Mercado fictício</p>
+      <p class="eyebrow">Investir · Carteira principal</p>
       <h1>Mercado simulado</h1>
       <p class="lead">Pratique com cotações fictícias. Alguns movimentos afetam vários ativos de uma vez. O gráfico revela apenas os dias que já passaram.</p>
     </header>
     <section class="section" aria-label="Saldo da carteira">
       <div id="market-balances" class="metric-grid"></div>
-      <p class="muted">O valor a receber já faz parte do patrimônio. Ele entra no saldo disponível no próximo dia simulado.</p>
+      <div id="market-receivable" hidden>
+        <p id="market-credit-date" class="muted"></p>
+        <button type="button" class="secondary" id="market-show-clock" aria-controls="market-clock-controls">Abrir relógio da simulação</button>
+      </div>
     </section>
     <section class="card market-clock" aria-label="Controles do mercado simulado">
       <div class="market-clock-status"><p id="market-time" class="muted"></p><a href="#carteira">Ver minha carteira</a></div>
@@ -70,6 +73,9 @@ export function renderMarket(main) {
   const sort = query('#asset-sort');
   const onlyFavorites = query('#only-favorites');
   const toggle = query('#market-toggle');
+  const clock = query('#market-clock-controls');
+  const step = query('#market-step');
+  const receivable = query('#market-receivable');
 
   function renderAssets() {
     const active = category.querySelector(':checked').value;
@@ -109,7 +115,12 @@ export function renderMarket(main) {
   function showState(next) {
     state = next;
     provider = new DemoMarketProvider(state.market);
-    query('#market-balances').innerHTML = balanceCards(marketPortfolio(next.operations, next.market.ticks.at(-1)));
+    const tick = next.market.ticks.at(-1);
+    const summary = marketPortfolio(next.operations, tick);
+    query('#market-balances').innerHTML = balanceCards(summary);
+    if (!summary.pendingCash && receivable.contains(document.activeElement)) clock.querySelector('summary').focus();
+    receivable.hidden = !summary.pendingCash;
+    query('#market-credit-date').textContent = summary.pendingCash ? receivableText(tick.day) : '';
     query('#market-time').textContent = `${dateTime(provider.timestamp())} · ${state.market.paused ? 'Pausado' : 'Em andamento'}`;
     query('#market-scenario').value = state.market.scenario;
     query('#market-speed').value = state.market.speed;
@@ -127,7 +138,11 @@ export function renderMarket(main) {
   query('#market-scenario').addEventListener('change', event => handle(() => configureMarket({ scenario: event.target.value })));
   query('#market-speed').addEventListener('change', event => handle(() => configureMarket({ speed: event.target.value })));
   toggle.addEventListener('click', () => handle(() => configureMarket({ paused: !state.market.paused })));
-  query('#market-step').addEventListener('click', () => handle(stepMarket));
+  step.addEventListener('click', () => handle(stepMarket));
+  query('#market-show-clock').addEventListener('click', () => {
+    clock.open = true;
+    step.focus();
+  });
   search.addEventListener('input', renderAssets);
   for (const control of [category, sort, onlyFavorites]) control.addEventListener('change', renderAssets);
   list.addEventListener('click', event => {

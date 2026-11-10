@@ -63,6 +63,7 @@ function renderRoute() {
   const route = routes.get(id);
   renderNavigation(id);
   document.title = route.label + ' · Montante';
+  for (const dialog of main.querySelectorAll('dialog[open]')) dialog.close();
   cleanup?.();
   cleanup = undefined;
   try {

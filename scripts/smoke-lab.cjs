@@ -117,7 +117,7 @@ async (page) => {
   await expect('dialog .error', 'Quantidade superior');
   await modal().getByLabel('Quantidade', { exact: true }).fill('4');
   await confirm('Confirmar venda');
-  await page.getByText('Venda registrada.', { exact: true }).waitFor();
+  await page.getByText(/Venda registrada\. Crédito em \d{2}\/\d{2}\/\d{4}/).waitFor();
   await expect('#positions', 'PETR4 6');
   verify(await page.locator('#portfolio-history tbody tr').count() === 2, 'Extrato de compra e venda');
 

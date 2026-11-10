@@ -12,7 +12,7 @@ export function renderPortfolio(main) {
   let state = store.read();
   main.innerHTML = `
     <header class="page-intro">
-      <p class="eyebrow">Investir · Saldo virtual</p>
+      <p class="eyebrow">Investir · Carteira principal</p>
       <h1>Minha carteira</h1>
       <p class="lead">Acompanhe o saldo fictício, os ativos que você tem e o registro de cada compra e venda.</p>
     </header>
@@ -42,9 +42,10 @@ export function renderPortfolio(main) {
   function show(next) {
     state = next;
     provider = new DemoMarketProvider(state.market);
-    const summary = marketPortfolio(state.operations, state.market.ticks.at(-1));
+    const tick = state.market.ticks.at(-1);
+    const summary = marketPortfolio(state.operations, tick);
     query('#portfolio-profile').textContent = state.profile === 'example' ? 'Carteira de exemplo acadêmico' : '';
-    query('#portfolio-metrics').innerHTML = portfolioMetrics(summary);
+    query('#portfolio-metrics').innerHTML = portfolioMetrics(summary, { day: tick.day });
     query('#portfolio-distribution').innerHTML = distribution(summary.positions);
     query('#portfolio-history').innerHTML = operationTable(state.operations.slice().reverse(), provider);
     const focused = document.activeElement?.dataset.portfolioButton;

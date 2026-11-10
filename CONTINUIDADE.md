@@ -20,6 +20,7 @@
 1. **Categorias do Mercado.** Ações abre por padrão. FIIs, ETFs e Criptomoedas têm controles nativos, contagens do catálogo e explicações próprias. Busca, ordenação e favoritos continuam na troca de categoria. Lint, 34 testes do Node e os smoke tests de Investir, navegação e toque passaram. Próximo marco: simplificar Metas.
 2. **Metas por aporte.** Valor e prazo bastam para calcular. A opção Salvar esta meta aceita nome opcional. O motor e o backup v5 foram preservados. Lint, 35 testes do Node e os smoke tests de Educação e Projeções passaram. A meta de R$ 300 mil em 36 meses a 0% retornou R$ 8.333,34 por mês. O teste no Edge abriu e editou uma meta do estado v4. Próximo marco: explicações de risco.
 3. **Linguagem de risco.** O detalhe do ativo explica a classe e mostra a maior oscilação diária observada nos últimos 30 dias simulados. A Visão geral prioriza o patrimônio e o glossário contextual explica os números. O quiz inclui o saldo a receber. Lint, 35 testes do Node e os smoke tests de Investir, Educação, toque e Desafios passaram. Próximo marco: relógio e datas de crédito.
+4. **Relógio e carteiras.** A ordem suspende somente o avanço automático. Fechar a ordem libera o relógio e respeita a preferência de pausa da outra aba. O crédito da venda tem data no diálogo, na Carteira principal e no Mercado. A rodada usa o próprio saldo. Lint, 35 testes do Node e os smoke tests de relógio, Investir, risco e Desafios passaram. Próximo marco: polir categorias e conferir a regressão final.
 
 # Módulos concluídos
 

@@ -66,7 +66,7 @@ async page => {
       await amount().fill(String(size));
       await expectText(page, '[data-preview]', 'Valor a receber: R$ ' + money(sellTotal(size)));
       await submit('Confirmar venda');
-      await expectText(page, '#portfolio-status', 'Venda registrada.');
+      await expectText(page, '#portfolio-status', 'Venda registrada. Crédito em 02/01/2026');
     }
     const pending = sellTotal(first) + sellTotal(units - first);
     await checkBalances(page, cash, pending, cash + pending);
@@ -82,9 +82,12 @@ async page => {
     await submit('Confirmar compra');
     await expectText(page, 'dialog .error', 'Saldo fictício insuficiente.');
     await submit('Cancelar');
-    await tap(page.getByText('Relógio da simulação', { exact: true }));
+    await expectText(page, '#market-credit-date', '02/01/2026');
+    await tap(button('Abrir relógio da simulação'));
+    verify(await page.evaluate(() => document.activeElement?.id === 'market-step'), 'Atalho do relógio não levou ao avanço');
     await tap(button('Avançar um dia'));
     await checkBalances(page, cash + pending, 0, cash + pending);
+    await button('Abrir relógio da simulação').waitFor({ state: 'hidden' });
     await checkBalances(otherTab, cash + pending, 0, cash + pending);
     verify(await checkLayout(), 'Layout do Mercado em 390 px');
     await openBuy();
