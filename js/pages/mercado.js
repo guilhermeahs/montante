@@ -40,12 +40,14 @@ export function renderMarket(main) {
       </details>
     </section>
     <section class="card section stacked">
-      <h2>Escolha uma categoria</h2>
-      <fieldset class="market-categories">
-        <legend>Categoria de ativos</legend>
+      <h2 id="market-categories-title">Escolha uma categoria</h2>
+      <fieldset class="market-categories" aria-labelledby="market-categories-title">
         <div class="market-category-options">${categories.map((name, index) => {
           const count = provider.list().filter(asset => asset.category === name).length;
-          return `<label title="${assetClasses[name].title}"><input type="radio" name="asset-category" value="${name}"${index === 0 ? ' checked' : ''}> <span>${name} (${count})</span></label>`;
+          return `<label>
+            <input type="radio" name="asset-category" value="${name}" aria-label="${name} (${count})"${index === 0 ? ' checked' : ''}>
+            <span>${name}</span><span class="market-category-count" aria-hidden="true">${count}</span>
+          </label>`;
         }).join('')}</div>
       </fieldset>
       <div>

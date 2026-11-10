@@ -44,7 +44,7 @@ async (page) => {
   verify(await page.getByRole('radio', { name: 'FIIs (4)', exact: true }).isChecked(), 'Troca de categoria pelo teclado');
   for (const [category, size, ticker] of [['FIIs', 4, 'HGLG11'], ['ETFs', 4, 'BOVA11'], ['Criptomoedas', 3, 'BTC']]) {
     const radio = page.getByRole('radio', { name: `${category} (${size})`, exact: true });
-    await radio.check();
+    await radio.locator('..').click();
     verify(await page.locator('#market-assets tbody tr').count() === size, 'Quantidade de ' + category);
     await page.getByLabel('Buscar ativo').fill(ticker);
     await action('Favoritar ' + ticker).click();
@@ -54,7 +54,7 @@ async (page) => {
     await page.getByLabel('Buscar ativo').clear();
   }
   await page.getByLabel('Buscar ativo').fill('BTC');
-  await stocks.check();
+  await stocks.locator('..').click();
   await expect('#market-assets', 'Nenhum ativo');
   verify(await page.getByLabel('Buscar ativo').inputValue() === 'BTC', 'Busca deve persistir na troca de categoria');
   await action('Limpar filtros').click();

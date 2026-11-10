@@ -28,9 +28,9 @@ npm test
 | Investir | Visão geral (`#painel`), Desafios históricos (`#desafios-historicos`), Mercado simulado (`#mercado`), Minha carteira (`#carteira`) |
 | Aprender | Conceitos e glossário (`#aprender`), Quiz e atividades (`#quiz`) |
 
-**Simular** usa valores hipotéticos. Permite salvar projeções, exportar CSV, comparar Poupança, CDB e Tesouro Selic e estimar aportes e poder de compra. O rascunho do Simulador acompanha a navegação da aba.
+**Simular** usa valores hipotéticos. Em Metas e cenários, informe valor e prazo para estimar o aporte mensal. A taxa padrão é zero, e o nome só é pedido como opção ao salvar. Também é possível exportar projeções em CSV, comparar Poupança, CDB e Tesouro Selic e estimar poder de compra. O rascunho do Simulador acompanha a navegação da aba.
 
-**Investir** permite comprar e vender 18 ativos com cotações fictícias e saldo inicial virtual de R$ 50.000,00. O cenário padrão combina movimentos do mercado, da categoria e de cada ativo. Novas operações cobram 0,10% de taxa simulada. O dinheiro de uma venda entra no saldo disponível no próximo dia simulado. Na Visão geral, acompanhe concentração, maior queda recente e taxas pagas.
+**Investir** separa Ações, FIIs, ETFs e Criptomoedas no catálogo de 18 ativos fictícios. A Carteira principal começa com R$ 50.000 virtuais. A confirmação de uma ordem segura o relógio automático e conserva a preferência de pausa. Novas operações cobram 0,10% de taxa simulada. O dinheiro da venda tem data de crédito visível e fica disponível no próximo dia simulado. Na Visão geral, acompanhe concentração, maior queda recente e taxas pagas.
 
 **Desafios históricos** é uma prática separada com R$ 10.000 virtuais. A rodada pode ter alta, queda ou passar sem choque forte. O gráfico revela um dia por vez. No fim, compare suas decisões com manter a posição ou ficar em caixa e acesse os replays reais do dólar de março e novembro de 2020.
 

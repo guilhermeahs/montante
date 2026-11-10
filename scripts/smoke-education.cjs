@@ -26,8 +26,11 @@ async (page) => {
   await includes('#goal-error', 'entre');
   await target.fill('300.000,00');
   await months.fill('36');
+  await page.setViewportSize({ width: 390, height: 844 });
   await calculate.click();
   await includes('#goal-result', '8.333,34 por mês');
+  verify(await page.locator('#goal-result-title').evaluate(title => document.activeElement === title &&
+    title.getBoundingClientRect().top >= 0 && title.getBoundingClientRect().top < 120), 'O resultado não ganhou foco no início da tela');
   await includes('#goal-result', 'Sem considerar rendimentos');
   verify(await page.getByLabel('Nome da meta (opcional)').isHidden(), 'Nome aparece antes de salvar');
   await find('Salvar esta meta').click();

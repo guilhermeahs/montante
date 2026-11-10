@@ -54,6 +54,23 @@ async page => {
   verify(await page.locator('#comparison-chart .chart-values > span').count() === 3, 'Comparador perdeu séries');
 
   await page.goto(base + '#mercado');
+  for (const width of [360, 390]) {
+    await page.setViewportSize({ width, height: 844 });
+    const cards = page.locator('.market-category-options label');
+    for (const [index, expected] of [7, 4, 4, 3].entries()) {
+      const card = cards.nth(index);
+      await card.tap();
+      verify(await card.getByRole('radio').isChecked(), 'Categoria não selecionou ao tocar');
+      verify(await page.locator('#market-assets tbody tr').count() === expected, 'Categoria errada ao tocar');
+      verify(await card.evaluate(node => {
+        const [name, count] = node.querySelectorAll('span');
+        const bounds = node.getBoundingClientRect();
+        return bounds.height >= 48 && name.getBoundingClientRect().right <= count.getBoundingClientRect().left &&
+          count.getBoundingClientRect().right < bounds.right && document.documentElement.scrollWidth <= innerWidth;
+      }), 'Rótulo ou contagem apertada a ' + width + ' px');
+    }
+  }
+  await page.getByRole('radio', { name: 'Ações (7)', exact: true }).locator('..').tap();
   const table = page.getByRole('region', { name: 'Cotações simuladas' });
   await table.waitFor();
   await table.evaluate(node => { node.scrollLeft = 120; });
@@ -72,5 +89,5 @@ async page => {
   verify(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Overflow no Mercado');
 
   verify(errors.length === 0, JSON.stringify(errors));
-  return 'MOBILE OK: toque, arraste, botões, teclado, foco no resultado e rolagem da tabela em 360 e 390 px.';
+  return 'MOBILE OK: categorias, toque, arraste, botões, teclado, foco no resultado e rolagem da tabela em 360 e 390 px.';
 }

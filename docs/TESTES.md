@@ -14,14 +14,16 @@ npx --yes --package @playwright/cli playwright-cli -s=montante-teste open http:/
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --filename scripts/smoke-navigation.cjs
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --filename scripts/smoke-core.cjs
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --filename scripts/smoke-lab.cjs
+npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --filename scripts/smoke-trade-clock.cjs
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --filename scripts/smoke-education.cjs
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste close
 ```
 
 - **Navegação.** Onze telas em 360, 390, 601, 768, 1024 e 1440 px. Cobre hashes existentes, aliases, estados ativos, foco visível, Voltar/Avançar, áreas de toque, contraste dos CTAs nos dois temas, movimento reduzido e leitura de estado v3 sem regravação.
 - **Projeções.** Início, Juros compostos, Comparar modalidades e Metas e cenários. Cobre os valores de referência, rascunho ao voltar de Metas, envio dos valores ao Comparador, validação, simulações salvas e CSV.
-- **Investir.** Visão geral, Mercado simulado, Minha carteira e Dados e demonstração. Cobre carteira vazia, filtros e favoritos, retorno dos detalhes, compra, venda parcial, recarga, extrato, relógio, backup e restauração.
-- **Educação.** Metas e cenários, Conceitos e glossário, Quiz educativo, Visão geral e Dados e demonstração. Cobre metas, inflação, busca, retorno ao glossário, respostas persistidas, reinício do quiz e tema.
+- **Investir.** Visão geral, Mercado simulado, Minha carteira e Dados e demonstração. Cobre categorias, teclado, filtros e favoritos, detalhes de risco, compra, venda parcial, recarga, extrato, relógio, backup e restauração.
+- **Relógio.** Verifica suspensão durante a ordem, retomada após cancelar, comprar ou vender, recarga e pausa explícita feita em outra aba.
+- **Educação.** Metas e cenários, Conceitos e glossário, Quiz educativo, Visão geral e Dados e demonstração. Cobre aporte de R$ 8.333,34 para R$ 300 mil em 36 meses, salvamento sem nome, edição de meta antiga, inflação, busca, respostas persistidas e tema.
 
 ## Interação no celular
 
@@ -32,4 +34,4 @@ npx --yes --package @playwright/cli playwright-cli -s=montante-toque run-code --
 npx --yes --package @playwright/cli playwright-cli -s=montante-toque close
 ```
 
-Os testes emulam toque em 360 e 390 px. O primeiro percorre períodos pelo gráfico, pelos botões e pelo teclado, confere o foco no resultado e verifica a tabela ao rolar horizontalmente. O teste de risco cobre taxa, duas vendas no mesmo dia, saldo a receber, recarga, sincronização entre abas, bloqueio de compra sem caixa e reinvestimento após avançar.
+Os testes emulam toque em 360 e 390 px. O primeiro percorre períodos pelo gráfico, pelos botões e pelo teclado, confere o foco no resultado, toca nas quatro categorias e verifica a tabela ao rolar horizontalmente. O teste de risco cobre taxa, duas vendas no mesmo dia, data do crédito, atalho para o relógio, recarga, sincronização entre abas, bloqueio de compra sem caixa e reinvestimento após avançar.

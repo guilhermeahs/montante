@@ -140,14 +140,23 @@ button[hidden] { display: none; }
 .market-clock-status p { margin: 0; }
 .market-clock-status a { display: inline-flex; align-items: center; min-height: 44px; }
 .market-clock summary { min-height: 44px; padding-block: .65rem; }
-.market-category-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; }
+.market-categories { padding: 0; border: 0; }
+.market-category-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .55rem; }
 .market-category-options label {
-  display: flex; align-items: center; gap: .4rem; min-height: 44px; padding: .45rem .6rem;
-  border: 1px solid var(--control); border-radius: 10px; cursor: pointer;
+  position: relative; display: flex; align-items: center; justify-content: space-between; gap: .35rem;
+  min-height: 48px; padding: .5rem clamp(.4rem, 1.5vw, .8rem); border: 1px solid var(--control);
+  border-radius: 12px; background: var(--surface); color: var(--ink); font-weight: 650; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
-.market-category-options input { margin: 0; accent-color: var(--green); }
-.market-category-options label:has(:checked) { background: var(--nav-active); border-color: var(--green); font-weight: 700; }
+.market-category-options input { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; }
+.market-category-options label:has(:checked) { background: var(--action); border-color: var(--action); color: var(--action-text); }
+.market-category-options label:active { opacity: .8; }
 .market-category-options label:has(:focus-visible) { outline: 3px solid var(--green); outline-offset: 2px; }
+.market-category-count {
+  flex: none; min-width: 1.35rem; padding: .08rem .25rem; border-radius: 99px;
+  background: var(--bg); color: var(--muted); font-size: .75rem; text-align: center;
+}
+.market-category-options label:has(:checked) .market-category-count { background: var(--nav-active); color: var(--ink); }
 .market-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .asset-detail > p, .asset-detail h2 { margin: 0; }
 .asset-quote > strong { font-size: 1.35rem; color: var(--ink); }
@@ -264,6 +273,7 @@ progress { display: block; width: 100%; margin: .5rem 0 1rem; accent-color: var(
 }
 @media (max-width: 760px) {
   .market-category-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .market-category-options label { font-size: .9rem; }
   .cards, .two-cards, .home-steps { grid-template-columns: 1fr; }
   .market-filters { grid-template-columns: 1fr; }
   .table-hint { display: block; }

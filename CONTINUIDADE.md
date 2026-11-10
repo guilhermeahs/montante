@@ -21,6 +21,7 @@
 2. **Metas por aporte.** Valor e prazo bastam para calcular. A opção Salvar esta meta aceita nome opcional. O motor e o backup v5 foram preservados. Lint, 35 testes do Node e os smoke tests de Educação e Projeções passaram. A meta de R$ 300 mil em 36 meses a 0% retornou R$ 8.333,34 por mês. O teste no Edge abriu e editou uma meta do estado v4. Próximo marco: explicações de risco.
 3. **Linguagem de risco.** O detalhe do ativo explica a classe e mostra a maior oscilação diária observada nos últimos 30 dias simulados. A Visão geral prioriza o patrimônio e o glossário contextual explica os números. O quiz inclui o saldo a receber. Lint, 35 testes do Node e os smoke tests de Investir, Educação, toque e Desafios passaram. Próximo marco: relógio e datas de crédito.
 4. **Relógio e carteiras.** A ordem suspende somente o avanço automático. Fechar a ordem libera o relógio e respeita a preferência de pausa da outra aba. O crédito da venda tem data no diálogo, na Carteira principal e no Mercado. A rodada usa o próprio saldo. Lint, 35 testes do Node e os smoke tests de relógio, Investir, risco e Desafios passaram. Próximo marco: polir categorias e conferir a regressão final.
+5. **Polimento mobile.** A seleção de categoria usa uma grade 2×2 com alvos de pelo menos 48 px, contagens separadas e foco de teclado. Metas leva o foco e a rolagem ao resultado, com opção de salvar ao lado do aporte calculado. Lint (48 arquivos), 35 testes do Node e oito smoke tests locais no Edge passaram. Foram abertas 11 telas em seis larguras e conferidas capturas de Mercado, Metas e Visão geral. Próximo passo: validar a revisão em uma prévia do Pages.
 
 # Módulos concluídos
 
@@ -43,7 +44,7 @@ Os seis marcos da reorganização foram implementados e validados localmente. A 
 
 # Próximas tarefas por prioridade
 
-1. Abrir **Investir → Mercado simulado** em um celular físico. Comprar e vender, observar o valor a receber, avançar o dia e verificar o saldo disponível. Pedir a um aluno iniciante que explique a diferença entre saldo e patrimônio e leia o painel de risco. Em seguida, ensaiar as jornadas de Simular e Desafios históricos.
+1. Abrir **Investir → Mercado simulado** em um celular físico. Tocar nas quatro categorias, comprar, vender e observar a data do crédito. Em **Simular → Metas e cenários**, informar R$ 300 mil e 36 meses para conferir R$ 8.333,34 por mês sem rendimentos.
 2. Fazer a verificação manual com leitor de tela, incluindo navegação secundária, gráfico e diálogos.
 3. Conferir no aparelho físico a rolagem dos gráficos, a interação por toque e os controles das tabelas.
 

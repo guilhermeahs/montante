@@ -40,17 +40,19 @@ export function renderGoals(main) {
           </div>
         </details>
         <div class="actions"><button type="submit">Calcular meu aporte mensal</button><button type="button" class="secondary" id="clear-goal" hidden>Nova meta</button></div>
-        <details id="goal-save-options">
-          <summary>Salvar esta meta</summary>
-          <div class="stacked section">
-            <div class="field"><label for="goal-name">Nome da meta (opcional)</label><input id="goal-name" maxlength="80" placeholder="Ex.: Comprar um carro"></div>
-            <div><button type="submit" class="secondary" value="save" id="save-goal">Salvar meta</button></div>
-          </div>
-        </details>
         <p class="error" role="alert" id="goal-error"></p>
       </form>
-      <section class="card stacked"><h2 id="goal-result-title" tabindex="-1">Aporte mensal necessário</h2><div id="goal-result" aria-live="polite"></div>
-        <p class="muted">Projeção com taxa constante e depósitos no fim do mês. A estimativa exclui impostos e inflação.</p></section>
+      <section class="card stacked" id="goal-result-panel">
+        <h2 id="goal-result-title" tabindex="-1">Aporte mensal necessário</h2><div id="goal-result" aria-live="polite"></div>
+        <p class="muted">Projeção com taxa constante e depósitos no fim do mês. A estimativa exclui impostos e inflação.</p>
+        <details id="goal-save-options" hidden>
+          <summary>Salvar esta meta</summary>
+          <div class="stacked section">
+            <div class="field"><label for="goal-name">Nome da meta (opcional)</label><input id="goal-name" form="goal-form" maxlength="80" placeholder="Ex.: Comprar um carro"></div>
+            <div><button type="submit" form="goal-form" class="secondary" value="save" id="save-goal">Salvar meta</button></div>
+          </div>
+        </details>
+      </section>
     </div>
     <section class="card section"><h2>Metas salvas</h2><p id="goal-status" role="status"></p><ul class="record-list" id="goals"></ul></section>
     <section class="card section stacked">
@@ -75,6 +77,7 @@ export function renderGoals(main) {
   const list = query('#goals');
   const output = query('#goal-result');
   const advanced = query('#goal-options');
+  const saveOptions = query('#goal-save-options');
   const emptyResult = 'Informe o valor e o prazo para calcular.';
 
   function show(target, params, hasContribution) {
@@ -98,6 +101,7 @@ export function renderGoals(main) {
           Total investido: ${money(projected.invested)}. Rendimentos estimados: ${money(projected.interest)}.</p>
         <div id="goal-chart"></div></details>` : ''}`;
     if (projected) drawChart(query('#goal-chart'), projected.series, investmentLines, { label: 'Evolução projetada da meta' });
+    saveOptions.hidden = false;
   }
   function load(item, hasContribution = item?.params.contribution > 0) {
     editingId = item?.id;
@@ -109,7 +113,8 @@ export function renderGoals(main) {
     form.elements['goal-rate'].value = inputNumber(rate);
     form.elements['goal-months'].value = months;
     advanced.open = initial > 0 || rate > 0 || hasContribution;
-    query('#goal-save-options').open = Boolean(item);
+    saveOptions.open = Boolean(item);
+    saveOptions.hidden = !item;
     query('#clear-goal').hidden = !item;
     query('#save-goal').textContent = item ? 'Salvar alterações' : 'Salvar meta';
     query('#goal-error').textContent = '';
@@ -136,7 +141,8 @@ export function renderGoals(main) {
     };
     show(target, params, hasContribution);
     if (event.submitter?.value !== 'save') {
-      query('#goal-result-title').focus();
+      query('#goal-result-title').focus({ preventScroll: true });
+      if (window.matchMedia('(max-width: 760px)').matches) query('#goal-result-panel').scrollIntoView({ block: 'start' });
       return;
     }
     const name = form.elements['goal-name'].value.trim() || 'Meta de ' + money(target);
@@ -157,8 +163,9 @@ export function renderGoals(main) {
       save.disabled = false;
     }
   });
-  form.addEventListener('input', event => {
-    if (event.target.id !== 'goal-name') output.textContent = emptyResult;
+  form.addEventListener('input', () => {
+    output.textContent = emptyResult;
+    saveOptions.hidden = true;
   });
   query('#clear-goal').addEventListener('click', () => {
     load();
