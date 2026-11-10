@@ -1,6 +1,6 @@
 # Estado atual do Montante
 
-10/11/2026 · branch `main`. A versão educacional inclui as três telas do protótipo, laboratório de mercado e carteira, metas, cenários e quiz.
+10/11/2026 · branch `main`. O Montante está organizado em Início, Simular, Investir e Aprender. Configurações abre Dados e demonstração.
 
 `npm start` executa o servidor estático local em Node.js, no endereço `http://127.0.0.1:4178`. A aplicação roda no navegador.
 
@@ -11,7 +11,7 @@
 3. **Início.** Duas jornadas com CTAs para juros compostos e Mercado simulado, gráfico calculado pelo motor existente e três passos de apoio. Navegação, Simular e Investir passaram no Edge. As capturas de 360 e 1440 px confirmaram o contraste e os dois CTAs na área inicial após o ajuste de espaçamento mobile.
 4. **Simular e Investir.** O Simulador conserva os campos editados ao voltar de Metas e pode enviar os valores calculados ao Comparador. Investir abre uma visão geral com patrimônio, saldo, resultado e uma primeira ação para carteira vazia. A cotação de um ativo abre em diálogo na lista ou na carteira e devolve o foco à origem. No Edge passaram os fluxos de rascunho, valor de referência, compra, recarga, venda parcial, filtros, relógio e extrato.
 5. **Aprender e Configurações.** `#aprender` concentra conceitos e busca, e `#quiz` tem navegação própria e respostas persistidas. Configurações mantém `#dados`, com backup, demonstração, tema e restauração confirmada. Navegação, Aprender e dados passaram no Edge, incluindo retorno ao glossário, persistência do quiz e importação/exportação.
-6. Validar navegação, dados existentes, responsividade e acessibilidade no navegador. Atualizar a documentação e enviar os marcos à `main`.
+6. **Regressão final.** Passaram a checagem de sintaxe, os 24 testes unitários e os quatro smoke tests no Edge. Foram abertas dez telas em seis larguras, com teclado, hashes anteriores, aliases, Voltar/Avançar, contraste dos CTAs nos dois temas, movimento reduzido e um estado v3 existente intacto. README, AGENTS e documentação técnica foram atualizados.
 
 # Módulos concluídos
 
@@ -20,24 +20,24 @@
 - Comparador (`js/pages/comparador.js`) com taxas editáveis, três modalidades e inclusão opcional da taxa de uma simulação salva.
 - Motor (`js/core/financial-engine.js`) com aporte ao fim do mês e conversão efetiva anual/mensal. Persistência local versionada em `js/services/storage.js`.
 - Mercado (`js/pages/mercado.js`, `market-engine.js`, `market-provider.js`) com 18 ativos, filtro, favoritos, histórico e relógio reproduzível.
-- Carteira e Painel (`js/pages/carteira.js`, `painel.js`) com ordens fictícias, valor a mercado, resultados, distribuição, extrato e CSV.
+- Minha carteira e Visão geral (`js/pages/carteira.js`, `painel.js`) com ordens fictícias, valor a mercado, resultados, distribuição, extrato e CSV.
 - Dados e demonstração (`js/pages/dados.js`, `js/services/demo.js`) com exemplos, importação/exportação JSON e restauração.
 - Metas e cenários (`js/pages/metas.js`, `js/core/planning.js`) com metas editáveis, aporte necessário, inflação e análise de sensibilidade.
 - Aprender (`js/pages/aprender.js`, `js/data/educacao.js`) com glossário e quiz persistido. Tema claro padrão e escuro opcional em Dados e demonstração.
 
 # Módulos em andamento
 
-Os módulos de primeira entrega estão implementados. A aceitação acadêmica depende de um ensaio humano.
+Os seis marcos da reorganização foram implementados e validados localmente. A próxima etapa é o ensaio de uso com o público da apresentação.
 
 # Próximas tarefas por prioridade
 
-1. Abrir Dados e demonstração, carregar a carteira de exemplo e ensaiar o roteiro em desktop e celular.
-2. Testar com usuários e leitor de tela, conforme os próximos passos do A3.
-3. Avaliar hospedagem estática e eventuais melhorias de acessibilidade identificadas no ensaio.
+1. Abrir a revisão local, entrar em Configurações, carregar a carteira de exemplo e ensaiar as duas jornadas com um aluno iniciante em desktop e celular físico.
+2. Fazer a verificação manual com leitor de tela, incluindo navegação secundária, gráfico e diálogos.
+3. Promover a revisão ao projeto existente do Cloudflare Pages quando for a hora de atualizar o link público.
 
 # Contratos e arquitetura
 
-Leia `docs/ARQUITETURA.md`, `docs/REGRAS_FINANCEIRAS.md` e `docs/REFERENCIAS.md`. Projeções usam taxa mensal percentual. A carteira é derivada do extrato em centavos, com preços congelados. O estado v3 migra versões 1 e 2 e permite backup local validado.
+Leia `docs/ARQUITETURA.md`, `docs/REGRAS_FINANCEIRAS.md` e `docs/REFERENCIAS.md`. Projeções usam taxa mensal percentual. A carteira é derivada do extrato em centavos, com preços congelados. A reorganização preserva a chave `montante.state`, o formato v3 e os nove hashes existentes. O estado v3 migra versões 1 e 2 e permite backup local validado.
 
 # Bugs e limitações conhecidos
 
@@ -45,15 +45,17 @@ Os dados salvos ficam vinculados ao navegador e à origem HTTP. O relógio autom
 
 # Testes executados
 
-24 testes unitários passaram, incluindo a base P0, compras, vendas, arredondamento, extrato, persistência, histórico, backup, metas, cenários e migração. Sintaxe JavaScript passou. Os três smoke tests passaram no Edge, em nove telas e cinco larguras, sem erros no console ou respostas HTTP inesperadas. O teste de compra também cobre cotação alterada em outra aba e tentativa de envio duplicado. A grade do Mercado foi ajustada para conter a rolagem da tabela a partir de 360 px. Comandos em `docs/TESTES.md`.
+24 testes unitários passaram e a checagem de sintaxe cobriu 40 arquivos JavaScript. Os quatro smoke tests passaram no Edge em 360, 390, 601, 768, 1024 e 1440 px, sem erros no console ou recursos ausentes. A referência de R$ 1.000 mais R$ 500 por mês, a 0,8% por 60 meses, continuou dando R$ 39.924,92 de montante, R$ 31.000,00 investidos e R$ 8.924,92 de juros. Os testes cobriram compra, venda parcial, extrato, recarga e backup. As capturas confirmaram as duas jornadas do Início e a leitura dos principais fluxos em desktop e mobile. Comandos em `docs/TESTES.md`.
 
 # GitHub
 
-O último marco funcional foi confirmado em `main` no commit `a0801e6c2d24e92c65080f47a10be09b5cfe5397`, em 10/11/2026 às 12:04:45 (horário de Brasília). O checkout usa Git Credential Manager. Use `git status -sb` e `git ls-remote origin refs/heads/main` para confirmar a revisão atual, que pode incluir commits posteriores de documentação.
+Os marcos da reorganização foram enviados à `main`, incluindo Aprender e Configurações em `ecda377`. O checkout usa Git Credential Manager. Use `git status -sb`, `git log --oneline -6` e `git ls-remote origin refs/heads/main` para confirmar o commit de validação final.
 
 # Publicação
 
 Em 10/11/2026, o commit `0392f720ba4c4fe886835021877b3324d2bcb9ab` foi publicado no projeto `montante-educacao` do Cloudflare Pages, com produção na branch `main`. Acesse [o endereço público](https://montante-educacao.pages.dev/). Os três smoke tests passaram por HTTPS no Edge, sem erros no console.
+
+O endereço público ainda serve essa revisão. A experiência reorganizada está no checkout e na `main` do GitHub.
 
 O projeto usa upload direto. Para publicar uma nova revisão, gere o pacote a partir da raiz do repositório e envie o ZIP pelo painel do projeto, em **Create a new deployment → Production**.
 

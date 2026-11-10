@@ -8,7 +8,7 @@ Os dois PDFs originais estão na raiz. As 3 páginas do protótipo e as 7 da apr
 2. Simulador. Parâmetros à esquerda. À direita, cartão escuro para o montante, dois cartões brancos e gráfico de evolução. Área verde translúcida e total investido com traço âmbar.
 3. Comparador. Título, resumo da base de cálculo, três barras horizontais em cinza quente e dois tons de verde, cartões de modalidades e aviso de taxas ilustrativas.
 
-A interface usa fundo off-white, texto verde quase preto, cartões claros com bordas discretas e cantos arredondados. Mantém as três entradas principais no cabeçalho e adapta as colunas a telas pequenas.
+A interface usa fundo off-white, texto verde quase preto, cartões claros com bordas discretas e cantos arredondados. A reorganização conserva a frase, o gráfico, as cores e as telas centrais do protótipo. Início separa as jornadas de projeção e mercado fictício. Simulador e Comparador continuam na jornada Simular.
 
 ## Apresentação A3
 

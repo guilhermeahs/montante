@@ -3,18 +3,20 @@
 - `npm run lint` verifica a sintaxe dos módulos e scripts JavaScript.
 - `npm test` executa os testes do Node para projeção, comparador, persistência, CSV, mercado, carteira e backup.
 - `npm start` sobe o servidor estático em `http://127.0.0.1:4178`.
-- O smoke test exercita Início, Simulador e Comparador em Edge e verifica o console, as respostas HTTP e as larguras de 360, 390, 768, 1024 e 1440 px.
+- Os smoke tests exercitam o site no Edge e verificam console, respostas HTTP, fluxo e responsividade.
 
-Com o servidor aberto, rode o smoke test em uma sessão Playwright descartável. Ele limpa o armazenamento da origem no perfil de teste.
+Com o servidor aberto, rode os smoke tests em uma sessão Playwright descartável. Eles substituem ou limpam o armazenamento da origem no perfil de teste.
 
 ```sh
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste open http://127.0.0.1:4178 --browser=msedge
+npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --filename scripts/smoke-navigation.cjs
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --filename scripts/smoke-core.cjs
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --filename scripts/smoke-lab.cjs
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste run-code --filename scripts/smoke-education.cjs
 npx --yes --package @playwright/cli playwright-cli -s=montante-teste close
 ```
 
-O teste do laboratório percorre Mercado, Carteira, Painel e Dados e demonstração. Verifica filtros e favoritos, preços, validação de compras e vendas, extrato, persistência, relógio, backup e restauração nas mesmas larguras.
-
-O teste de educação percorre Metas e cenários, Aprender, Painel e Dados e demonstração. Verifica edição e exclusão de metas, premissas com prazos diferentes, gráfico, inflação, busca, respostas e reinício do quiz, tema e persistência.
+- **Navegação.** Dez telas em 360, 390, 601, 768, 1024 e 1440 px. Cobre hashes existentes, aliases, estados ativos, foco visível, Voltar/Avançar, áreas de toque, contraste dos CTAs nos dois temas, movimento reduzido e leitura de estado v3 sem regravação.
+- **Projeções.** Início, Juros compostos, Comparar modalidades e Metas e cenários. Cobre os valores de referência, rascunho ao voltar de Metas, envio dos valores ao Comparador, validação, simulações salvas e CSV.
+- **Investir.** Visão geral, Mercado simulado, Minha carteira e Dados e demonstração. Cobre carteira vazia, filtros e favoritos, retorno dos detalhes, compra, venda parcial, recarga, extrato, relógio, backup e restauração.
+- **Educação.** Metas e cenários, Conceitos e glossário, Quiz educativo, Visão geral e Dados e demonstração. Cobre metas, inflação, busca, retorno ao glossário, respostas persistidas, reinício do quiz e tema.

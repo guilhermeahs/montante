@@ -1,9 +1,13 @@
 import { escapeHtml } from '../core/format.js';
 
+let dialogSequence = 0;
+
 export function openDialog(content, onOpen) {
   const dialog = document.createElement('dialog');
   dialog.innerHTML = content;
-  dialog.setAttribute('aria-labelledby', 'dialog-title');
+  const title = dialog.querySelector('#dialog-title');
+  title.id = 'dialog-title-' + ++dialogSequence;
+  dialog.setAttribute('aria-labelledby', title.id);
   document.querySelector('main').append(dialog);
   dialog.querySelector('[data-cancel]')?.addEventListener('click', () => dialog.close());
   dialog.addEventListener('close', () => dialog.remove(), { once: true });

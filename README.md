@@ -19,11 +19,20 @@ npm run lint
 npm test
 ```
 
-O Início apresenta uma projeção calculada. O Simulador aceita taxas mensais ou anuais, compara juros simples e compostos, salva cenários no navegador e exporta a evolução em CSV. O Comparador calcula Poupança, CDB e Tesouro Selic sobre a mesma base, com taxas editáveis.
+## Navegação
 
-Em **Laboratório**, pratique com 18 ativos fictícios, acompanhe o relógio simulado e use R$ 50.000,00 virtuais para comprar e vender. Painel e carteira mostram posições, distribuição, desempenho e extrato. **Dados e demonstração** inclui roteiro acadêmico, carteira de exemplo reproduzível, backup JSON e restauração.
+| Jornada | Telas e endereços |
+| --- | --- |
+| Início | Duas formas de começar e gráfico calculado (`#inicio`) |
+| Simular | Juros compostos (`#simulador`), Comparar modalidades (`#comparador`), Metas e cenários (`#metas`) |
+| Investir | Visão geral (`#painel`), Mercado simulado (`#mercado`), Minha carteira (`#carteira`) |
+| Aprender | Conceitos e glossário (`#aprender`), Quiz e atividades (`#quiz`) |
 
-**Metas e cenários** calcula aportes, testa hipóteses e estima poder de compra com inflação ilustrativa. **Aprender** oferece glossário com busca e quiz com feedback.
+**Simular** usa valores hipotéticos. Permite salvar projeções, exportar CSV, comparar Poupança, CDB e Tesouro Selic e estimar aportes e poder de compra. O rascunho do Simulador acompanha a navegação da aba.
+
+**Investir** permite comprar e vender 18 ativos fictícios com saldo inicial virtual de R$ 50.000,00. Acompanhe posições, distribuição, desempenho e extrato.
+
+**Configurações** abre **Dados e demonstração** (`#dados`), com roteiro acadêmico, carteira de exemplo, backup JSON, restauração e tema. Os endereços antigos continuam válidos. `#simular` e `#investir` também abrem as entradas de cada jornada.
 
 Simulações, metas, respostas, tema, favoritos, mercado e carteira ficam no navegador deste endereço. Outro navegador ou computador tem armazenamento independente. Exporte e importe o backup para transferir o progresso.
 

@@ -19,9 +19,11 @@ export function renderGoals(main) {
   let editingId;
   let shownGoals;
   main.innerHTML = `
-    <p class="eyebrow">Planejamento educativo</p>
-    <h1>Metas e cenários</h1>
-    <p class="lead">Estime quanto guardar por mês e veja como as premissas mudam sua projeção.</p>
+    <header class="page-intro">
+      <p class="eyebrow">Simular · Projeções</p>
+      <h1>Metas e cenários</h1>
+      <p class="lead">Estime quanto guardar por mês e veja como as premissas mudam sua projeção.</p>
+    </header>
     <div class="two-cards">
       <form id="goal-form" class="card stacked" novalidate>
         <h2>Calcule uma meta</h2>
