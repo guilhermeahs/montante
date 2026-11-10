@@ -55,7 +55,7 @@ async (page) => {
   await page.getByRole('button', { name: 'Simular', exact: true }).click();
   await contains(page.locator('#projection-error'), 'número inteiro');
   await term.fill('60');
-  await page.getByLabel('Período da taxa').selectOption('annual');
+  await page.getByRole('radio', { name: 'Anual efetiva', exact: true }).locator('..').click();
   await page.getByRole('button', { name: 'Simular', exact: true }).click();
   await contains(page.locator('#projection-metrics'), '39.924,92');
   await save();

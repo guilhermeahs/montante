@@ -35,9 +35,16 @@ async (page) => {
   await expect('#market-time', 'Pausado');
   verify(await page.getByRole('radio', { name: 'Ações (7)', exact: true }).isChecked(), 'Ações deve ser a categoria inicial');
   verify(await page.locator('#market-assets tbody tr').count() === 7, 'Lista inicial de ações');
+  const highestPrice = page.getByRole('radio', { name: 'Maior preço', exact: true });
+  await highestPrice.locator('..').click();
+  verify(await highestPrice.isChecked(), 'Ordenação de preço não selecionada');
+  const prices = await page.locator('#market-assets tbody td:nth-child(2)').evaluateAll(cells =>
+    cells.map(cell => Number(cell.textContent.replace(/[^0-9,]/g, '').replace(',', '.'))));
+  verify(prices.every((value, index) => index === 0 || value <= prices[index - 1]), 'Preços fora de ordem');
   await page.getByLabel('Buscar ativo').fill('nenhum-ticker');
   await action('Limpar filtros').click();
   verify(await page.locator('#market-assets tbody tr').count() === 7, 'Limpar filtros deve restaurar a categoria');
+  verify(await page.getByRole('radio', { name: 'Nome', exact: true }).isChecked(), 'Limpar filtros não restaurou a ordem por nome');
   const stocks = page.getByRole('radio', { name: 'Ações (7)', exact: true });
   await stocks.focus();
   await page.keyboard.press('ArrowRight');
@@ -67,7 +74,7 @@ async (page) => {
   await action('PETR4').click();
   await modal().getByRole('heading', { name: 'Entenda este investimento', exact: true }).waitFor();
   await expect('dialog', 'Ela descreve os preços fictícios');
-  await modal().getByLabel('Período do histórico').selectOption('90');
+  await modal().getByRole('radio', { name: '90 dias', exact: true }).locator('..').click();
   await modal().getByRole('img', { name: /Histórico de preço simulado/ }).waitFor();
   await confirm('Voltar aos ativos');
   verify(await page.getByLabel('Somente favoritos').isChecked(), 'Filtro de favoritos se perdeu após fechar o ativo');
@@ -123,11 +130,11 @@ async (page) => {
 
   await page.goto(origin + '/#mercado');
   await page.getByText('Relógio da simulação', { exact: true }).click();
-  await page.getByLabel('Cenário de preços').selectOption('up');
+  await page.getByRole('radio', { name: 'Treino guiado · Alta', exact: true }).locator('..').click();
   const start = await read('#market-time');
   await action('Avançar um dia').click();
   await page.waitForFunction(previous => !document.querySelector('#market-time').textContent.includes(previous.split(' · ')[0]), start);
-  await page.getByLabel('Velocidade', { exact: true }).selectOption('fast');
+  await page.getByRole('radio', { name: 'Rápida · 2 s por dia', exact: true }).locator('..').click();
   const beforeAuto = await read('#market-time');
   await action('Retomar simulação').click();
   await page.waitForFunction(previous => !document.querySelector('#market-time').textContent.includes(previous.split(' · ')[0]), beforeAuto, { timeout: 8000 });
@@ -136,7 +143,7 @@ async (page) => {
   await page.reload();
   await expect('#market-time', 'Pausado');
   await page.getByText('Relógio da simulação', { exact: true }).click();
-  verify(await page.getByLabel('Velocidade', { exact: true }).inputValue() === 'fast', 'Velocidade persistida');
+  verify(await page.getByRole('radio', { name: 'Rápida · 2 s por dia', exact: true }).isChecked(), 'Velocidade persistida');
   verify(await action('Favoritar PETR4').getAttribute('aria-pressed') === 'true', 'Favorito não persistiu');
   await page.goto(origin + '/#painel');
   await page.getByRole('img', { name: 'Histórico da carteira virtual' }).waitFor();

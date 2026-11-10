@@ -25,6 +25,8 @@
 
 # Módulos concluídos
 
+**Controles com a identidade Montante.** Categorias, ordenação, cenário, velocidade, período de gráfico, tema e exposição usam opções visíveis com rádios nativos e estilo compartilhado. Favoritos e as opções de gráfico usam caixas estilizadas. O estado e as regras financeiras foram preservados. O teste no Edge cobriu toque em 360 e 390 px, teclado, temas, ordenação e filtros.
+
 - Mercado com risco (`#mercado`, `#carteira`, `#painel`). O cenário padrão combina oscilações gerais, por categoria e por ativo, com períodos de turbulência sorteados pela semente. Novas ordens cobram 0,10% de taxa simulada. O valor líquido da venda fica a receber até o dia seguinte. A Visão geral explica concentração, maior queda recente e taxas pagas.
 - Desafios históricos (`#desafios-historicos`) entra em Investir com rodadas surpresa de alta, queda ou sem choque forte. A inspiração é revelada no resultado, que libera os replays da PTAX de março e novembro de 2020. A carteira do desafio é isolada e incluída nos backups desde a versão 4. O plano inicial de anunciar alta ou queda antes da prática foi substituído pela rodada surpresa a pedido do usuário.
 

@@ -20,6 +20,25 @@ export function durationField(months, prefix = '') {
   return field(prefix + 'months', 'Prazo (meses)', months, { mode: 'numeric' });
 }
 
+export function choiceField(id, label, options, selected = options[0][0]) {
+  return `<fieldset class="choice-field" id="${id}">
+    <legend>${escapeHtml(label)}</legend>
+    <div class="choice-options">${options.map(([value, title]) => `<label>
+      <input type="radio" name="${id}" value="${escapeHtml(String(value))}"${value === selected ? ' checked' : ''}>
+      <span>${escapeHtml(title)}</span>
+    </label>`).join('')}</div>
+  </fieldset>`;
+}
+
+export function choiceValue(group) {
+  return group.querySelector('input:checked').value;
+}
+
+export function setChoice(group, value) {
+  const choice = Array.from(group.querySelectorAll('input')).find(input => input.value === String(value));
+  if (choice) choice.checked = true;
+}
+
 export function readNumber(form, key, { min = 0, max = Infinity, integer = false, grouped = false, cents = false } = {}) {
   const input = form.elements[key];
   const text = input.value.trim();

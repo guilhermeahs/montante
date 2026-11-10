@@ -40,7 +40,7 @@ async page => {
   await page.reload();
   await page.getByRole('heading', { name: 'Mercado simulado', exact: true }).waitFor();
   verify(await checkLayout(), 'CSS ou layout do Mercado em 360 px');
-  verify(await page.getByLabel('Cenário de preços').inputValue() === 'random', 'Modo padrão');
+  verify(await page.locator('#market-scenario input:checked').inputValue() === 'random', 'Modo padrão');
   const buyTotal = units => units * price + Math.round(units * price / 1000);
   const sellTotal = units => units * price - Math.round(units * price / 1000);
   const units = Math.floor(startingCash / (price * 1.001));

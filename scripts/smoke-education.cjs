@@ -94,7 +94,7 @@ async (page) => {
   await includes('#quiz-score', '0 de 5 respondidas');
 
   await page.getByRole('link', { name: 'Configurações', exact: true }).click();
-  await page.getByLabel('Tema do Montante').selectOption('dark');
+  await page.getByRole('radio', { name: 'Escuro', exact: true }).locator('..').click();
   await find('Tema salvo.').waitFor();
   await page.reload();
   verify(await page.evaluate(() => document.documentElement.dataset.theme === 'dark'), 'Tema escuro não persistiu');
@@ -107,7 +107,7 @@ async (page) => {
     }
   }
   await page.goto(origin + '/#dados');
-  await page.getByLabel('Tema do Montante').selectOption('light');
+  await page.getByRole('radio', { name: 'Claro (original)', exact: true }).locator('..').click();
   await find('Tema salvo.').waitFor();
   await page.goto(origin + '/#metas');
   await button('Excluir').click();

@@ -69,6 +69,17 @@ async page => {
           count.getBoundingClientRect().right < bounds.right && document.documentElement.scrollWidth <= innerWidth;
       }), 'Rótulo ou contagem apertada a ' + width + ' px');
     }
+    const sort = page.getByRole('radio', { name: 'Maior variação', exact: true });
+    await sort.locator('..').tap();
+    verify(await sort.isChecked(), 'Ordenação não mudou ao tocar');
+    verify(await page.locator('#asset-sort .choice-options').evaluate(group => {
+      const positions = [...group.querySelectorAll('label')].map(label => label.getBoundingClientRect().top);
+      return positions.every(top => top === positions[0]);
+    }), 'Opções de ordenação saíram da mesma linha');
+    const favorites = page.getByRole('checkbox', { name: 'Somente favoritos' });
+    await favorites.locator('..').tap();
+    verify(await favorites.isChecked() && await favorites.evaluate(node => getComputedStyle(node).appearance === 'none'), 'Filtro de favoritos sem estilo ou sem toque');
+    await favorites.locator('..').tap();
   }
   await page.getByRole('radio', { name: 'Ações (7)', exact: true }).locator('..').tap();
   const table = page.getByRole('region', { name: 'Cotações simuladas' });
@@ -80,10 +91,10 @@ async page => {
   }), 'Ticker não ficou visível ao deslizar a tabela');
   await page.getByRole('button', { name: 'PETR4', exact: true }).click();
   const detail = page.getByRole('dialog');
-  await detail.getByLabel('Período do histórico').selectOption('1');
+  await detail.getByRole('radio', { name: '1 dia', exact: true }).locator('..').tap();
   await detail.getByLabel('Explore o período do gráfico').press('Home');
   const oldPeriod = await detail.locator('[data-chart-period]').innerText();
-  await detail.getByLabel('Período do histórico').selectOption('7');
+  await detail.getByRole('radio', { name: '7 dias', exact: true }).locator('..').tap();
   verify(await detail.locator('[data-chart-period]').innerText() === oldPeriod, 'Mudança de intervalo perdeu o dia selecionado');
   await detail.getByRole('button', { name: 'Voltar aos ativos' }).click();
   verify(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Overflow no Mercado');

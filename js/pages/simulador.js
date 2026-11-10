@@ -2,7 +2,7 @@ import { annualFromMonthly, example, monthlyFromAnnual, project } from '../core/
 import { escapeHtml, inputNumber, money, percent } from '../core/format.js';
 import { drawChart, investmentLines } from '../components/chart.js';
 import { askName, confirmAction } from '../components/dialog.js';
-import { baseFields, durationField, field, listenForm, readBase, readNumber } from '../components/forms.js';
+import { baseFields, choiceField, choiceValue, durationField, field, listenForm, readBase, readNumber } from '../components/forms.js';
 import { exportCSV } from '../services/export.js';
 import { store, transact } from '../services/storage.js';
 
@@ -37,7 +37,7 @@ export function renderSimulator(main) {
         <h2 class="form-title">Parâmetros</h2>
         ${baseFields(lastParams)}
         ${field('rate', 'Taxa de juros (% ao mês)', initialRate)}
-        <div class="field"><label for="rate-unit">Período da taxa</label><select id="rate-unit"><option value="monthly">Mensal</option><option value="annual">Anual efetiva</option></select></div>
+        ${choiceField('rate-unit', 'Período da taxa', [['monthly', 'Mensal'], ['annual', 'Anual efetiva']], unit)}
         ${durationField(lastParams.months)}
         <button type="submit">Simular</button>
         <p id="projection-error" class="error" role="alert"></p>
@@ -49,8 +49,8 @@ export function renderSimulator(main) {
           <h2>Evolução do patrimônio</h2>
           <div id="projection-chart"></div>
           <div class="chart-options">
-            <label><input id="show-interest" type="checkbox"> Mostrar juros acumulados</label>
-            <label><input id="show-simple" type="checkbox"> Comparar com juros simples</label>
+            <label class="check-choice"><input id="show-interest" type="checkbox"> Mostrar juros acumulados</label>
+            <label class="check-choice"><input id="show-simple" type="checkbox"> Comparar com juros simples</label>
           </div>
           <p id="projection-context" class="muted"></p>
         </section>
@@ -142,11 +142,10 @@ export function renderSimulator(main) {
     rateLabel.textContent = unit === 'annual' ? 'Taxa de juros (% ao ano)' : 'Taxa de juros (% ao mês)';
   }
 
-  rateUnit.value = unit;
   setRateLabel();
   rateUnit.addEventListener('change', () => {
     const oldUnit = unit;
-    const newUnit = rateUnit.value;
+    const newUnit = choiceValue(rateUnit);
     unit = newUnit;
     setRateLabel();
     try {

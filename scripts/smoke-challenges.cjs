@@ -25,12 +25,14 @@ async page => {
   await page.setViewportSize({ width: 360, height: 800 });
   await tap(page.getByRole('link', { name: 'Abrir Desafios históricos', exact: true }));
   await page.getByRole('heading', { name: 'Desafios históricos', exact: true }).waitFor();
+  await tap(page.getByRole('radio', { name: 'Até 75%', exact: true }).locator('..'));
   await tap(button('Sortear rodada'));
   await waitText('#challenge-day', 'Dia 0');
   verify(await page.locator('#challenge-result').isHidden(), 'Referência histórica apareceu antes da hora');
   verify(await page.getByRole('button', { name: /^Replay:/ }).count() === 0, 'Replay anunciado antes do resultado');
   verify((await page.locator('#challenge-metrics').innerText()).includes('10.000,00'), 'Saldo total inicial');
   verify((await page.locator('#challenge-metrics').innerText()).includes('Saldo desta rodada'), 'Falta distinguir a carteira da rodada');
+  verify((await page.locator('#challenge-position').innerText()).includes('75%'), 'Exposição selecionada não aplicada');
   await tap(button('Comprar'));
   const dialog = page.getByRole('dialog');
   await dialog.getByLabel('Quantidade (unidades da cesta)').fill('2');

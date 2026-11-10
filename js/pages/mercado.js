@@ -1,4 +1,5 @@
 import { openAssetDetails } from '../components/asset-details.js';
+import { choiceField, choiceValue, setChoice } from '../components/forms.js';
 import { balanceCards, dateTime, moneyCents, profitClass, receivableText } from '../components/portfolio-ui.js';
 import { openTrade } from '../components/trade.js';
 import { escapeHtml, normalizeSearch, percent } from '../core/format.js';
@@ -32,8 +33,8 @@ export function renderMarket(main) {
         <div class="stacked section">
           <p class="muted">Cada avanço corresponde a um dia no mercado fictício. No modo imprevisível, os períodos de alta, queda e calmaria aparecem sem aviso.</p>
           <div class="two-cards">
-            <div class="field"><label for="market-scenario">Cenário de preços</label><select id="market-scenario">${Object.entries(modes).map(([id, mode]) => `<option value="${id}">${mode.label}</option>`).join('')}</select></div>
-            <div class="field"><label for="market-speed">Velocidade</label><select id="market-speed"><option value="normal">Normal · 8 s por dia</option><option value="fast">Rápida · 2 s por dia</option></select></div>
+            ${choiceField('market-scenario', 'Cenário de preços', Object.entries(modes).map(([id, mode]) => [id, mode.label]))}
+            ${choiceField('market-speed', 'Velocidade', [['normal', 'Normal · 8 s por dia'], ['fast', 'Rápida · 2 s por dia']])}
           </div>
           <div class="actions"><button id="market-toggle" type="button"></button><button class="secondary" id="market-step" type="button">Avançar um dia</button></div>
         </div>
@@ -42,7 +43,7 @@ export function renderMarket(main) {
     <section class="card section stacked">
       <h2 id="market-categories-title">Escolha uma categoria</h2>
       <fieldset class="market-categories" aria-labelledby="market-categories-title">
-        <div class="market-category-options">${categories.map((name, index) => {
+        <div class="choice-options market-category-options">${categories.map((name, index) => {
           const count = provider.list().filter(asset => asset.category === name).length;
           return `<label>
             <input type="radio" name="asset-category" value="${name}" aria-label="${name} (${count})"${index === 0 ? ' checked' : ''}>
@@ -57,9 +58,9 @@ export function renderMarket(main) {
       <div class="cards market-filters">
         <div class="field"><label for="asset-search">Buscar ativo</label><input type="search" id="asset-search" aria-describedby="market-search-help">
           <small id="market-search-help">A busca e os filtros continuam ativos ao trocar de categoria.</small></div>
-        <div class="field"><label for="asset-sort">Ordenar por</label><select id="asset-sort"><option value="name">Nome</option><option value="price">Preço (maior primeiro)</option><option value="variation">Variação (maior primeiro)</option></select></div>
+        ${choiceField('asset-sort', 'Ordenar por', [['name', 'Nome'], ['price', 'Maior preço'], ['variation', 'Maior variação']])}
       </div>
-      <label><input type="checkbox" id="only-favorites"> Somente favoritos</label>
+      <label class="check-choice"><input type="checkbox" id="only-favorites"> Somente favoritos</label>
       <p id="market-count" class="muted" role="status"></p>
       <p id="market-status" class="muted" role="status"></p>
       <p id="market-error" class="error" role="alert"></p>
@@ -80,7 +81,8 @@ export function renderMarket(main) {
   const receivable = query('#market-receivable');
 
   function renderAssets() {
-    const active = category.querySelector(':checked').value;
+    const active = choiceValue(category);
+    const orderBy = choiceValue(sort);
     const { title, description, risk } = assetClasses[active];
     query('#market-category-title').textContent = title;
     query('#market-category-intro').textContent = description + ' ' + risk;
@@ -93,8 +95,8 @@ export function renderMarket(main) {
       (!onlyFavorites.checked || state.favorites.includes(asset.id))
     ).map(asset => ({ asset, quote: provider.quote(asset.id) }));
     items.sort((a, b) => {
-      if (sort.value === 'price') return b.quote.cents - a.quote.cents;
-      if (sort.value === 'variation') return b.quote.changePercent - a.quote.changePercent;
+      if (orderBy === 'price') return b.quote.cents - a.quote.cents;
+      if (orderBy === 'variation') return b.quote.changePercent - a.quote.changePercent;
       return a.asset.name.localeCompare(b.asset.name, 'pt-BR');
     });
     const count = `${items.length} ${items.length === 1 ? 'ativo em' : 'ativos em'} ${active}`;
@@ -124,8 +126,8 @@ export function renderMarket(main) {
     receivable.hidden = !summary.pendingCash;
     query('#market-credit-date').textContent = summary.pendingCash ? receivableText(tick.day) : '';
     query('#market-time').textContent = `${dateTime(provider.timestamp())} · ${state.market.paused ? 'Pausado' : 'Em andamento'}`;
-    query('#market-scenario').value = state.market.scenario;
-    query('#market-speed').value = state.market.speed;
+    setChoice(query('#market-scenario'), state.market.scenario);
+    setChoice(query('#market-speed'), state.market.speed);
     toggle.textContent = state.market.paused ? 'Retomar simulação' : 'Pausar simulação';
     renderAssets();
   }
@@ -151,7 +153,7 @@ export function renderMarket(main) {
     const { detail, favorite, clearFilters } = event.target.closest('button')?.dataset ?? {};
     if (clearFilters !== undefined) {
       search.value = '';
-      sort.value = 'name';
+      setChoice(sort, 'name');
       onlyFavorites.checked = false;
       renderAssets();
       search.focus();

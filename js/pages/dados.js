@@ -1,4 +1,5 @@
 import { confirmAction } from '../components/dialog.js';
+import { choiceField, choiceValue, setChoice } from '../components/forms.js';
 import { download } from '../services/export.js';
 import { emptyState, replaceState, store, transact } from '../services/storage.js';
 import { exampleState, maximumBackupSize, parseBackup, serializeBackup } from '../services/demo.js';
@@ -40,7 +41,7 @@ export function renderData(main) {
     </div>
     <section class="card section stacked">
       <h2>Preferências</h2>
-      <div class="field"><label for="site-theme">Tema do Montante</label><select id="site-theme"><option value="light">Claro (original)</option><option value="dark">Escuro</option></select></div>
+      ${choiceField('site-theme', 'Tema do Montante', [['light', 'Claro (original)'], ['dark', 'Escuro']])}
       <p role="status" id="theme-status"></p><p class="error" role="alert" id="theme-error"></p>
     </section>`;
   const query = selector => main.querySelector(selector);
@@ -48,12 +49,12 @@ export function renderData(main) {
   const status = query('#data-status');
   const demoStatus = query('#demo-status');
   const theme = query('#site-theme');
-  try { theme.value = store.read().theme; } catch { /* A restauração fica disponível mesmo com armazenamento inválido. */ }
+  try { setChoice(theme, store.read().theme); } catch { /* A restauração fica disponível mesmo com armazenamento inválido. */ }
   async function apply(state, feedback, message) {
     await replaceState(state);
     resetSimulator();
     resetComparator();
-    theme.value = state.theme;
+    setChoice(theme, state.theme);
     error.textContent = '';
     status.textContent = '';
     demoStatus.textContent = '';
@@ -91,11 +92,11 @@ export function renderData(main) {
     const themeError = query('#theme-error');
     themeError.textContent = '';
     try {
-      await transact(current => ({ ...current, theme: theme.value }));
+      await transact(current => ({ ...current, theme: choiceValue(theme) }));
       query('#theme-status').textContent = 'Tema salvo.';
     } catch (failure) {
       themeError.textContent = failure.message;
-      theme.value = document.documentElement.dataset.theme ?? 'light';
+      setChoice(theme, document.documentElement.dataset.theme ?? 'light');
     }
   });
 }

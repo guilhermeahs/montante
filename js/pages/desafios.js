@@ -1,5 +1,6 @@
 import { drawChart } from '../components/chart.js';
 import { confirmAction, openDialog } from '../components/dialog.js';
+import { choiceField, choiceValue } from '../components/forms.js';
 import { moneyCents } from '../components/portfolio-ui.js';
 import { percent } from '../core/format.js';
 import { advanceChallenge, allocations, challengeView, createChallenge, historicalEvents, tradeChallenge } from '../core/challenges.js';
@@ -61,9 +62,7 @@ export function renderChallenges(main) {
     <section class="card stacked section challenge-setup">
       <h2>Nova rodada surpresa</h2>
       <p class="muted">Cada rodada começa com R$ 10.000 virtuais, separados da carteira principal. Escolha quanto colocar na cesta de ações antes de conhecer o cenário.</p>
-      <div class="field"><label for="challenge-allocation">Exposição inicial</label><select id="challenge-allocation">${allocations.map(value =>
-        `<option value="${value}"${value === 50 ? ' selected' : ''}>Até ${value}% do saldo</option>`
-      ).join('')}</select></div>
+      ${choiceField('challenge-allocation', 'Exposição inicial', allocations.map(value => [value, 'Até ' + value + '%']), run?.allocation ?? 50)}
       <div class="actions"><button type="button" id="challenge-start">Sortear rodada</button><a href="#mercado">Abrir Mercado simulado</a></div>
       <p class="error" id="challenge-error" role="alert"></p>
     </section>`;
@@ -76,7 +75,6 @@ export function renderChallenges(main) {
   const result = query('#challenge-result');
   const error = query('#challenge-error');
   const feedback = query('#challenge-feedback');
-  if (run) query('#challenge-allocation').value = run.allocation;
 
   function stop() {
     clearInterval(timer);
@@ -184,7 +182,7 @@ export function renderChallenges(main) {
 
   function start(episode = null) {
     const previous = run?.id;
-    const next = createChallenge({ id: crypto.randomUUID(), allocation: Number(query('#challenge-allocation').value),
+    const next = createChallenge({ id: crypto.randomUUID(), allocation: Number(choiceValue(query('#challenge-allocation'))),
       seed: crypto.getRandomValues(new Uint32Array(1))[0], episode });
     async function replace() {
       if (!active) return;

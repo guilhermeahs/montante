@@ -31,7 +31,7 @@ async page => {
   await page.evaluate(() => localStorage.removeItem('montante.state'));
   await page.reload();
   await clock(page).click();
-  await page.getByLabel('Velocidade', { exact: true }).selectOption('fast');
+  await page.getByRole('radio', { name: 'Rápida · 2 s por dia', exact: true }).locator('..').click();
   const paused = await buy();
   await confirm('Cancelar');
   verify(paused.paused && (await state(page)).paused, 'Cancelar mudou um mercado já pausado');
