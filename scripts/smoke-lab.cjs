@@ -124,7 +124,7 @@ async (page) => {
   const csv = await csvPending;
   verify(csv.suggestedFilename() === 'montante-extrato.csv', 'Nome do CSV de operações');
 
-  await page.goto(origin + '/#dados');
+  await page.getByRole('link', { name: 'Configurações', exact: true }).click();
   const pending = page.waitForEvent('download');
   await action('Exportar backup JSON').click();
   const downloaded = await pending;

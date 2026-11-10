@@ -51,26 +51,36 @@ async (page) => {
   await page.getByRole('heading', { name: 'Inflação', exact: true }).waitFor();
   await page.getByLabel('Buscar no glossário').fill('xyzabc');
   await find('Nenhum termo encontrado.').waitFor();
+  await page.getByLabel('Buscar no glossário').fill('inflacao');
+  await page.getByRole('link', { name: 'Testar no quiz', exact: true }).click();
+  await page.getByRole('heading', { name: 'Quiz educativo', level: 1, exact: true }).waitFor();
   await button('Entram no saldo e também rendem').click();
   await includes('#quiz-score', '1 acerto');
+  await page.goBack();
+  verify(await page.getByLabel('Buscar no glossário').inputValue() === 'inflacao', 'Busca perdida ao voltar ao glossário');
+  await page.getByRole('navigation', { name: 'Navegação de Aprender' }).getByRole('link', { name: 'Quiz e atividades' }).click();
   await button('No mesmo mês em que é depositado').click();
   await includes('#quiz-score', '2 de 5 respondidas');
   await page.reload();
+  await includes('#quiz-score', '2 de 5 respondidas');
+  await page.getByRole('link', { name: 'Voltar ao glossário', exact: true }).click();
+  await page.getByRole('heading', { name: 'Conceitos e glossário', level: 1, exact: true }).waitFor();
+  await page.getByRole('navigation', { name: 'Navegação de Aprender' }).getByRole('link', { name: 'Quiz e atividades' }).click();
   await includes('#quiz-score', '2 de 5 respondidas');
   await button('Refazer quiz').click();
   await page.getByRole('dialog').getByRole('button', { name: 'Limpar respostas' }).click();
   await includes('#quiz-score', '0 de 5 respondidas');
 
-  await page.goto(origin + '/#dados');
+  await page.getByRole('link', { name: 'Configurações', exact: true }).click();
   await page.getByLabel('Tema do Montante').selectOption('dark');
   await find('Tema salvo.').waitFor();
   await page.reload();
   verify(await page.evaluate(() => document.documentElement.dataset.theme === 'dark'), 'Tema escuro não persistiu');
   for (const width of [360, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const route of ['metas', 'aprender']) {
+    for (const [route, title] of [['metas', 'Metas e cenários'], ['aprender', 'Conceitos e glossário'], ['quiz', 'Quiz educativo']]) {
       await page.goto(origin + '/#' + route);
-      await page.getByRole('heading', { level: 1, name: route === 'metas' ? 'Metas e cenários' : 'Aprender' }).waitFor();
+      await page.getByRole('heading', { level: 1, name: title, exact: true }).waitFor();
       verify(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), route + ' excede ' + width + ' px');
     }
   }
@@ -83,5 +93,5 @@ async (page) => {
   await find('Meta excluída.').waitFor();
   await find('Nenhuma meta salva neste navegador.').waitFor();
   verify(errors.length === 0, JSON.stringify(errors));
-  return 'EDU OK: metas, cenários, inflação, glossário, quiz, tema e 2 telas × 5 larguras.';
+  return 'EDU OK: metas, cenários, inflação, glossário, quiz, tema e 3 telas × 5 larguras.';
 }

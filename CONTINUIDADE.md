@@ -10,7 +10,7 @@
 2. **Navegação principal.** Início, Simular, Investir e Aprender agrupam as telas existentes. Configurações abre `#dados` fora do menu principal. Os nove hashes anteriores continuam válidos, com aliases `#simular` e `#investir`. Os quatro smoke tests passaram no Edge, com foco, estados ativos, Voltar/Avançar e seis larguras cobertos no teste de navegação.
 3. **Início.** Duas jornadas com CTAs para juros compostos e Mercado simulado, gráfico calculado pelo motor existente e três passos de apoio. Navegação, Simular e Investir passaram no Edge. As capturas de 360 e 1440 px confirmaram o contraste e os dois CTAs na área inicial após o ajuste de espaçamento mobile.
 4. **Simular e Investir.** O Simulador conserva os campos editados ao voltar de Metas e pode enviar os valores calculados ao Comparador. Investir abre uma visão geral com patrimônio, saldo, resultado e uma primeira ação para carteira vazia. A cotação de um ativo abre em diálogo na lista ou na carteira e devolve o foco à origem. No Edge passaram os fluxos de rascunho, valor de referência, compra, recarga, venda parcial, filtros, relógio e extrato.
-5. Organizar glossário e quiz. Rever Dados e demonstração dentro de Configurações.
+5. **Aprender e Configurações.** `#aprender` concentra conceitos e busca, e `#quiz` tem navegação própria e respostas persistidas. Configurações mantém `#dados`, com backup, demonstração, tema e restauração confirmada. Navegação, Aprender e dados passaram no Edge, incluindo retorno ao glossário, persistência do quiz e importação/exportação.
 6. Validar navegação, dados existentes, responsividade e acessibilidade no navegador. Atualizar a documentação e enviar os marcos à `main`.
 
 # Módulos concluídos

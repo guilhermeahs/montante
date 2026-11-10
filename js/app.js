@@ -6,7 +6,7 @@ import { renderMarket } from './pages/mercado.js';
 import { renderPortfolio } from './pages/carteira.js';
 import { renderData } from './pages/dados.js';
 import { renderGoals } from './pages/metas.js';
-import { renderEducation } from './pages/aprender.js';
+import { renderEducation, renderQuiz } from './pages/aprender.js';
 import { startClock } from './services/market-clock.js';
 import { observeState, store } from './services/storage.js';
 
@@ -18,14 +18,15 @@ const routes = new Map([
   ['painel', { label: 'Visão geral', render: renderDashboard }],
   ['mercado', { label: 'Mercado simulado', render: renderMarket }],
   ['carteira', { label: 'Minha carteira', render: renderPortfolio }],
-  ['aprender', { label: 'Aprender', render: renderEducation }],
+  ['aprender', { label: 'Conceitos e glossário', render: renderEducation }],
+  ['quiz', { label: 'Quiz e atividades', render: renderQuiz }],
   ['dados', { label: 'Dados e demonstração', render: renderData }]
 ]);
 const sections = [
   { label: 'Início', entry: 'inicio' },
   { label: 'Simular', entry: 'simulador', tabs: ['simulador', 'comparador', 'metas'] },
   { label: 'Investir', entry: 'painel', tabs: ['painel', 'mercado', 'carteira'] },
-  { label: 'Aprender', entry: 'aprender' }
+  { label: 'Aprender', entry: 'aprender', tabs: ['aprender', 'quiz'] }
 ];
 const aliases = new Map([['simular', 'simulador'], ['investir', 'painel']]);
 const main = document.querySelector('main');

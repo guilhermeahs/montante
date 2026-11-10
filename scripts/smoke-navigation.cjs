@@ -16,7 +16,8 @@ async (page) => {
     ['painel', 'Visão geral', 'Investir', 'Visão geral'],
     ['mercado', 'Mercado simulado', 'Investir', 'Mercado simulado'],
     ['carteira', 'Minha carteira', 'Investir', 'Minha carteira'],
-    ['aprender', 'Aprender', 'Aprender'],
+    ['aprender', 'Conceitos e glossário', 'Aprender', 'Conceitos e glossário'],
+    ['quiz', 'Quiz educativo', 'Aprender', 'Quiz e atividades'],
     ['dados', 'Dados e demonstração']
   ];
 
