@@ -82,6 +82,8 @@ Os marcos da reorganização foram enviados à `main`, incluindo Aprender e Conf
 
 # Publicação
 
+Em 10/11/2026, o Comparador com taxas de referência mensais e anuais do commit `b20a6cb4f5275f9093f71b69a23a1a3b9e03432c` foi publicado. Lint, 35 testes do Node e o smoke de Projeções passaram localmente, na prévia e em produção. Os 35 arquivos públicos correspondem ao pacote validado. [Comparador](https://montante-educacao.pages.dev/#comparador) · [Prévia](https://347126e5.montante-educacao.pages.dev/#comparador) · [Deploy](https://308c25d8.montante-educacao.pages.dev/#comparador).
+
 Em 10/11/2026, a revisão `aecfe31a1192b14c8f17ef910c8f37ec750d7ba1` foi publicada com Investir simplificado, quantidade em destaque e fechamento do detalhe do ativo pelo X, Escape ou toque fora. Navegação, Investir e mobile passaram no Edge em prévia e produção. Os 35 arquivos do domínio público correspondem ao pacote validado. [Prévia](https://a37febfd.montante-educacao.pages.dev/) · [Produção](https://fad0e4ff.montante-educacao.pages.dev/#carteira).
 
 Em 10/11/2026, a revisão `9e764873ced2088fdf9a334325663c631ef7f652` publicou o resumo de quantidade, caixa e posição nos Desafios e o sorteio do replay do dólar com identificação do episódio só no resultado. O smoke passou em prévia e no domínio público, com toque emulado em 360 e 390 px. Os 36 arquivos públicos correspondem ao pacote validado. [Prévia](https://ea377f06.montante-educacao.pages.dev/) · [Produção](https://c5baa5b8.montante-educacao.pages.dev/#desafios-historicos).
