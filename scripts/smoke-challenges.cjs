@@ -55,8 +55,31 @@ async page => {
   await tap(button('Sortear rodada'));
   await dialog.getByRole('button', { name: 'Cancelar' }).click();
   await waitText('#challenge-day', 'Dia 1');
+  const held = await page.evaluate(() => {
+    const state = JSON.parse(localStorage.getItem('montante.state'));
+    return 75 + state.challenge.orders.reduce((total, order) =>
+      total + (order.side === 'buy' ? order.units : -order.units), 0);
+  });
+  await tap(button('Vender tudo'));
+  await dialog.getByText('Quantidade a vender: ' + held + ' (unidades da cesta).', { exact: true }).waitFor();
+  await dialog.getByRole('button', { name: 'Cancelar' }).click();
+  verify(await button('Vender tudo').isEnabled(), 'Cancelar a venda total alterou a posição');
+  await tap(button('Vender tudo'));
+  await dialog.getByRole('button', { name: 'Confirmar venda total' }).click();
+  await waitText('#challenge-feedback', 'Venda total registrada');
+  await waitText('#challenge-position', '0 unidades da cesta');
+  await waitText('#challenge-trade-help', 'Compre antes de vender');
+  verify(await button('Vender').isDisabled() && await button('Vender tudo').isDisabled(), 'Venda disponível sem posição');
+  const liquidation = await page.evaluate(() => JSON.parse(localStorage.getItem('montante.state')).challenge.orders.at(-1));
+  verify(liquidation.side === 'sell' && liquidation.units === held && liquidation.day === 1, 'Venda total com dia ou quantidade incorreta');
   for (let day = 2; day < 20; day++) await advance('Dia ' + day);
-  await advance('Rodada concluída');
+  await advance('Última rodada concluída');
+  await page.reload();
+  await waitText('#challenge-day', 'Última rodada concluída');
+  await waitText('#challenge-trade-help', 'Esta rodada terminou');
+  verify(await button('Vender tudo').isDisabled(), 'Rodada concluída abriu venda');
+  await tap(button('Nova rodada surpresa'));
+  verify(await page.evaluate(() => document.activeElement?.id === 'challenge-setup-title'), 'Atalho da nova rodada não levou à preparação');
   await tap(button('Ver resultado'));
   await page.getByRole('heading', { name: 'Como sua carteira reagiu' }).waitFor();
   for (const label of ['Manter a posição inicial', 'Ficar em caixa', 'Maior queda da sua carteira']) {
@@ -89,6 +112,23 @@ async page => {
   await page.getByText('Backup importado.', { exact: true }).waitFor();
   await page.goto(base + '#desafios-historicos');
   await waitText('#challenge-day', '02/03/2020');
+  await tap(button('Vender tudo'));
+  await dialog.getByText(/Quantidade a vender: \d+ \(lotes de US\$ 100\)\./).waitFor();
+  await dialog.getByRole('button', { name: 'Cancelar' }).click();
+
+  const previous = await page.evaluate(() => JSON.parse(localStorage.getItem('montante.state')).challenge.id);
+  await tap(button('Nova rodada surpresa'));
+  await tap(button('Sortear rodada'));
+  await dialog.getByRole('button', { name: 'Substituir rodada' }).click();
+  await waitText('#challenge-day', 'Rodada em andamento · Dia 0');
+  await page.waitForFunction(() => document.activeElement?.id === 'challenge-mode');
+  const next = await page.evaluate(() => JSON.parse(localStorage.getItem('montante.state')).challenge);
+  verify(next.id !== previous && next.kind === 'blind' && next.orders.length === 0, 'Nova rodada herdou o replay ou as ordens');
+  await tap(button('Vender tudo'));
+  await dialog.getByRole('button', { name: 'Confirmar venda total' }).click();
+  await waitText('#challenge-feedback', 'Venda total registrada');
+  await waitText('#challenge-position', '0 unidades da cesta');
+  await waitText('#challenge-metrics', '10.000,00');
   verify(errors.length === 0, JSON.stringify(errors));
-  return 'DESAFIOS OK: rodada surpresa, compra, venda, pausa, recarga, relatório, replay real, backup e toque em 360/390 px.';
+  return 'DESAFIOS OK: rodada salva e nova, compra, venda parcial e total, pausa, recarga, resultado, replay, backup e toque em 360/390 px.';
 }
