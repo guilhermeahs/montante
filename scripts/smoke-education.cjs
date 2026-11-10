@@ -77,12 +77,15 @@ async (page) => {
   await page.getByRole('navigation', { name: 'Navegação de Aprender' }).getByRole('link', { name: 'Quiz e atividades' }).click();
   await button('No mesmo mês em que é depositado').click();
   await includes('#quiz-score', '2 de 5 respondidas');
+  await button('O saldo disponível, o dinheiro a receber e o valor dos ativos').click();
+  await includes('#quiz', 'a partir do próximo dia simulado');
+  await includes('#quiz-score', '3 de 5 respondidas');
   await page.reload();
-  await includes('#quiz-score', '2 de 5 respondidas');
+  await includes('#quiz-score', '3 de 5 respondidas');
   await page.getByRole('link', { name: 'Voltar ao glossário', exact: true }).click();
   await page.getByRole('heading', { name: 'Conceitos e glossário', level: 1, exact: true }).waitFor();
   await page.getByRole('navigation', { name: 'Navegação de Aprender' }).getByRole('link', { name: 'Quiz e atividades' }).click();
-  await includes('#quiz-score', '2 de 5 respondidas');
+  await includes('#quiz-score', '3 de 5 respondidas');
   await button('Refazer quiz').click();
   await page.getByRole('dialog').getByRole('button', { name: 'Limpar respostas' }).click();
   await includes('#quiz-score', '0 de 5 respondidas');

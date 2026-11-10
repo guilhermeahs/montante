@@ -1,6 +1,6 @@
 import { openAssetDetails } from '../components/asset-details.js';
 import { confirmAction } from '../components/dialog.js';
-import { distribution, moneyCents, operationTable, portfolioMetrics, profitClass, quantity, sideLabel } from '../components/portfolio-ui.js';
+import { distribution, moneyCents, operationTable, portfolioHelp, portfolioMetrics, profitClass, quantity, sideLabel } from '../components/portfolio-ui.js';
 import { openTrade } from '../components/trade.js';
 import { marketDate } from '../core/market-engine.js';
 import { marketPortfolio, saleAvailabilityDay } from '../core/portfolio-engine.js';
@@ -18,6 +18,7 @@ export function renderPortfolio(main) {
     </header>
     <p id="portfolio-profile" class="eyebrow"></p>
     <div id="portfolio-metrics"></div>
+    ${portfolioHelp}
     <p id="portfolio-status" role="status"></p><p id="portfolio-error" class="error" role="alert"></p>
     <section class="card section">
       <h2>Posições</h2>

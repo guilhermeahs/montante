@@ -32,6 +32,6 @@ export const quiz = Object.freeze([
     options: ['Liquidez', 'Diversificação', 'Taxa efetiva'], answer: 0,
     explanation: 'Liquidez considera o prazo e a facilidade de venda ou resgate do investimento.' },
   { id: 'carteira', prompt: 'O que compõe o patrimônio da carteira virtual?',
-    options: ['O valor das projeções salvas', 'O saldo em caixa mais as posições a mercado', 'O saldo inicial mais todos os aportes do simulador'], answer: 1,
-    explanation: 'A carteira virtual soma o caixa disponível e o valor a mercado das posições. As projeções são independentes.' }
+    options: ['O valor das projeções salvas', 'O saldo disponível, o dinheiro a receber e o valor dos ativos', 'O saldo inicial mais todos os aportes do simulador'], answer: 1,
+    explanation: 'O valor a receber já conta no patrimônio. No Montante, ele só pode ser usado para comprar a partir do próximo dia simulado.' }
 ]);

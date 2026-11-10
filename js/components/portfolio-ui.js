@@ -12,6 +12,17 @@ export const quantity = (asset, units) => number(units / asset.scale, 6);
 export const sideLabel = side => side === 'buy' ? 'Compra' : 'Venda';
 export const profitClass = value => value < 0 ? 'negative' : value > 0 ? 'positive' : '';
 
+export const portfolioHelp = `<details class="card section">
+  <summary>O que significam os valores da carteira?</summary>
+  <ul>
+    <li><strong>Patrimônio:</strong> saldo disponível, vendas a receber e valor dos ativos que você tem.</li>
+    <li><strong>Saldo disponível:</strong> o dinheiro virtual que você pode usar para comprar agora.</li>
+    <li><strong>A receber:</strong> dinheiro de vendas que entra no saldo no próximo dia simulado.</li>
+    <li><strong>Resultado realizado:</strong> ganho ou perda de vendas já feitas, depois dos custos.</li>
+    <li><strong>Resultado não realizado:</strong> ganho ou perda que ainda pode mudar enquanto você mantém o ativo.</li>
+  </ul>
+</details>`;
+
 export function balanceCards(summary) {
   return `<article class="card metric emphasis" data-balance="wealth"><p>Patrimônio</p><strong>${moneyCents(summary.wealth)}</strong></article>
     <article class="card metric" data-balance="cash"><p>Saldo disponível</p><strong>${moneyCents(summary.cash)}</strong></article>

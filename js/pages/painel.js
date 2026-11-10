@@ -1,5 +1,5 @@
 import { drawChart } from '../components/chart.js';
-import { distribution, moneyCents, operationTable, portfolioMetrics, shortDate } from '../components/portfolio-ui.js';
+import { distribution, moneyCents, operationTable, portfolioHelp, portfolioMetrics, shortDate } from '../components/portfolio-ui.js';
 import { escapeHtml, money, percent } from '../core/format.js';
 import { project } from '../core/financial-engine.js';
 import { marketDate } from '../core/market-engine.js';
@@ -14,15 +14,9 @@ export function renderDashboard(main) {
     <header class="page-intro">
       <p class="eyebrow">Investir · Mercado fictício</p>
       <h1>Visão geral</h1>
-      <p class="lead">Pratique com saldo virtual. Compras e vendas mudam sua carteira, sem movimentar dinheiro real.</p>
+      <p class="lead">Acompanhe sua carteira e pratique com saldo virtual.</p>
       <div class="actions"><a class="button" href="#mercado">Explorar mercado</a><a class="button secondary" href="#carteira">Ver minha carteira</a></div>
     </header>
-    <section class="card empty-state section">
-      <p class="eyebrow">Novo · Rodada surpresa</p>
-      <h2>Desafios históricos</h2>
-      <p>Pratique como reagir a oscilações inspiradas em fatos reais. O episódio só é revelado depois que a rodada termina.</p>
-      <a class="button" href="#desafios-historicos">Abrir Desafios históricos</a>
-    </section>
     <p id="dashboard-profile" class="eyebrow section"></p><div id="dashboard-metrics" class="section"></div>
     <p id="dashboard-error" class="error" role="alert"></p>
     <section id="dashboard-first-trade" class="card empty-state section" hidden>
@@ -30,9 +24,23 @@ export function renderDashboard(main) {
       <p>Escolha um ativo, consulte a cotação simulada e confirme a compra. A posição e o registro aparecerão em Minha carteira.</p>
       <a class="button" href="#mercado">Escolher um ativo</a>
     </section>
+    ${portfolioHelp}
     <section class="card section" aria-labelledby="dashboard-risk-title">
       <h2 id="dashboard-risk-title">Risco da carteira</h2>
       <div id="dashboard-risk"></div>
+      <details>
+        <summary>Como interpretar esses números?</summary>
+        <p><strong>Concentração:</strong> quanto da carteira depende de um ativo ou categoria. Se a maior posição perde valor, ela pode puxar o total para baixo.</p>
+        <p><strong>Maior queda desde um pico:</strong> quanto o patrimônio chegou a cair em relação a um valor mais alto já alcançado no período do gráfico.</p>
+        <p><strong>Taxas pagas:</strong> a soma dos custos simulados das compras e vendas.</p>
+        <a href="#aprender">Ver conceitos no glossário</a>
+      </details>
+    </section>
+    <section class="card empty-state section" id="dashboard-challenges">
+      <p class="eyebrow">Exercício separado · Rodada surpresa</p>
+      <h2>Desafios históricos</h2>
+      <p>Pratique como reagir a oscilações inspiradas em fatos reais. O episódio só é revelado depois que a rodada termina.</p>
+      <a class="button secondary" href="#desafios-historicos">Abrir Desafios históricos</a>
     </section>
     <section class="card section"><h2>Onde investi</h2><div id="dashboard-distribution"></div></section>
     <section class="card section">
@@ -77,7 +85,10 @@ export function renderDashboard(main) {
       '<ul>' + next.simulations.map(item => `<li><strong>${escapeHtml(item.name)}</strong> · ${moneyCents(project(item.params).balance * 100)} · ${item.params.months} meses</li>`).join('') + '</ul>' :
       '<p class="muted">Nenhuma simulação salva.</p>';
     query('#dashboard-goals').innerHTML = next.goals.length ?
-      '<ul>' + next.goals.map(item => `<li><strong>${escapeHtml(item.name)}</strong> · ${percent(projectGoal(item.target, item.params).reach)} de ${money(item.target)}</li>`).join('') + '</ul>' :
+      '<ul>' + next.goals.map(item => {
+        const { required } = projectGoal(item.target, item.params);
+        return `<li><strong>${escapeHtml(item.name)}</strong> · ${required === null ? 'Aporte fora do limite de projeção' : money(required) + ' por mês'}</li>`;
+      }).join('') + '</ul>' :
       '<p class="muted">Nenhuma meta salva.</p>';
   }
   show(state);

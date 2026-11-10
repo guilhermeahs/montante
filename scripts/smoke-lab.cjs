@@ -27,6 +27,9 @@ async (page) => {
   await primary.getByRole('link', { name: 'Investir', exact: true }).click();
   await expect('#dashboard-first-trade', 'Faça sua primeira compra');
   await expect('#dashboard-metrics', '50.000,00');
+  verify(await page.locator('#dashboard-metrics').evaluate(metrics =>
+    metrics.getBoundingClientRect().bottom < document.querySelector('#dashboard-challenges').getBoundingClientRect().top),
+  'A carteira deve aparecer antes do exercício separado');
   await primary.getByRole('link', { name: 'Início', exact: true }).click();
   await page.getByRole('link', { name: 'Entrar no mercado simulado', exact: true }).click();
   await expect('#market-time', 'Pausado');
@@ -62,6 +65,8 @@ async (page) => {
   await page.getByLabel('Somente favoritos').check();
   verify(await page.locator('#market-assets tbody tr').count() === 1, 'Filtro de favoritos');
   await action('PETR4').click();
+  await modal().getByRole('heading', { name: 'Entenda este investimento', exact: true }).waitFor();
+  await expect('dialog', 'Ela descreve os preços fictícios');
   await modal().getByLabel('Período do histórico').selectOption('90');
   await modal().getByRole('img', { name: /Histórico de preço simulado/ }).waitFor();
   await confirm('Voltar aos ativos');
@@ -137,6 +142,8 @@ async (page) => {
   await page.getByRole('img', { name: 'Histórico da carteira virtual' }).waitFor();
   await expect('#dashboard-operations', 'Venda');
   await expect('#dashboard-distribution', 'PETR4');
+  await page.getByText('Como interpretar esses números?', { exact: true }).click();
+  await expect('#dashboard-risk-title + div + details', 'Concentração');
 
   await page.goto(origin + '/#carteira');
   const csvPending = page.waitForEvent('download');
