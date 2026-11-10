@@ -55,6 +55,8 @@ Os marcos da reorganização foram enviados à `main`, incluindo Aprender e Conf
 
 # Publicação
 
+Em 10/11/2026, os rótulos de negociação do commit `74916e4ac0a5dfb49e1f6ed0c3fdf549f377ddc7` foram publicados na produção do Cloudflare Pages. O fluxo de compra, venda parcial, saldo e extrato passou por HTTPS no Edge, sem erros no console. [Deploy dos rótulos de negociação](https://7a3c849b.montante-educacao.pages.dev/).
+
 Em 10/11/2026, a reorganização e os ajustes de gráficos e celular do commit `86b548e949d9a7ada7c214509322e4fd3a3f9821` foram publicados na branch de produção `main` do projeto `montante-educacao` no Cloudflare Pages. O [endereço público](https://montante-educacao.pages.dev/) respondeu com os arquivos da revisão, e os cinco smoke tests passaram por HTTPS no Edge, incluindo toque emulado, sem erros no console. A [URL específica do deploy](https://dec647d5.montante-educacao.pages.dev/) identifica esta publicação.
 
 O projeto usa upload direto. Para publicar uma nova revisão, gere o pacote a partir da raiz do repositório e envie o ZIP pelo painel do projeto, em **Create a new deployment → Production**.
