@@ -13,7 +13,7 @@ export function drawChart(container, data, lines, options = {}) {
   const id = 'chart-' + ++chartSequence;
   const values = data.flatMap(point => lines.map(line => point[line.key]));
   const min = options.zoom ? Math.min(...values) : Math.min(0, ...values);
-  const max = Math.max(...values);
+  const max = options.zoom ? Math.max(...values) : Math.max(0, ...values);
   const width = 600;
   const left = 14;
   const right = 575;
@@ -37,7 +37,7 @@ export function drawChart(container, data, lines, options = {}) {
   }).join('');
 
   container.innerHTML = `<figure class="chart"><svg viewBox="0 0 ${width} 248" role="img" aria-label="${escapeHtml(label)}">
-    ${grids}${paths}<line hidden data-marker stroke="#52615a" y1="${top}" y2="${bottom}"/>${labels}</svg>
+    ${grids}${paths}${interactive ? `<line data-marker stroke="#52615a" y1="${top}" y2="${bottom}"/>` : ''}${labels}</svg>
     <figcaption class="legend">${lines.map(line => `<span><i style="--swatch:${line.color}"></i>${escapeHtml(line.label)}</span>`).join('')}</figcaption>
     ${interactive ? `<div class="chart-controls"><label class="muted" for="${id}">Explore o período do gráfico</label><input type="range" id="${id}" min="0" max="${data.length - 1}" value="${data.length - 1}"><output for="${id}" class="chart-readout"></output></div>` : ''}</figure>`;
 

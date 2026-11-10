@@ -1,8 +1,10 @@
 export const example = Object.freeze({ initial: 1000, contribution: 500, rate: 0.8, months: 60 });
 
 export function project({ initial, contribution, rate, months }) {
-  if (![initial, contribution].every(value => Number.isFinite(value) && value >= 0 && value <= 1e8)) {
-    throw new RangeError('Informe valores entre R$ 0 e R$ 100 milhões.');
+  if (![initial, contribution].every(value =>
+    Number.isFinite(value) && value >= 0 && value <= 1e8 && Number(value.toFixed(2)) === value
+  )) {
+    throw new RangeError('Informe valores entre R$ 0 e R$ 100 milhões, com até duas casas decimais.');
   }
   if (!Number.isFinite(rate) || rate < 0 || rate > 100) {
     throw new RangeError('Informe uma taxa mensal equivalente entre 0% e 100%.');

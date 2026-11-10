@@ -17,6 +17,10 @@ npm run lint
 npm test
 ```
 
-Veja [CONTINUIDADE.md](CONTINUIDADE.md), [arquitetura](docs/ARQUITETURA.md) e [referências](docs/REFERENCIAS.md).
+O Início apresenta uma projeção calculada. O Simulador aceita taxas mensais ou anuais, compara juros simples e compostos, salva cenários no navegador e exporta a evolução em CSV. O Comparador calcula Poupança, CDB e Tesouro Selic sobre a mesma base, com taxas editáveis.
+
+As simulações salvas ficam no navegador deste endereço local. Outro navegador ou computador tem armazenamento independente.
+
+Veja [CONTINUIDADE.md](CONTINUIDADE.md), [arquitetura](docs/ARQUITETURA.md), [regras financeiras](docs/REGRAS_FINANCEIRAS.md), [testes](docs/TESTES.md) e [referências](docs/REFERENCIAS.md).
 
 Equipe A3: Bernardo Rocha, Arthur Cantarutti, Guilherme Honorato e Bernardo Benizio.

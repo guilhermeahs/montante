@@ -3,6 +3,7 @@ const whole = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL
 export const money = value => brl.format(value);
 export const compactMoney = value => whole.format(value);
 export const number = (value, digits = 4) => new Intl.NumberFormat('pt-BR', { maximumFractionDigits: digits }).format(value);
+export const inputNumber = value => new Intl.NumberFormat('pt-BR', { useGrouping: false, maximumFractionDigits: 12 }).format(value);
 export const percent = (value, digits = 2) => number(value, digits) + '%';
 
 export function parseBR(value) {
