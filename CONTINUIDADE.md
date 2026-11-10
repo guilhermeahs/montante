@@ -72,7 +72,9 @@ Os marcos da reorganização foram enviados à `main`, incluindo Aprender e Conf
 
 # Publicação
 
-Em 10/11/2026, a Atualização 2 do commit `06fcaa9b689e3dd1ea0b54d188ceedc84c3b58be` foi enviada à `main` e disponibilizada em prévia. Os 36 arquivos servidos conferem com o pacote. Investir, Metas e Educação, relógio, toque, crédito de vendas e Desafios passaram no Edge por HTTPS. O domínio público ainda serve a revisão anterior. O próximo passo de publicação é promover este pacote para a branch de produção `main` após autorização específica. [Prévia da Atualização 2](https://63f695d2.montante-educacao.pages.dev/).
+Em 10/11/2026, a Atualização 2 e os controles redesenhados do commit `478b3e7cd8e444378115a45f257810534da5517b` foram publicados em produção após a validação no Edge da prévia. Os 36 arquivos do domínio público correspondem ao pacote validado. Seis smoke tests passaram no domínio público, incluindo categorias, ordenação, favoritos, crédito, projeções, tema e Desafios. O toque foi testado em 360 e 390 px emulados. [Prévia dos controles](https://4ab451a1.montante-educacao.pages.dev/) · [Deploy de produção](https://9fbe93ad.montante-educacao.pages.dev/) · [Mercado simulado](https://montante-educacao.pages.dev/#mercado).
+
+Em 10/11/2026, a primeira revisão da Atualização 2 (`06fcaa9b689e3dd1ea0b54d188ceedc84c3b58be`) passou em prévia. Investir, Metas e Educação, relógio, toque, crédito de vendas e Desafios passaram no Edge por HTTPS. [Prévia da primeira revisão](https://63f695d2.montante-educacao.pages.dev/).
 
 Em 10/11/2026, o Mercado com risco do commit `f29213cebe1861770cfb8e02ca0223642504265a` foi enviado à `main` e publicado no Cloudflare Pages. O teste de risco, a regressão de Investir e os Desafios históricos passaram na prévia e em produção no Edge. Duas regressões públicas iniciadas logo após o deploy expiraram e passaram em sessões novas. Os 36 arquivos no endereço público conferem com o pacote validado. [Prévia](https://c935055f.montante-educacao.pages.dev/) · [Deploy de produção](https://52aed73b.montante-educacao.pages.dev/) · [Mercado simulado](https://montante-educacao.pages.dev/#mercado).
 
