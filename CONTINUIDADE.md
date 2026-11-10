@@ -74,6 +74,8 @@ Os marcos da reorganização foram enviados à `main`, incluindo Aprender e Conf
 
 # Publicação
 
+Em 10/11/2026, a revisão `43d7815d663ffedcf9a6412805576b4e8d09bc78` adicionou Vender tudo e distinguiu a rodada salva de um novo sorteio. O smoke dos Desafios passou em prévia e no domínio público por HTTPS com toque emulado em 360 e 390 px. Os 36 arquivos de produção correspondem ao pacote validado. [Prévia](https://14c3966d.montante-educacao.pages.dev/) · [Produção](https://3a0cac23.montante-educacao.pages.dev/#desafios-historicos).
+
 Em 10/11/2026, a Atualização 2 e os controles redesenhados do commit `478b3e7cd8e444378115a45f257810534da5517b` foram publicados em produção após a validação no Edge da prévia. Os 36 arquivos do domínio público correspondem ao pacote validado. Seis smoke tests passaram no domínio público, incluindo categorias, ordenação, favoritos, crédito, projeções, tema e Desafios. O toque foi testado em 360 e 390 px emulados. [Prévia dos controles](https://4ab451a1.montante-educacao.pages.dev/) · [Deploy de produção](https://9fbe93ad.montante-educacao.pages.dev/) · [Mercado simulado](https://montante-educacao.pages.dev/#mercado).
 
 Em 10/11/2026, a primeira revisão da Atualização 2 (`06fcaa9b689e3dd1ea0b54d188ceedc84c3b58be`) passou em prévia. Investir, Metas e Educação, relógio, toque, crédito de vendas e Desafios passaram no Edge por HTTPS. [Prévia da primeira revisão](https://63f695d2.montante-educacao.pages.dev/).
