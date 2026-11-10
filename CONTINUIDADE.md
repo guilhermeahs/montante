@@ -78,6 +78,8 @@ Os marcos da reorganização foram enviados à `main`, incluindo Aprender e Conf
 
 # Publicação
 
+Em 10/11/2026, a revisão `9e764873ced2088fdf9a334325663c631ef7f652` publicou o resumo de quantidade, caixa e posição nos Desafios e o sorteio do replay do dólar com identificação do episódio só no resultado. O smoke passou em prévia e no domínio público, com toque emulado em 360 e 390 px. Os 36 arquivos públicos correspondem ao pacote validado. [Prévia](https://ea377f06.montante-educacao.pages.dev/) · [Produção](https://c5baa5b8.montante-educacao.pages.dev/#desafios-historicos).
+
 Em 10/11/2026, a revisão `43d7815d663ffedcf9a6412805576b4e8d09bc78` adicionou Vender tudo e distinguiu a rodada salva de um novo sorteio. O smoke dos Desafios passou em prévia e no domínio público por HTTPS com toque emulado em 360 e 390 px. Os 36 arquivos de produção correspondem ao pacote validado. [Prévia](https://14c3966d.montante-educacao.pages.dev/) · [Produção](https://3a0cac23.montante-educacao.pages.dev/#desafios-historicos).
 
 Em 10/11/2026, a Atualização 2 e os controles redesenhados do commit `478b3e7cd8e444378115a45f257810534da5517b` foram publicados em produção após a validação no Edge da prévia. Os 36 arquivos do domínio público correspondem ao pacote validado. Seis smoke tests passaram no domínio público, incluindo categorias, ordenação, favoritos, crédito, projeções, tema e Desafios. O toque foi testado em 360 e 390 px emulados. [Prévia dos controles](https://4ab451a1.montante-educacao.pages.dev/) · [Deploy de produção](https://9fbe93ad.montante-educacao.pages.dev/) · [Mercado simulado](https://montante-educacao.pages.dev/#mercado).
