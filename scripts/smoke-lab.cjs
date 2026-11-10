@@ -30,13 +30,31 @@ async (page) => {
   await primary.getByRole('link', { name: 'Início', exact: true }).click();
   await page.getByRole('link', { name: 'Entrar no mercado simulado', exact: true }).click();
   await expect('#market-time', 'Pausado');
-  verify(await page.locator('#market-assets tbody tr').count() === 18, 'Catálogo incompleto');
+  verify(await page.getByRole('radio', { name: 'Ações (7)', exact: true }).isChecked(), 'Ações deve ser a categoria inicial');
+  verify(await page.locator('#market-assets tbody tr').count() === 7, 'Lista inicial de ações');
   await page.getByLabel('Buscar ativo').fill('nenhum-ticker');
   await action('Limpar filtros').click();
-  verify(await page.locator('#market-assets tbody tr').count() === 18, 'Limpar filtros deve restaurar o catálogo');
-  await page.getByLabel('Categoria', { exact: true }).selectOption('Criptomoedas');
-  verify(await page.locator('#market-assets tbody tr').count() === 3, 'Filtro por categoria');
-  await page.getByLabel('Categoria', { exact: true }).selectOption('');
+  verify(await page.locator('#market-assets tbody tr').count() === 7, 'Limpar filtros deve restaurar a categoria');
+  const stocks = page.getByRole('radio', { name: 'Ações (7)', exact: true });
+  await stocks.focus();
+  await page.keyboard.press('ArrowRight');
+  verify(await page.getByRole('radio', { name: 'FIIs (4)', exact: true }).isChecked(), 'Troca de categoria pelo teclado');
+  for (const [category, size, ticker] of [['FIIs', 4, 'HGLG11'], ['ETFs', 4, 'BOVA11'], ['Criptomoedas', 3, 'BTC']]) {
+    const radio = page.getByRole('radio', { name: `${category} (${size})`, exact: true });
+    await radio.check();
+    verify(await page.locator('#market-assets tbody tr').count() === size, 'Quantidade de ' + category);
+    await page.getByLabel('Buscar ativo').fill(ticker);
+    await action('Favoritar ' + ticker).click();
+    await page.getByLabel('Somente favoritos').check();
+    verify(await page.locator('#market-assets tbody tr').count() === 1, 'Busca e favoritos em ' + category);
+    await page.getByLabel('Somente favoritos').uncheck();
+    await page.getByLabel('Buscar ativo').clear();
+  }
+  await page.getByLabel('Buscar ativo').fill('BTC');
+  await stocks.check();
+  await expect('#market-assets', 'Nenhum ativo');
+  verify(await page.getByLabel('Buscar ativo').inputValue() === 'BTC', 'Busca deve persistir na troca de categoria');
+  await action('Limpar filtros').click();
   await page.getByLabel('Buscar ativo').fill('petrobras');
   await action('Favoritar PETR4').click();
   await page.locator('[data-favorite="PETR4"][aria-pressed="true"]').waitFor();

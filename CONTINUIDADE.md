@@ -15,6 +15,10 @@
 7. **Gráficos e celular.** Gráficos receberam escala em reais, marcadores por série e valores do período selecionado. A interação funciona por toque, arraste, botões e teclado. Em telas estreitas, Simular leva ao resultado e as tabelas de Mercado e posições mantêm o código do ativo visível durante a rolagem horizontal. Lint, 24 testes unitários, quatro smoke tests e o smoke de toque em 360 e 390 px passaram no Edge.
 8. **Textos de negociação.** O detalhe do ativo usa “Comprar” e as confirmações de compra e venda explicam que a operação movimenta saldo virtual. Foram validados a compra, a venda parcial, o saldo e o extrato no Edge, além do lint e dos 24 testes unitários.
 
+# Atualização 2
+
+1. **Categorias do Mercado.** Ações abre por padrão. FIIs, ETFs e Criptomoedas têm controles nativos, contagens do catálogo e explicações próprias. Busca, ordenação e favoritos continuam na troca de categoria. Lint, 34 testes do Node e os smoke tests de Investir, navegação e toque passaram. Próximo marco: simplificar Metas.
+
 # Módulos concluídos
 
 - Mercado com risco (`#mercado`, `#carteira`, `#painel`). O cenário padrão combina oscilações gerais, por categoria e por ativo, com períodos de turbulência sorteados pela semente. Novas ordens cobram 0,10% de taxa simulada. O valor líquido da venda fica a receber até o dia seguinte. A Visão geral explica concentração, maior queda recente e taxas pagas.

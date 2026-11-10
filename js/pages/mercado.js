@@ -4,7 +4,7 @@ import { openTrade } from '../components/trade.js';
 import { escapeHtml, normalizeSearch, percent } from '../core/format.js';
 import { modes } from '../core/market-engine.js';
 import { marketPortfolio } from '../core/portfolio-engine.js';
-import { categories } from '../data/ativos.js';
+import { assetClasses, categories } from '../data/ativos.js';
 import { configureMarket, stepMarket } from '../services/market-clock.js';
 import { DemoMarketProvider } from '../services/market-provider.js';
 import { observeState, store, transact } from '../services/storage.js';
@@ -37,13 +37,25 @@ export function renderMarket(main) {
       </details>
     </section>
     <section class="card section stacked">
-      <h2>Ativos</h2>
+      <h2>Escolha uma categoria</h2>
+      <fieldset class="market-categories">
+        <legend>Categoria de ativos</legend>
+        <div class="market-category-options">${categories.map((name, index) => {
+          const count = provider.list().filter(asset => asset.category === name).length;
+          return `<label title="${assetClasses[name].title}"><input type="radio" name="asset-category" value="${name}"${index === 0 ? ' checked' : ''}> <span>${name} (${count})</span></label>`;
+        }).join('')}</div>
+      </fieldset>
+      <div>
+        <h3 id="market-category-title"></h3>
+        <p id="market-category-intro" class="muted"></p>
+      </div>
       <div class="cards market-filters">
-        <div class="field"><label for="asset-search">Buscar ativo</label><input type="search" id="asset-search" placeholder="Ex.: PETR4 ou Petrobras"></div>
-        <div class="field"><label for="asset-category">Categoria</label><select id="asset-category"><option value="">Todas</option>${categories.map(category => `<option>${category}</option>`).join('')}</select></div>
+        <div class="field"><label for="asset-search">Buscar ativo</label><input type="search" id="asset-search" aria-describedby="market-search-help">
+          <small id="market-search-help">A busca e os filtros continuam ativos ao trocar de categoria.</small></div>
         <div class="field"><label for="asset-sort">Ordenar por</label><select id="asset-sort"><option value="name">Nome</option><option value="price">Preço (maior primeiro)</option><option value="variation">Variação (maior primeiro)</option></select></div>
       </div>
       <label><input type="checkbox" id="only-favorites"> Somente favoritos</label>
+      <p id="market-count" class="muted" role="status"></p>
       <p id="market-status" class="muted" role="status"></p>
       <p id="market-error" class="error" role="alert"></p>
       <div id="market-assets"></div>
@@ -54,18 +66,22 @@ export function renderMarket(main) {
   const status = query('#market-status');
   const error = query('#market-error');
   const search = query('#asset-search');
-  const category = query('#asset-category');
+  const category = query('.market-categories');
   const sort = query('#asset-sort');
   const onlyFavorites = query('#only-favorites');
   const toggle = query('#market-toggle');
 
   function renderAssets() {
+    const active = category.querySelector(':checked').value;
+    const { title, description, risk } = assetClasses[active];
+    query('#market-category-title').textContent = title;
+    query('#market-category-intro').textContent = description + ' ' + risk;
     const focused = document.activeElement?.dataset.marketButton;
     const horizontal = list.querySelector('.table-wrap')?.scrollLeft ?? 0;
     const term = normalizeSearch(search.value.trim());
     const items = provider.list().filter(asset =>
       (!term || normalizeSearch(asset.id + ' ' + asset.name).includes(term)) &&
-      (!category.value || category.value === asset.category) &&
+      active === asset.category &&
       (!onlyFavorites.checked || state.favorites.includes(asset.id))
     ).map(asset => ({ asset, quote: provider.quote(asset.id) }));
     items.sort((a, b) => {
@@ -73,6 +89,8 @@ export function renderMarket(main) {
       if (sort.value === 'variation') return b.quote.changePercent - a.quote.changePercent;
       return a.asset.name.localeCompare(b.asset.name, 'pt-BR');
     });
+    const count = `${items.length} ${items.length === 1 ? 'ativo em' : 'ativos em'} ${active}`;
+    if (query('#market-count').textContent !== count) query('#market-count').textContent = count;
     if (!items.length) {
       list.innerHTML = '<p class="muted">Nenhum ativo corresponde aos filtros.</p><button type="button" class="secondary" data-clear-filters>Limpar filtros</button>';
       return;
@@ -116,7 +134,6 @@ export function renderMarket(main) {
     const { detail, favorite, clearFilters } = event.target.closest('button')?.dataset ?? {};
     if (clearFilters !== undefined) {
       search.value = '';
-      category.value = '';
       sort.value = 'name';
       onlyFavorites.checked = false;
       renderAssets();

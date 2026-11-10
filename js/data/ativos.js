@@ -1,8 +1,12 @@
-const classes = {
-  'Ações': { scale: 1, volatility: .025, description: 'Uma ação representa uma participação em uma empresa.' },
-  'FIIs': { scale: 1, volatility: .014, description: 'Um FII reúne investimentos ligados ao setor imobiliário.' },
-  'ETFs': { scale: 1, volatility: .018, description: 'Um ETF é um fundo negociado em bolsa que pode acompanhar um índice.' },
-  'Criptomoedas': { scale: 1e6, volatility: .065, description: 'Um criptoativo é um ativo digital que pode ter grande variação de preço.' }
+export const assetClasses = {
+  'Ações': { scale: 1, volatility: .025, title: 'Ações', description: 'Uma ação é uma pequena parte de uma empresa.',
+    risk: 'Se os negócios da empresa ou as expectativas do mercado piorarem, o preço pode cair e sua posição pode perder valor.' },
+  'FIIs': { scale: 1, volatility: .014, title: 'Fundos imobiliários (FIIs)', description: 'Um FII reúne investimentos ligados a imóveis ou recebíveis.',
+    risk: 'Imóveis vazios, atrasos em pagamentos ou mudanças nos juros podem reduzir os rendimentos ou o preço da cota.' },
+  'ETFs': { scale: 1, volatility: .018, title: 'ETFs (fundos de índice)', description: 'Um ETF negociado em bolsa pode acompanhar uma cesta de ativos.',
+    risk: 'Uma cesta distribui a exposição, mas sua cota pode cair se os ativos que ela reúne perderem valor.' },
+  'Criptomoedas': { scale: 1e6, volatility: .065, title: 'Criptomoedas', description: 'Criptomoedas são ativos digitais negociados por compradores e vendedores.',
+    risk: 'Mudanças rápidas na procura e problemas de tecnologia podem causar quedas acentuadas.' }
 };
 
 export const assets = Object.freeze([
@@ -24,7 +28,7 @@ export const assets = Object.freeze([
   ['BTC', 'Bitcoin', 'Criptomoedas', 36200000],
   ['ETH', 'Ethereum', 'Criptomoedas', 1485000],
   ['SOL', 'Solana', 'Criptomoedas', 74500]
-].map(([id, name, category, initial], index) => Object.freeze({ id, name, category, initial, index, ...classes[category] })));
+].map(([id, name, category, initial], index) => Object.freeze({ id, name, category, initial, index, ...assetClasses[category] })));
 
 export const assetById = new Map(assets.map(asset => [asset.id, asset]));
-export const categories = Object.keys(classes);
+export const categories = Object.keys(assetClasses);
